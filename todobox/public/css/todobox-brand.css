@@ -1,0 +1,68 @@
+/* =============================================================================
+   ToDoBox brand theme (html[data-accent="todobox"], the default) — colours from
+   the logo: navy ink, amber lid, cream body. COLOURS ONLY: no sizes, spacing, radii
+   or fonts change here. Markup uses inline styles, hence !important / [style*=].
+   ============================================================================= */
+:root[data-accent="todobox"] {
+	--tbb-ink: #16233F; --tbb-canvas: #FAF9F7; --tbb-surface: #FFFFFF; --tbb-sunken: #F2F0EC; --tbb-border: #E4E1DB;
+	--tbb-body: #2D2A26; --tbb-muted: #6E6A62; --tbb-check: #B9B4AA;
+	--tbb-ok-bg: #E4F5EE; --tbb-ok-fg: #0A7453; --tbb-warn-bg: #FDF1E3; --tbb-warn-fg: #8F520F;
+	--tbb-bad: #DC3F3F; --tbb-bad-bg: #FCEAEA; --tbb-bad-fg: #B22F2F;
+	--tbb-int: #C98A00; --tbb-int-bg: #FBF3DE; --tbb-int-fg: #7D5600;
+	--tbb-amber: #E9973F;
+}
+:root[data-dark="1"][data-accent="todobox"] {
+	--tbb-ink: #E9ECF5; --tbb-canvas: #12151C; --tbb-surface: #1A1F2B; --tbb-sunken: #0E1117; --tbb-border: #2A3140;
+	--tbb-body: #E6E3DD; --tbb-muted: #9A968E; --tbb-check: #4A5163;
+	--tbb-ok-bg: #16332B; --tbb-ok-fg: #4FD6A6; --tbb-warn-bg: #3A2C1C; --tbb-warn-fg: #F2B26A;
+	--tbb-bad: #F06A6A; --tbb-bad-bg: #3A2024; --tbb-bad-fg: #F58A8A;
+	--tbb-int: #E0A93A; --tbb-int-bg: #33291A; --tbb-int-fg: #E8BC62;
+	--tbb-amber: #F2A857;
+}
+
+/* surfaces: white header + sidebar, warm canvas */
+[data-accent="todobox"] .tt-app { background: var(--tbb-canvas) !important; color: var(--tbb-body) !important; }
+[data-accent="todobox"] .tt-navbar { background: var(--tbb-surface) !important; border-bottom-color: var(--tbb-border) !important; }
+[data-accent="todobox"] .desk-sidebar.tt-nav { background: var(--tbb-surface) !important; border-inline-end-color: var(--tbb-border) !important; }
+[data-accent="todobox"] .tt-list-pane { background: var(--tbb-canvas) !important; border-color: var(--tbb-border) !important; }
+[data-accent="todobox"] .tt-list-pane .list-row { border-bottom-color: var(--tbb-border) !important; }
+[data-accent="todobox"] .tt-detail-pane { background: var(--tbb-surface) !important; }
+
+/* sidebar items: active = brand blue on its soft tint */
+[data-accent="todobox"] .desk-sidebar .tt-nav-item { color: var(--tbb-body) !important; }
+[data-accent="todobox"] .desk-sidebar .tt-nav-item:not([data-on="1"]):hover { background: var(--tbb-sunken) !important; }
+[data-accent="todobox"] .desk-sidebar .tt-nav-item[data-on="1"] { background: var(--primary-soft) !important; color: var(--primary) !important; }
+[data-accent="todobox"] .desk-sidebar .tt-nav-item[data-on="1"]::before { background: var(--tbb-amber) !important; }
+[data-accent="todobox"] .desk-sidebar .tt-nav-item svg[data-ic] { color: var(--tbb-muted) !important; }
+[data-accent="todobox"] .desk-sidebar .tt-nav-item[data-on="1"] svg[data-ic] { color: var(--primary) !important; }
+[data-accent="todobox"] .desk-sidebar .tt-nav-sec { color: var(--tbb-muted) !important; }
+[data-accent="todobox"] .desk-sidebar .tt-nav-count { color: var(--tbb-muted) !important; }
+[data-accent="todobox"] .desk-sidebar .tt-nav-item[data-on="1"] .tt-nav-count { color: var(--primary) !important; }
+
+/* text: titles/subjects in brand ink */
+[data-accent="todobox"] .tt-list-pane .list-row span[style*="color: var(--fg)"] { color: var(--tbb-ink) !important; }
+[data-accent="todobox"] .tt-detail-pane .scp6 { color: var(--tbb-ink) !important; }
+[data-accent="todobox"] .tt-detail-pane span[style*="font-weight: 600"][style*="color: var(--fg)"] { color: var(--tbb-ink) !important; }
+
+/* semantic chips */
+[data-accent="todobox"] span[style*="background: var(--amber-soft)"] { background: var(--tbb-warn-bg) !important; color: var(--tbb-warn-fg) !important; }
+[data-accent="todobox"] span[style*="background: var(--red-soft)"] { background: var(--tbb-bad-bg) !important; color: var(--tbb-bad-fg) !important; }
+[data-accent="todobox"] span[style*="background: var(--green-soft)"] { background: var(--tbb-ok-bg) !important; color: var(--tbb-ok-fg) !important; }
+[data-accent="todobox"] .indicator-pill[data-tone="red"] { color: var(--tbb-bad-fg); background: var(--tbb-bad-bg); }
+[data-accent="todobox"] .indicator-pill[data-tone="orange"] { color: var(--tbb-warn-fg); background: var(--tbb-warn-bg); }
+[data-accent="todobox"] .indicator-pill[data-tone="green"] { color: var(--tbb-ok-fg); background: var(--tbb-ok-bg); }
+[data-accent="todobox"] .indicator-pill[data-tone="blue"] { color: var(--primary); background: var(--primary-soft); }
+
+/* cards and thread */
+[data-accent="todobox"] .tt-detail-pane div[style*="background: var(--panel2)"][style*="border: 1px solid var(--line)"] { background: var(--tbb-surface) !important; border-color: var(--tbb-border) !important; }
+[data-accent="todobox"] .tt-detail-pane div[style*="border-radius: 12px"][style*="background: var(--panel2)"] { background: var(--tbb-canvas) !important; border-color: var(--tbb-border) !important; }
+[data-accent="todobox"] .tt-detail-pane div[style*="border-radius: 12px"][style*="background: var(--amber-soft)"] {
+	background: var(--tbb-int-bg) !important; border-color: color-mix(in srgb, var(--tbb-int) 35%, transparent) !important; color: var(--tbb-int-fg);
+}
+[data-accent="todobox"] .tt-check.list-row-checkbox[data-checked="0"] { border-color: var(--tbb-check) !important; }
+[data-accent="todobox"] .tt-ck[data-done="0"] > span:first-child { border-color: var(--tbb-check) !important; }
+
+/* amber = the logo's lid: the one highlight (focus ring, selected-row edge, progress) */
+[data-accent="todobox"] { --ring: 0 0 0 2px var(--panel), 0 0 0 4px color-mix(in srgb, var(--tbb-amber) 70%, transparent); }
+[data-accent="todobox"] .tt-list-pane .list-row[style*="var(--sel)"] { box-shadow: inset 3px 0 0 var(--tbb-amber) !important; }
+[dir="rtl"][data-accent="todobox"] .tt-list-pane .list-row[style*="var(--sel)"] { box-shadow: inset -3px 0 0 var(--tbb-amber) !important; }

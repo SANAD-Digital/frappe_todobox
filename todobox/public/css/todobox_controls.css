@@ -1,0 +1,196 @@
+/* =============================================================================
+   ToDoBox — glue for the Frappe controls on the standalone page.
+
+   The controls and Frappe's datepicker are styled by Frappe's own CSS
+   (frappe_controls[_rtl].css, generated from website.bundle.css and scoped to
+   .tm-frappe). This file only adds what the page itself needs:
+     · theme colours for dark mode (html[data-dark="1"]) on Frappe's variables
+     · the popup layer: the datepicker container above drawers and sheets, and
+       air-datepicker's parked (closed) pickers clipped so RTL pages don't widen
+     · the invisible field pickDate() opens Frappe's datepicker from, and
+       avatars / workload in the recipients list
+   ============================================================================= */
+
+/* ------------------------------------------------------------ dark mode -- */
+html[data-dark="1"] .tm-frappe {
+	--bg-color: var(--panel);
+	--fg-color: var(--panel);
+	--modal-bg: var(--panel);
+	--popover-bg: var(--panel);
+	--card-bg: var(--panel);
+	--control-bg: var(--sunk);
+	--awesomplete-hover-bg: var(--hover);
+	--fg-hover-color: var(--hover);
+	--subtle-fg: var(--sunk);
+	--border-color: var(--line);
+	--dark-border-color: var(--line2);
+	--text-color: var(--fg);
+	--text-muted: var(--fg3);
+	--text-light: var(--fg2);
+	--heading-color: var(--fg);
+	--disabled-control-bg: var(--sunk);
+}
+
+/* Bootstrap's compiled .form-control colours are fixed light greys: dark theme tokens */
+html[data-dark="1"] .tm-frappe .form-control,
+html[data-dark="1"] .tm-frappe .form-control:focus { background-color: var(--control-bg); color: var(--text-color); border-color: transparent; }
+html[data-dark="1"] .tm-frappe .form-control:disabled { background-color: var(--disabled-control-bg); }
+
+/* Frappe's MultiSelectPills box grows with its pills (in website.bundle.css the later
+   generic .form-control height would clip it) */
+.tm-frappe .table-multiselect.form-control { height: auto; }
+
+/* Frappe's invalid state (.has-error, set by the app when a required value is missing) draws
+   its border from --error-border / --error-bg, which website.bundle.css never defines */
+.tm-frappe {
+	--error-border: color-mix(in srgb, var(--red, #e03636) 65%, transparent);
+	--error-bg: color-mix(in srgb, var(--red, #e03636) 16%, transparent);
+}
+.tm-frappe .frappe-control.has-error .control-label { color: var(--red, #e03636); }
+
+/* ------------------------------------------------------------ popup layer -- */
+/* air-datepicker parks closed pickers at left:-100000px: in RTL that would widen
+   the page (and zoom phones out). The app shell never scrolls the document, so
+   the container can be the viewport and clip what is parked outside it. */
+.datepickers-container { position: fixed; inset: 0; z-index: 1070; overflow: hidden; pointer-events: none; }
+.datepickers-container .datepicker { pointer-events: auto; }
+/* air-datepicker's own CSS sets font-family: Tahoma on .datepicker, and its container lives in
+   <body> (outside .tt-app), so the day numbers fell back to Tahoma: use the app font and features,
+   with tabular figures so the day grid lines up like the app's other numbers */
+.datepickers-container .datepicker {
+	font-family: var(--font, system-ui, sans-serif);
+	font-feature-settings: "cv11", "ss01", "tnum" 1;
+	font-variant-numeric: tabular-nums lining-nums;
+	letter-spacing: -.003em;
+}
+.datepickers-container .datepicker :is(button, input) { font-family: inherit; font-feature-settings: inherit; }
+.tm-frappe .tooltip-content { display: none; }
+
+/* ------------------------------------------- pickDate() anchor -- */
+/* the invisible ControlDate laid over a date button: Frappe's datepicker opens from it */
+.tmc-dp-anchor .frappe-control, .tmc-dp-anchor .form-group { margin: 0; height: 100%; }
+.tmc-dp-anchor .form-control { width: 100%; height: 100%; min-height: 0; padding: 0; opacity: 0; cursor: pointer; }
+
+/* ------------------------------------- recipients: avatar + workload -- */
+.tmc-user-opt { display: flex !important; align-items: center; gap: 9px; }
+.tmc-user-opt .tmc-dd-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.tmc-user-opt .tmc-dd-label, .tmc-user-opt .tmc-dd-sub { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tmc-user-opt .tmc-dd-sub { font-size: var(--text-xs, 11px); color: var(--text-muted); text-align: start; }
+.tm-frappe .data-pill .tmc-ava { margin-inline-end: 4px; }
+
+/* dates and times read left-to-right inside Arabic text */
+[dir="rtl"] .tm-frappe .frappe-control[data-fieldtype="Date"] input,
+[dir="rtl"] .tm-frappe .frappe-control[data-fieldtype="Datetime"] input,
+[dir="rtl"] .tm-frappe .frappe-control[data-fieldtype="Time"] input { direction: ltr; text-align: right; }
+
+/* Text editor toolbar: readable icons in dark mode */
+html[data-dark="1"] .tm-frappe .ql-toolbar .ql-stroke { stroke: var(--fg2, #bdbdbd); }
+html[data-dark="1"] .tm-frappe .ql-toolbar .ql-fill { fill: var(--fg2, #bdbdbd); }
+html[data-dark="1"] .tm-frappe .ql-toolbar .ql-picker,
+html[data-dark="1"] .tm-frappe .ql-toolbar .ql-picker-label { color: var(--fg2, #bdbdbd); }
+html[data-dark="1"] .tm-frappe .ql-toolbar button:hover .ql-stroke,
+html[data-dark="1"] .tm-frappe .ql-toolbar button.ql-active .ql-stroke { stroke: var(--fg, #e5e5e5); }
+html[data-dark="1"] .tm-frappe .ql-toolbar button:hover .ql-fill,
+html[data-dark="1"] .tm-frappe .ql-toolbar button.ql-active .ql-fill { fill: var(--fg, #e5e5e5); }
+
+/* Text editor toolbar in RTL: the picker's arrow at the end (left) so it does not cover
+   the picker's text ("Normal", "Table"), which starts on the right */
+[dir="rtl"] .tm-frappe .ql-snow .ql-picker:not(.ql-color-picker):not(.ql-icon-picker) .ql-picker-label { padding-left: 20px; padding-right: 6px; }
+[dir="rtl"] .tm-frappe .ql-snow .ql-picker:not(.ql-color-picker):not(.ql-icon-picker) svg { right: auto; left: 0; }
+
+/* Frappe wraps each suggestion in an <a>: keep the list's text colour, not the page's link
+   colour (--primary, near-black on the dark theme's classic accent) */
+.tm-frappe .awesomplete > [role=listbox] a { color: inherit; }
+.tm-frappe .awesomplete > [role=listbox] .small { color: var(--text-muted); }
+
+/* MultiSelectPills (To / CC / Tags): compact Frappe-style pills on one flowing line with the input */
+.tm-frappe .table-multiselect.form-control {
+	display: flex; flex-wrap: wrap; align-items: center; gap: 4px;
+	min-height: 32px; padding: 3px 6px !important;
+}
+.tm-frappe .table-multiselect .data-pill.tb-selected-value {
+	display: inline-flex; align-items: center; gap: 5px; max-width: 100%;
+	height: 24px; margin: 0 !important; padding: 0 4px 0 8px !important;
+	font-size: 12px; font-weight: 500; line-height: 1; white-space: nowrap;
+	color: var(--text-color, var(--fg)); background: var(--card-bg, var(--panel)) !important;
+	border: 1px solid var(--border-color, var(--line)) !important; border-radius: 999px !important;
+	box-shadow: none !important;
+}
+.tm-frappe .table-multiselect .data-pill .tmc-ic { width: 12px; height: 12px; flex: 0 0 auto; color: var(--text-muted, var(--fg3)); }
+.tm-frappe .table-multiselect .data-pill .tmc-ava { margin-inline-end: 0; }
+.tm-frappe .table-multiselect .data-pill .btn-link-to-form { overflow: hidden; text-overflow: ellipsis; }
+.tm-frappe .table-multiselect .data-pill .btn-remove {
+	display: inline-grid; place-items: center; width: 16px; height: 16px; border-radius: 50%;
+	color: var(--text-muted, var(--fg3)); cursor: pointer;
+}
+.tm-frappe .table-multiselect .data-pill .btn-remove:hover { background: var(--sunk); color: var(--text-color, var(--fg)); }
+.tm-frappe .table-multiselect .data-pill .btn-remove svg { width: 10px; height: 10px; }
+.tm-frappe .table-multiselect .awesomplete { flex: 1 1 120px; min-width: 120px; align-self: center; }
+.tm-frappe .table-multiselect .awesomplete > input { display: block; height: 24px; line-height: 24px; padding: 0 4px !important; background: transparent !important; border: 0 !important; box-shadow: none !important; }
+
+/* Check: Frappe's checkbox (frappe/public/scss/element/checkbox.scss + the .checkbox block of
+   common/global.scss, and desk/dark.scss for dark mode). website.bundle.css — which
+   frappe_controls.css is generated from — leaves these out, so the Check control fell back to
+   the browser's native box. Physical margins/paddings are logical here for RTL. */
+.tm-frappe .checkbox { --checkbox-right-margin: 8px; }
+.tm-frappe .checkbox label { display: inline-flex; align-items: start; margin-bottom: 0; padding-top: 2.5px; cursor: pointer; }
+.tm-frappe .checkbox .label-area { font-size: var(--text-sm, 13px); font-weight: 500; line-height: 1.4; color: var(--text-color); }
+.tm-frappe .checkbox .input-area,
+.tm-frappe .checkbox .disp-area { display: flex; align-items: center; height: 20px; }
+.tm-frappe .checkbox .help-box { padding-left: 0; padding-inline-start: 26px; margin-top: 0; }
+.tm-frappe input[type="checkbox"] {
+	position: relative;
+	width: var(--checkbox-size) !important;
+	height: var(--checkbox-size);
+	margin: 0 !important;
+	margin-inline-end: var(--checkbox-right-margin) !important;
+	background-repeat: no-repeat;
+	background-position: center;
+	border: 1px solid var(--gray-500);
+	box-sizing: border-box;
+	border-radius: 4px;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	-webkit-print-color-adjust: exact;
+	print-color-adjust: exact;
+	cursor: pointer;
+}
+.tm-frappe input[type="checkbox"]:checked {
+	background-color: var(--primary);
+	background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 8 7' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 4.00001L2.66667 5.80001L7 1.20001' stroke='white' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"), var(--checkbox-gradient);
+	background-size: 57%, 100%;
+	box-shadow: none;
+	border: none;
+}
+.tm-frappe input[type="checkbox"]:focus { outline: none; box-shadow: var(--checkbox-focus-shadow); }
+.tm-frappe input[type="checkbox"]:focus-visible { box-shadow: var(--checkbox-focus-shadow); }
+.tm-frappe input[type="checkbox"].disabled-deselected,
+.tm-frappe input[type="checkbox"]:disabled {
+	background-color: var(--disabled-control-bg);
+	box-shadow: inset 0 1px 7px rgba(0, 0, 0, .1);
+	border: .5px solid var(--dark-border-color);
+	pointer-events: none;
+}
+.tm-frappe input[type="checkbox"].disabled-selected,
+.tm-frappe input[type="checkbox"]:disabled:checked {
+	background-color: var(--gray-600);
+	background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 8 7' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 4.00001L2.66667 5.80001L7 1.20001' stroke='white' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+	background-size: 57%;
+	box-shadow: inset 0 1px 3px rgba(0, 0, 0, .1);
+	border: none;
+	pointer-events: none;
+}
+html[data-dark="1"] .tm-frappe {
+	--checkbox-color: var(--neutral-white);
+	--checkbox-gradient: linear-gradient(180deg, var(--neutral-white) -124.51%, var(--neutral-white) 100%);
+	--checkbox-disabled-gradient: linear-gradient(180deg, var(--gray-600) -124.51%, var(--gray-600) 100%);
+}
+html[data-dark="1"] .tm-frappe input[type="checkbox"]:checked {
+	background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 8 7' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 4.00001L2.66667 5.80001L7 1.20001' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"), var(--checkbox-gradient);
+}
+html[data-dark="1"] .tm-frappe input[type="checkbox"].disabled-selected,
+html[data-dark="1"] .tm-frappe input[type="checkbox"]:disabled:checked {
+	background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 8 7' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 4.00001L2.66667 5.80001L7 1.20001' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"), var(--checkbox-disabled-gradient);
+}
+html[data-dark="1"] .tm-frappe input[type="checkbox"].disabled-deselected { border: none; background-color: var(--gray-700); }

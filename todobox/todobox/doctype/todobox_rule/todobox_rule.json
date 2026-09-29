@@ -1,0 +1,139 @@
+{
+ "actions": [],
+ "autoname": "field:rule_name",
+ "creation": "2026-09-19 12:00:00.000000",
+ "description": "Automation rule applied to every new ToDo: when its conditions match (all or any), the actions are applied.",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "rule_name",
+  "enabled",
+  "section_conditions",
+  "reference_doctype",
+  "column_break_cond",
+  "match",
+  "conditions",
+  "section_actions",
+  "set_priority",
+  "add_label",
+  "section_stats",
+  "hits",
+  "last_applied"
+ ],
+ "fields": [
+  {
+   "fieldname": "rule_name",
+   "fieldtype": "Data",
+   "label": "Rule Name",
+   "reqd": 1,
+   "unique": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "label": "Enabled",
+   "default": "1",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "section_conditions",
+   "fieldtype": "Section Break",
+   "label": "Conditions",
+   "description": "Conditions on the new ToDo, or on its reference document when a Reference Document Type is set."
+  },
+  {
+   "fieldname": "reference_doctype",
+   "fieldtype": "Link",
+   "label": "Reference Document Type",
+   "options": "DocType",
+   "description": "Optional: the rule only applies to ToDos linked to this document type, and can test its fields."
+  },
+  {
+   "fieldname": "column_break_cond",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "match",
+   "fieldtype": "Select",
+   "label": "Match",
+   "options": "All\nAny",
+   "default": "All",
+   "description": "All: every condition must match (AND). Any: at least one condition must match (OR)."
+  },
+  {
+   "fieldname": "conditions",
+   "fieldtype": "JSON",
+   "label": "Conditions",
+   "description": "Frappe filters: [[doctype, fieldname, operator, value], ...] on the ToDo or on its reference document."
+  },
+  {
+   "fieldname": "section_actions",
+   "fieldtype": "Section Break",
+   "label": "Actions"
+  },
+  {
+   "fieldname": "set_priority",
+   "fieldtype": "Select",
+   "label": "Set Priority",
+   "options": "\nHigh\nMedium\nLow"
+  },
+  {
+   "fieldname": "add_label",
+   "fieldtype": "Small Text",
+   "label": "Add Tags",
+   "description": "Comma-separated"
+  },
+  {
+   "fieldname": "section_stats",
+   "fieldtype": "Section Break",
+   "label": "Statistics"
+  },
+  {
+   "fieldname": "hits",
+   "fieldtype": "Int",
+   "label": "Times Applied",
+   "read_only": 1,
+   "default": "0",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "last_applied",
+   "fieldtype": "Datetime",
+   "label": "Last Applied",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-09-22 16:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "ToDoBox",
+ "name": "ToDoBox Rule",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "All"
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "rule_name",
+ "track_changes": 1
+}

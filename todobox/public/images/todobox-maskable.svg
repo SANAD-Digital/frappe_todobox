@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 1024 1024" role="img" aria-label="ToDoBox">
+  <title>ToDoBox</title>
+  <defs>
+    <mask id="tbx-cut-m" maskUnits="userSpaceOnUse" x="0" y="0" width="1024" height="1024">
+      <rect width="1024" height="1024" fill="#fff"/>
+      <path d="M372 584 L468 680 L660 488" fill="none" stroke="#000" stroke-width="80" stroke-linecap="round" stroke-linejoin="round"/>
+    </mask>
+  </defs>
+  <rect width="1024" height="1024" fill="#16233F"/>
+  <g transform="translate(512 512) scale(0.84) translate(-512 -512)">
+    <rect x="232" y="244" width="560" height="80" rx="40" fill="#E9973F"/>
+    <rect x="232" y="380" width="560" height="400" rx="80" fill="#FAF9F7" mask="url(#tbx-cut-m)"/>
+  </g>
+</svg>

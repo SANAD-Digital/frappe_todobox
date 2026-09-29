@@ -1,0 +1,32 @@
+[build-system]
+requires = ["flit_core >=3.4,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "todobox"
+authors = [
+    { name = "SANAD Digital", email = "dev@sanad.digital" },
+]
+description = "ToDoBox: inbox-style task management (ToDo, workflow actions, automation) for Frappe"
+requires-python = ">=3.10"
+readme = "README.md"
+license = { text = "AGPL-3.0-or-later" }
+dynamic = ["version"]
+dependencies = [
+    # "frappe~=16.0.0" is installed and managed by bench
+]
+
+[tool.bench.frappe-dependencies]
+frappe = ">=16.0.0-dev,<17.0.0"
+
+[tool.ruff]
+line-length = 110
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["F", "E", "W", "I", "B"]
+ignore = ["E501", "W191", "E101"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "tab"

@@ -1,0 +1,189 @@
+{% raw %}
+  <!-- ================= NEW TASK (compose drawer) =================
+       Layout only: the fields are Frappe form controls (label + input, Frappe's look)
+       from js/todobox/controls.js, mounted into the empty [ref] slots by
+       hub/compose.js (tmcVals / tmcSlot). -->
+  <sc-if value="{{ composeOpen }}" hint-placeholder-val="{{ false }}">
+    <div class="tmc-backdrop" onClick="{{ tmc.requestClose }}"></div>
+    <aside ref="{{ tmc.rootRef }}" class="{{ tmc.cls }}" role="dialog" aria-modal="true" aria-labelledby="tmc-title">
+      <header class="tmc-head">
+        <span class="tmc-head-ic"><svg data-ic="" class="tmc-ic"><use href="#i-plus"></use></svg></span>
+        <div class="tmc-head-text">
+          <h2 id="tmc-title" class="tmc-title">New ToDo</h2>
+          <span class="tmc-head-sub">{{ tmc.headSub }}</span>
+        </div>
+        <button type="button" class="tmc-icon-btn tmc-expand" onClick="{{ tmc.toggleExpand }}" title="{{ tmc.expandLabel }}" aria-label="{{ tmc.expandLabel }}">
+          <svg data-ic="" class="tmc-ic"><use href="{{ tmc.expandIcon }}"></use></svg>
+        </button>
+        <button type="button" class="tmc-icon-btn" onClick="{{ tmc.requestClose }}" title="Close (Esc)" aria-label="Close">
+          <svg data-ic="" class="tmc-ic"><use href="#i-x"></use></svg>
+        </button>
+      </header>
+
+      <sc-if value="{{ tmc.restoreOpen }}" hint-placeholder-val="{{ false }}">
+        <div class="tmc-banner" role="status">
+          <svg data-ic="" class="tmc-ic"><use href="#i-pencil"></use></svg>
+          <span class="tmc-banner-text">{{ tmc.restoreText }}</span>
+          <button type="button" class="tmc-btn tmc-btn-sm" onClick="{{ tmc.discardDraft }}">Discard</button>
+          <button type="button" class="tmc-btn tmc-btn-sm tmc-btn-primary" onClick="{{ tmc.restoreDraft }}">Restore</button>
+        </div>
+      </sc-if>
+
+      <div class="tmc-body">
+        <!-- WHO -->
+        <div class="tmc-sec">
+          <div class="{{ tmc.fieldCls.to }} tmc-field-to">
+            <button type="button" class="tmc-link-toggle" onClick="{{ tmc.toggleCC }}" aria-expanded="{{ tmc.ccExpanded }}">{{ tmc.ccToggleLabel }}</button>
+            <div ref="{{ tmc.slot.to }}"></div>
+            <sc-if value="{{ tmc.hasErr.to }}" hint-placeholder-val="{{ false }}">
+              <div class="tmc-help tmc-help-err" role="alert">{{ tmc.err.to }}</div>
+            </sc-if>
+            <sc-if value="{{ tmc.hasSuggest }}" hint-placeholder-val="{{ false }}">
+              <div class="tmc-suggest">
+                <span class="tmc-suggest-label">Suggested</span>
+                <sc-for list="{{ tmc.suggest }}" as="sg" hint-placeholder-count="3">
+                  <button type="button" class="tmc-suggest-chip" onClick="{{ sg.onPick }}" title="{{ sg.title }}">
+                    <svg data-ic="" class="tmc-ic"><use href="#i-plus"></use></svg>{{ sg.name }}
+                  </button>
+                </sc-for>
+              </div>
+            </sc-if>
+          </div>
+          <sc-if value="{{ tmc.ccOpen }}" hint-placeholder-val="{{ false }}">
+            <div class="tmc-field">
+              <div ref="{{ tmc.slot.cc }}"></div>
+            </div>
+          </sc-if>
+        </div>
+
+        <!-- WHAT -->
+        <div class="tmc-sec">
+          <div class="{{ tmc.fieldCls.subject }}">
+            <div ref="{{ tmc.slot.subject }}"></div>
+            <sc-if value="{{ tmc.hasErr.subject }}" hint-placeholder-val="{{ false }}">
+              <div class="tmc-help tmc-help-err" role="alert">{{ tmc.err.subject }}</div>
+            </sc-if>
+          </div>
+          <div class="tmc-field">
+            <div ref="{{ tmc.slot.body }}"></div>
+          </div>
+        </div>
+
+        <!-- WHEN & HOW -->
+        <div class="tmc-sec">
+          <div class="tmc-col tmc-cols-2">
+            <div class="{{ tmc.fieldCls.date }}">
+              <div ref="{{ tmc.slot.date }}"></div>
+              <sc-if value="{{ tmc.hasErr.date }}" hint-placeholder-val="{{ false }}">
+                <div class="tmc-help tmc-help-err" role="alert">{{ tmc.err.date }}</div>
+              </sc-if>
+            </div>
+            <div class="tmc-field">
+              <div ref="{{ tmc.slot.priority }}"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CONTEXT (progressive disclosure) -->
+        <div class="tmc-sec">
+          <sc-if value="{{ tmc.hasAddChips }}" hint-placeholder-val="{{ true }}">
+            <div class="tmc-add-row">
+              <sc-for list="{{ tmc.addChips }}" as="ac" hint-placeholder-count="5">
+                <button type="button" class="tmc-add-chip" onClick="{{ ac.onAdd }}">
+                  <svg data-ic="" class="tmc-ic"><use href="{{ ac.icon }}"></use></svg>{{ ac.label }}
+                </button>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ tmc.show.ref }}" hint-placeholder-val="{{ false }}">
+            <div class="tmc-sub" data-tmc-sec="ref">
+              <div class="tmc-sub-head">
+                <svg data-ic="" class="tmc-ic"><use href="#i-link"></use></svg><span class="tmc-sub-title">Linked document</span>
+                <button type="button" class="tmc-icon-btn tmc-sm" onClick="{{ tmc.hide.ref }}" title="Remove" aria-label="Remove"><svg data-ic="" class="tmc-ic"><use href="#i-x"></use></svg></button>
+              </div>
+              <div class="tmc-col">
+                <div class="tmc-field">
+                  <div ref="{{ tmc.slot.ref_type }}"></div>
+                </div>
+                <div class="{{ tmc.fieldCls.ref }}">
+                  <div ref="{{ tmc.slot.ref_name }}"></div>
+                  <sc-if value="{{ tmc.hasErr.ref }}" hint-placeholder-val="{{ false }}">
+                    <div class="tmc-help tmc-help-err" role="alert">{{ tmc.err.ref }}</div>
+                  </sc-if>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ tmc.show.template }}" hint-placeholder-val="{{ false }}">
+            <div class="tmc-sub" data-tmc-sec="template">
+              <div class="tmc-sub-head">
+                <svg data-ic="" class="tmc-ic"><use href="#i-template"></use></svg><span class="tmc-sub-title">Template</span>
+                <button type="button" class="tmc-icon-btn tmc-sm" onClick="{{ tmc.hide.template }}" title="Remove" aria-label="Remove"><svg data-ic="" class="tmc-ic"><use href="#i-x"></use></svg></button>
+              </div>
+              <div ref="{{ tmc.slot.template }}"></div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ tmc.show.checklist }}" hint-placeholder-val="{{ false }}">
+            <div class="tmc-sub" data-tmc-sec="checklist">
+              <div class="tmc-sub-head">
+                <svg data-ic="" class="tmc-ic"><use href="#i-list"></use></svg><span class="tmc-sub-title">Checklist</span>
+                <span class="tmc-count">{{ tmc.checkCount }}</span>
+                <button type="button" class="tmc-icon-btn tmc-sm" onClick="{{ tmc.hide.checklist }}" title="Remove" aria-label="Remove"><svg data-ic="" class="tmc-ic"><use href="#i-x"></use></svg></button>
+              </div>
+              <div ref="{{ tmc.slot.checklist }}"></div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ tmc.show.tags }}" hint-placeholder-val="{{ false }}">
+            <div class="tmc-sub" data-tmc-sec="tags">
+              <div class="tmc-sub-head">
+                <svg data-ic="" class="tmc-ic"><use href="#i-tag"></use></svg><span class="tmc-sub-title">Tags</span>
+                <button type="button" class="tmc-icon-btn tmc-sm" onClick="{{ tmc.hide.tags }}" title="Remove" aria-label="Remove"><svg data-ic="" class="tmc-ic"><use href="#i-x"></use></svg></button>
+              </div>
+              <div ref="{{ tmc.slot.tags }}"></div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ tmc.show.files }}" hint-placeholder-val="{{ false }}">
+            <div class="tmc-sub" data-tmc-sec="files">
+              <div class="tmc-sub-head">
+                <svg data-ic="" class="tmc-ic"><use href="#i-paperclip"></use></svg><span class="tmc-sub-title">Attachments</span>
+                <button type="button" class="tmc-icon-btn tmc-sm" onClick="{{ tmc.hide.files }}" title="Remove" aria-label="Remove"><svg data-ic="" class="tmc-ic"><use href="#i-x"></use></svg></button>
+              </div>
+              <div ref="{{ tmc.slot.files }}"></div>
+              <sc-if value="{{ tmc.hasErr.files }}" hint-placeholder-val="{{ false }}">
+                <div class="tmc-help tmc-help-err" role="alert">{{ tmc.err.files }}</div>
+              </sc-if>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+
+      <sc-if value="{{ tmc.confirmOpen }}" hint-placeholder-val="{{ false }}">
+        <div class="tmc-confirm" role="alertdialog" aria-labelledby="tmc-confirm-text">
+          <span id="tmc-confirm-text" class="tmc-confirm-text">Close without sending? Your draft is saved and can be restored next time.</span>
+          <button type="button" class="tmc-btn tmc-btn-sm" onClick="{{ tmc.keepEditing }}">Keep editing</button>
+          <button type="button" class="tmc-btn tmc-btn-sm tmc-btn-danger" onClick="{{ tmc.confirmClose }}">Close</button>
+        </div>
+      </sc-if>
+
+      <footer class="tmc-foot">
+        <button type="button" class="tmc-btn tmc-btn-ghost" onClick="{{ tmc.onRecurring }}" title="Create a recurring task instead">
+          <svg data-ic="" class="tmc-ic"><use href="#i-repeat"></use></svg><span class="tmc-hide-sm">Recurring…</span>
+        </button>
+        <div class="tmc-foot-info">
+          <span class="tmc-notice">{{ tmc.notice }}</span>
+          <span class="tmc-kbd-hint">{{ tmc.kbdHint }}</span>
+        </div>
+        <button type="button" class="{{ tmc.sendCls }}" onClick="{{ tmc.submit }}" disabled="{{ tmc.busy }}" aria-busy="{{ tmc.busyAria }}">
+          <span class="tmc-spinner" aria-hidden="true"></span>
+          <svg data-ic="" class="tmc-ic tmc-send-ic"><use href="#i-send"></use></svg>
+          <span>{{ tmc.sendLabel }}</span>
+        </button>
+      </footer>
+    </aside>
+  </sc-if>
+{% endraw %}

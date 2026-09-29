@@ -1,0 +1,77 @@
+{
+ "app": "todobox",
+ "creation": "2026-09-22 10:00:00.000000",
+ "docstatus": 0,
+ "doctype": "Workspace Sidebar",
+ "header_icon": "inbox",
+ "idx": 0,
+ "items": [
+  {
+   "child": 0,
+   "collapsible": 1,
+   "icon": "inbox",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Open ToDoBox",
+   "link_type": "URL",
+   "show_arrow": 0,
+   "type": "Link",
+   "url": "/todobox"
+  },
+  {
+   "child": 0,
+   "collapsible": 1,
+   "icon": "check-square",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "ToDo",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link",
+   "link_to": "ToDo"
+  },
+  {
+   "child": 0,
+   "collapsible": 1,
+   "icon": "zap",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Automation Rules",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link",
+   "link_to": "ToDoBox Rule"
+  },
+  {
+   "child": 0,
+   "collapsible": 1,
+   "icon": "layout-template",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Task Templates",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link",
+   "link_to": "ToDoBox Task Template"
+  },
+  {
+   "child": 0,
+   "collapsible": 1,
+   "icon": "repeat",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Recurring Tasks",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link",
+   "link_to": "ToDoBox Recurring Task"
+  }
+ ],
+ "modified": "2026-09-22 10:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "ToDoBox",
+ "name": "ToDoBox",
+ "owner": "Administrator",
+ "standard": 1,
+ "title": "ToDoBox"
+}

@@ -1,0 +1,3403 @@
+# Arabic translations for ToDoBox.
+# Copyright (C) 2026 SANAD Digital
+# This file is distributed under the same license as the ToDoBox project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ToDoBox 0.1.0\n"
+"Report-Msgid-Bugs-To: dev@sanad.digital\n"
+"POT-Creation-Date: 2026-09-19 14:01+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ar\n"
+"Language-Team: dev@sanad.digital\n"
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=0 && n%100<=2 ? 4 : 5);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.16.0\n"
+
+msgid "0-3 days"
+msgstr "0-3 أيام"
+
+msgid "0–3 days"
+msgstr "0–3 أيام"
+
+msgid "1 day ago"
+msgstr "منذ يوم"
+
+msgctxt "ToDo Tool"
+msgid "1 hour ago"
+msgstr "منذ ساعة"
+
+msgctxt "ToDo Tool"
+msgid "1 week ago"
+msgstr "قبل أسبوع"
+
+msgid "15 days or more"
+msgstr "15 يومًا فأكثر"
+
+msgid "15+ days"
+msgstr "15 يومًا فأكثر"
+
+msgid "2 weeks ago"
+msgstr "قبل أسبوعين"
+
+msgid "3 weeks ago"
+msgstr "قبل 3 أسابيع"
+
+msgid "30 days"
+msgstr "30 يومًا"
+
+msgid "4 to 7 days"
+msgstr "من 4 إلى 7 أيام"
+
+msgid "4-7 days"
+msgstr "4-7 أيام"
+
+msgid "4–7 days"
+msgstr "4–7 أيام"
+
+msgid "7 days"
+msgstr "7 أيام"
+
+msgid "8 to 14 days"
+msgstr "من 8 إلى 14 يومًا"
+
+msgid "8+ days"
+msgstr "+8 أيام"
+
+msgid "8–14 days"
+msgstr "8–14 يومًا"
+
+msgid "90 days"
+msgstr "90 يومًا"
+
+msgid "A single aggregate query for cycle time, aging and member workload."
+msgstr "استعلام تجميعي واحد لزمن الدورة والتقادم وحِمل الأعضاء."
+
+msgid "A task has been forwarded to you: {0}"
+msgstr "تمت إحالة مهمة إليك: {0}"
+
+msgid "Accounts Manager"
+msgstr "مدير الحسابات"
+
+msgid "Accounts User"
+msgstr "مستخدم الحسابات"
+
+msgid "Acting as {0} — {1}"
+msgstr "تعمل الآن كـ {0} — {1}"
+
+msgid "Action '{0}' executed on {1}"
+msgstr "تم تنفيذ الإجراء '{0}' على {1}"
+
+msgctxt "ToDo Tool"
+msgid "Actions"
+msgstr "إجراءات"
+
+msgid "Add"
+msgstr "إضافة"
+
+msgid "Add Tag"
+msgstr "أضف وسمًا"
+
+msgid "Add a note with the decision… (required when rejecting or returning)"
+msgstr "أضف ملاحظة مع القرار… (إلزامية مع الرفض أو الإعادة)"
+
+msgid "Add a recipient and a subject"
+msgstr "أضف مستلمًا وموضوعًا"
+
+msgid "Add a step…"
+msgstr "أضف خطوة…"
+
+msgid "Add at least one action"
+msgstr "أضف إجراءً واحدًا على الأقل"
+
+msgid "Add at least one condition"
+msgstr "أضف شرطًا واحدًا على الأقل"
+
+msgid "Add checklist"
+msgstr "أضف قائمة تحقق"
+
+msgid "Add comment"
+msgstr "إضافة التعليق"
+
+msgid "Add filter"
+msgstr "أضف فلتر"
+
+msgid "Add recipients"
+msgstr "إضافة مستلمين"
+
+msgid "Add step"
+msgstr "إضافة خطوة"
+
+msgctxt "ToDo Tool"
+msgid "Add tag"
+msgstr "إضافة وسم"
+
+msgid "Add the tag"
+msgstr "إضافة الوسم"
+
+msgid "Add to CC"
+msgstr "إضافة نسخة"
+
+msgid "Add what you typed in the decision bar as a comment"
+msgstr "أضف ما كتبته في شريط القرار كتعليق"
+
+msgid "Added attachment {0}"
+msgstr "أضفت مرفق {0}"
+
+msgid "Added steps from template \"{0}\""
+msgstr "أُضيفت خطوات القالب «{0}»"
+
+msgid "All"
+msgstr "الكل"
+
+msgid "All are moving"
+msgstr "جميعها تتحرك"
+
+msgid "All fields"
+msgstr "كل الحقول"
+
+msgid "All filled conditions must match (AND)."
+msgstr "يجب أن تتحقق كل الشروط المعبّأة."
+
+msgid "All my tasks"
+msgstr "كل مهامي"
+
+msgid "All results"
+msgstr "كل النتائج"
+
+msgid "All statuses"
+msgstr "كل الحالات"
+
+msgid "All {0}"
+msgstr "الكل {0}"
+
+msgid "Amount above {0}"
+msgstr "المبلغ أكبر من {0}"
+
+msgctxt "ToDo Tool"
+msgid "Analytics"
+msgstr "لوحة التحليل"
+
+msgid "Any"
+msgstr "أي أولوية"
+
+msgid "Applied"
+msgstr "مُطبَّق"
+
+msgid "Apply action + comment"
+msgstr "تنفيذ الإجراء + تعليق"
+
+msgid "Approval path"
+msgstr "مسار الاعتماد"
+
+msgid "Approvals"
+msgstr "اعتمادات"
+
+msgid "Approve"
+msgstr "اعتماد"
+
+msgid "Approve a document from within the task"
+msgstr "اعتماد مستند من داخل المهمة"
+
+msgid "Approve for payment"
+msgstr "اعتماد للدفع"
+
+msgid "Approve order"
+msgstr "اعتماد الأمر"
+
+msgid "Approve profile"
+msgstr "اعتماد الملف"
+
+msgid "Approve request"
+msgstr "اعتماد الطلب"
+
+msgid "Approved"
+msgstr "معتمد"
+
+msgctxt "ToDo Tool"
+msgid "Assign To"
+msgstr "إسناد إلى"
+
+msgid "Assign to"
+msgstr "إسناد إلى"
+
+msgctxt "ToDo Tool"
+msgid "Assigned By"
+msgstr "المُسنِد"
+
+msgid "Assignee"
+msgstr "المستلم"
+
+msgid "Assigner"
+msgstr "المُسنِد"
+
+msgid "Assignment"
+msgstr "إسناد"
+
+msgid "Assignments, replies and alerts will appear here as soon as they arrive."
+msgstr "ستظهر هنا الإسنادات والردود والتنبيهات فور وصولها."
+
+msgid "Attach file"
+msgstr "إرفاق ملف"
+
+msgid "Attach file (a)"
+msgstr "إرفاق ملف (a)"
+
+msgid "Attached {0} file(s)"
+msgstr "أُرفق {0} ملف"
+
+msgid "Attachment ({0})"
+msgstr "مرفق ({0})"
+
+msgid "Attachment preview"
+msgstr "معاينة المرفق"
+
+msgid "Attachments"
+msgstr "المرفقات"
+
+msgid "Automation"
+msgstr "الأتمتة"
+
+msgid "Automation rule"
+msgstr "قاعدة أتمتة"
+
+msgid "Average cycle time {0} days — the highest on the team, with {1} open tasks, {2} of them overdue. Review their workload before the next assignment."
+msgstr "متوسط زمن دورته {0} يوم — الأعلى في الفريق، ولديه {1} مهمة مفتوحة منها {2} متأخرة. راجع حِمله قبل الإسناد التالي."
+
+msgid "Average {0} days"
+msgstr "المتوسط {0} يوم"
+
+msgid "Awaiting my decision"
+msgstr "بانتظار قراري"
+
+msgid "Awaiting my decision (user or role)"
+msgstr "بانتظار قراري (مستخدم أو دور)"
+
+msgid "Awaiting reply"
+msgstr "بانتظار رد"
+
+msgid "Awaiting {0}"
+msgstr "بانتظار {0}"
+
+msgid "Award to supplier"
+msgstr "ترسية على مورد"
+
+msgid "Back"
+msgstr "رجوع"
+
+msgid "Back from snooze — status of {0} changed"
+msgstr "عاد من التأجيل — تغيّرت حالة {0}"
+
+msgid "Back to list"
+msgstr "العودة إلى القائمة"
+
+msgid "Back to team"
+msgstr "العودة للفريق"
+
+msgid "Backlog grew by {0}"
+msgstr "زاد التراكم بـ {0}"
+
+msgid "Based on {0} tasks completed over 6 weeks"
+msgstr "مبنية على {0} مهمة منجزة خلال 6 أسابيع"
+
+msgid "Basis for cycle time and aging calculations"
+msgstr "أساس حساب زمن الدورة والتقادم"
+
+msgid "Be the first to comment on this document — your comment is saved on the document in ERPNext."
+msgstr "كن أول من يعلّق على هذا المستند — يُحفَظ تعليقك على المستند في ERPNext."
+
+msgctxt "ToDo Tool"
+msgid "Bold"
+msgstr "عريض"
+
+msgid "Bottleneck: {0}"
+msgstr "عنق الزجاجة: {0}"
+
+msgid "Buttons available to me now"
+msgstr "الأزرار المتاحة لي الآن"
+
+msgid "By priority"
+msgstr "حسب الأولوية"
+
+msgctxt "ToDo Tool"
+msgid "CC"
+msgstr "نسخة (CC)"
+
+msgid "CC ({0})"
+msgstr "نسخة ({0})"
+
+msgid "CC to me"
+msgstr "نسخة لي"
+
+msgid "CC:"
+msgstr "نسخة:"
+
+msgid "Calculating…"
+msgstr "جارٍ الحساب…"
+
+msgid "Cancel snooze"
+msgstr "إلغاء التأجيل"
+
+msgid "Cancelled"
+msgstr "ملغاة"
+
+msgid "Change sorting"
+msgstr "تغيير الترتيب"
+
+msgid "Change the filter or tab above."
+msgstr "غيّر الفلتر أو التبويب أعلاه."
+
+msgid "Check the account statement against the recorded invoices and let me know of any difference."
+msgstr "راجع كشف الحساب مقابل الفواتير المسجّلة وأبلغني بأي فرق."
+
+msgid "Checklist"
+msgstr "قائمة التحقق"
+
+msgid "Checklist inside the task (steps from {0})"
+msgstr "قائمة تحقق داخل المهمة (خطوات من {0})"
+
+msgid "Checklist step not found"
+msgstr "خطوة قائمة التحقق غير موجودة"
+
+msgid "Checklist template"
+msgstr "قالب قائمة التحقق"
+
+msgid "Checklist — from template"
+msgstr "قائمة التحقق — من القالب"
+
+msgid "Choose a recipient"
+msgstr "اختر مستلمًا"
+
+msgid "Choose a task template or enter a subject"
+msgstr "اختر قالب مهمة أو أدخل موضوعًا"
+
+msgid "Clear all"
+msgstr "مسح الكل"
+
+msgid "Clear search"
+msgstr "مسح البحث"
+
+msgid "Clear selection"
+msgstr "إلغاء التحديد"
+
+msgid "Clears {0} for tasks whose snooze has ended and broadcasts {1}."
+msgstr "يفرّغ {0} للمهام التي انتهى تأجيلها ويبثّ {1}."
+
+msgid "Click again to delete"
+msgstr "اضغط مرة أخرى للحذف"
+
+msgid "Close"
+msgstr "إغلاق"
+
+msgid "Close request"
+msgstr "إغلاق الطلب"
+
+msgid "Closes my task and opens a new task for the recipient in the same thread."
+msgstr "تُغلق مهمتي وتُفتح مهمة جديدة للمستلم بنفس الـ thread."
+
+msgctxt "ToDo Tool"
+msgid "Code"
+msgstr "كود"
+
+msgid "Comfortable"
+msgstr "مريح"
+
+msgid "Command palette"
+msgstr "لوحة الأوامر"
+
+msgid "Comment added to the document"
+msgstr "أُضيف التعليق على المستند"
+
+msgid "Comment and mention"
+msgstr "تعليق وإشارة"
+
+msgid "Comment cannot be empty"
+msgstr "لا يمكن أن يكون التعليق فارغًا"
+
+msgid "Comment for the internal team only (k)"
+msgstr "تعليق للفريق الداخلي فقط (k)"
+
+msgid "Comment on the document"
+msgstr "تعليق على المستند"
+
+msgid "Commenting…"
+msgstr "تعليق…"
+
+msgid "Comments"
+msgstr "التعليقات"
+
+msgid "Compact"
+msgstr "مضغوط"
+
+msgid "Compact view"
+msgstr "العرض المختصر"
+
+msgid "Compared with your own previous period — not with colleagues"
+msgstr "المقارنة مع فترتك السابقة — لا مع زملائك"
+
+msgid "Complete"
+msgstr "إنجاز"
+
+msgid "Complete (e)"
+msgstr "إنجاز (e)"
+
+msgid "Complete a task today to start a streak"
+msgstr "أنجز مهمة اليوم لتبدأ سلسلة"
+
+msgid "Complete selected task"
+msgstr "إنجاز المهمة المحددة"
+
+msgid "Complete with comment"
+msgstr "إنجاز مع التعليق"
+
+msgid "Complete with comment (e)"
+msgstr "إنجاز مع التعليق (e)"
+
+msgctxt "ToDo Tool"
+msgid "Completed"
+msgstr "منجزة"
+
+msgid "Completed \"{0}…\""
+msgstr "تم إنجاز «{0}…»"
+
+msgid "Completed \"{0}…\" — moved to Completed"
+msgstr "تم إنجاز «{0}…» — نُقلت إلى المنجزة"
+
+msgctxt "ToDo Tool"
+msgid "Completed On"
+msgstr "تاريخ الإنجاز"
+
+msgid "Completed in the period and open now · median days to complete"
+msgstr "المنجزة في الفترة والمفتوحة الآن · وسيط أيام الإنجاز"
+
+msgid "Completed later as: {0}"
+msgstr "اكتمل لاحقًا: {0}"
+
+msgid "Completed per week"
+msgstr "المنجَز أسبوعيًا"
+
+msgid "Completed vs new tasks"
+msgstr "المنجزة مقابل الجديدة"
+
+msgid "Completed: {0}"
+msgstr "مكتمل: {0}"
+
+msgid "Completing…"
+msgstr "إنجاز…"
+
+msgid "Completion streak"
+msgstr "سلسلة الإنجاز"
+
+msgid "Conditions"
+msgstr "الشروط"
+
+msgid "Confirm Delete"
+msgstr "تأكيد الحذف"
+
+msgid "Confirm?"
+msgstr "تأكيد؟"
+
+msgid "Copies the template and checklist on each cycle and sets the due date."
+msgstr "ينسخ القالب وقائمة التحقق في كل دورة ويضبط تاريخ الاستحقاق."
+
+msgid "Copy (CC)"
+msgstr "نسخة (CC)"
+
+msgid "Copy task link"
+msgstr "نسخ رابط المهمة"
+
+msgid "Could not complete the action"
+msgstr "تعذّر التنفيذ"
+
+msgid "Could not copy the link"
+msgstr "تعذّر نسخ الرابط"
+
+msgid "Could not open the attachment dialog"
+msgstr "تعذّر فتح نافذة الإرفاق"
+
+msgid "Could not run"
+msgstr "تعذّر التشغيل"
+
+msgid "Could not save the template"
+msgstr "تعذّر حفظ القالب"
+
+msgid "Could not save the view"
+msgstr "تعذّر حفظ العرض"
+
+msgid "Could not send the reminder"
+msgstr "تعذّر إرسال التذكير"
+
+msgid "Could not upload the file"
+msgstr "تعذّر رفع الملف"
+
+msgid "Create Template"
+msgstr "إنشاء القالب"
+
+msgid "Create a new task"
+msgstr "أنشئ مهمة جديدة"
+
+msgid "Create ready-made templates with checklists to use when creating tasks"
+msgstr "أنشئ قوالب جاهزة بقوائم تحقق تُستخدم عند إنشاء المهام"
+
+msgid "Create task from it"
+msgstr "إنشاء مهمة منه"
+
+msgid "Create with an automation rule"
+msgstr "إنشاء مع قاعدة أتمتة"
+
+msgid "Created \"{0}\" with a {1}-step checklist"
+msgstr "أُنشئت «{0}» بقائمة تحقق من {1} خطوات"
+
+msgctxt "ToDo Tool"
+msgid "Created By"
+msgstr "أنشأه"
+
+msgid "Created an assignment from the mention"
+msgstr "أُنشئ إسناد من الإشارة"
+
+msgid "Created an assignment from the mention (assign_to.add)"
+msgstr "أنشأت إسنادًا من الإشارة (assign_to.add)"
+
+msgid "Created {0} task(s)"
+msgstr "أُنشئت {0} مهمة"
+
+msgid "Creating…"
+msgstr "إنشاء…"
+
+msgid "Ctrl+Enter to send"
+msgstr "Ctrl+Enter للإرسال"
+
+msgid "Current User"
+msgstr "المستخدم الحالي"
+
+msgid "Custom fields on the ToDo DocType"
+msgstr "الحقول المخصّصة على DocType «ToDo»"
+
+msgid "Cycle time by priority"
+msgstr "زمن الدورة بحسب الأولوية"
+
+msgid "Cycle time — median"
+msgstr "زمن الدورة — الوسيط"
+
+msgid "Daily"
+msgstr "يوميًا"
+
+msgctxt "ToDo Tool"
+msgid "Dark mode"
+msgstr "الوضع الليلي"
+
+msgid "Day Plan"
+msgstr "خطة اليوم"
+
+msgid "Days since creation · red = overdue"
+msgstr "أيام منذ الإنشاء · الأحمر = متأخرة"
+
+msgid "Decided within 24 h"
+msgstr "قرارات خلال 24 ساعة"
+
+msgid "Decision on"
+msgstr "قرار على"
+
+msgid "Decision reverted"
+msgstr "تراجع عن القرار"
+
+msgid "Decisions"
+msgstr "القرارات"
+
+msgid "Delegate"
+msgstr "إشراك (Delegate)"
+
+msgid "Delegation"
+msgstr "إشراك"
+
+msgid "Delete"
+msgstr "حذف"
+
+msgid "Delete step"
+msgstr "حذف الخطوة"
+
+msgid "Delete view"
+msgstr "حذف العرض"
+
+msgid "Description"
+msgstr "الوصف"
+
+msgid "Detailed view"
+msgstr "العرض التفصيلي"
+
+msgctxt "ToDo Tool"
+msgid "Details"
+msgstr "التفاصيل"
+
+msgid "Detects tasks I assigned with no reply for more than {0} and sends a digest."
+msgstr "يرصد المهام المسندة منّي بلا ردّ لأكثر من {0} ويرسل ملخّصًا."
+
+msgid "Disable recurrence {0}"
+msgstr "تعطيل دورة {0}"
+
+msgid "Disable rule {0}"
+msgstr "تعطيل قاعدة {0}"
+
+msgid "Disable template"
+msgstr "تعطيل القالب"
+
+msgid "Disabled"
+msgstr "معطّل"
+
+msgid "Disabled — not shown when creating a task"
+msgstr "معطّل — لا يظهر عند إنشاء مهمة"
+
+msgid "Do not change"
+msgstr "بدون تغيير"
+
+msgctxt "ToDo Tool"
+msgid "Document"
+msgstr "مستند"
+
+msgid "Document Type"
+msgstr "نوع المستند"
+
+msgid "Document amount greater than"
+msgstr "مبلغ المستند أكبر من"
+
+msgid "Document deleted"
+msgstr "المستند محذوف"
+
+msgid "Document items/attachments/trail"
+msgstr "بنود/مرفقات/مسار المستند"
+
+msgid "Document not found"
+msgstr "المستند غير موجود"
+
+msgid "Document preview"
+msgstr "معاينة المستند"
+
+msgid "Document status changed"
+msgstr "تغيّرت حالة المستند"
+
+msgid "Document status changed — list refreshed"
+msgstr "تغيّرت حالة المستند — تم تحديث القائمة"
+
+msgid "Document type is {0}"
+msgstr "نوع المستند {0}"
+
+msgid "Documents you created that have not reached their final status — where they stopped and with whom"
+msgstr "مستندات أنشأتَها ولم تصل حالتها النهائية — أين توقفت ولدى مَن"
+
+msgid "Done"
+msgstr "تم"
+
+msgid "Done — {0}"
+msgstr "تم — {0}"
+
+msgid "Down"
+msgstr "أسفل"
+
+msgid "Download"
+msgstr "تنزيل"
+
+msgid "Draft"
+msgstr "مسودة"
+
+msgid "Drag to reorder"
+msgstr "اسحب لإعادة الترتيب"
+
+msgid "Due"
+msgstr "الاستحقاق"
+
+msgid "Due After (Days)"
+msgstr "الاستحقاق بعد (أيام)"
+
+msgid "Due after (days)"
+msgstr "الاستحقاق بعد (أيام)"
+
+msgid "Due after (days) cannot be negative"
+msgstr "لا يمكن أن يكون الاستحقاق بعد (أيام) سالبًا"
+
+msgid "Due date"
+msgstr "تاريخ الاستحقاق"
+
+msgid "Due soonest"
+msgstr "الأقرب استحقاقًا"
+
+msgid "Due today"
+msgstr "مستحق اليوم"
+
+msgid "Due: {0}"
+msgstr "الاستحقاق: {0}"
+
+msgid "ERPNext setup blueprint"
+msgstr "مخطط الإعداد في ERPNext"
+
+msgid "ERPNext setup schema"
+msgstr "مخطط الإعداد في ERPNext"
+
+msgid "Each cycle creates a new task from its template with the full checklist. \"Run now\" creates it immediately without waiting for the schedule."
+msgstr "كل دورة تُنشِئ مهمة جديدة من قالبها مع قائمة التحقق كاملة. «تشغيل الآن» ينشئها فورًا دون انتطار الموعد."
+
+msgid "Edit"
+msgstr "تعديل"
+
+msgid "Edit due date"
+msgstr "تعديل تاريخ الاستحقاق"
+
+msgid "Edit recurring task"
+msgstr "تعديل المهمة الدورية"
+
+msgid "Edit rule"
+msgstr "تعديل القاعدة"
+
+msgid "Enable price list"
+msgstr "تفعيل القائمة"
+
+msgid "Enable recurrence {0}"
+msgstr "تفعيل دورة {0}"
+
+msgid "Enable rule {0}"
+msgstr "تفعيل قاعدة {0}"
+
+msgid "Enable supplier"
+msgstr "تفعيل المورد"
+
+msgid "Enable template"
+msgstr "تفعيل القالب"
+
+msgid "Enabled"
+msgstr "مفعّل"
+
+msgid "Enabled — shown when creating a task"
+msgstr "مفعّل — يظهر عند إنشاء مهمة"
+
+msgid "Enabled templates appear when creating a task and in the task checklist"
+msgstr "القوالب المفعّلة تظهر عند إنشاء مهمة وفي قائمة تحقق المهمة"
+
+msgid "Endpoints —"
+msgstr "نقاط الاتصال —"
+
+msgid "Enter a rule name"
+msgstr "أدخل اسم القاعدة"
+
+msgid "Enter a template name"
+msgstr "أدخل اسم القالب"
+
+msgid "Enter a title"
+msgstr "أدخل العنوان"
+
+msgid "Enter a view name"
+msgstr "أدخل اسم العرض"
+
+msgid "Enter the step text"
+msgstr "أدخل نص الخطوة"
+
+msgid "Every approval or rejection you made, from the tool or from the document form — last 180 days"
+msgstr "كل اعتماد أو رفض نفّذته، من الأداة أو من شاشة المستند — آخر 180 يومًا"
+
+#, python-format
+msgid "Excellent reliability: {0}% of your tasks were done on or before their due date."
+msgstr "التزام ممتاز: {0}% من مهامك أُنجزت في موعدها أو قبله."
+
+msgid "Excellent responsiveness"
+msgstr "سرعة استجابة ممتازة"
+
+msgid "Files attached to this document in ERPNext will appear here."
+msgstr "ستظهر هنا الملفات المرفقة بهذا المستند في ERPNext."
+
+msgctxt "ToDo Tool"
+msgid "Filter"
+msgstr "فلتر"
+
+msgid "Filters"
+msgstr "الفلاتر"
+
+msgid "Filters & sorting"
+msgstr "الفلاتر والترتيب"
+
+msgid "Finance"
+msgstr "مالية"
+
+msgid "Folder filters"
+msgstr "فلاتر المجلدات"
+
+msgid "Folders"
+msgstr "المجلدات"
+
+msgid "Follow-up"
+msgstr "متابعة"
+
+msgctxt "ToDo Tool"
+msgid "Forward"
+msgstr "إحالة"
+
+msgid "Forward (f)"
+msgstr "إحالة (f)"
+
+msgid "Forward reason (logged as a comment in the thread)"
+msgstr "سبب الإحالة (يُسجَّل كتعليق في المحادثة)"
+
+msgid "Forward reason: {0}"
+msgstr "سبب الإحالة: {0}"
+
+msgid "Forward selected task"
+msgstr "إحالة المهمة المحددة"
+
+msgid "Forward task"
+msgstr "إحالة المهمة"
+
+msgid "Forward then complete"
+msgstr "إحالة ثم إنجاز"
+
+msgid "Forwarded"
+msgstr "مُحالة"
+
+msgid "Forwarded the task to {0} ({1})"
+msgstr "أحالت المهمة إلى {0} ({1})"
+
+msgid "Forwarding…"
+msgstr "إحالة…"
+
+msgctxt "ToDo Tool"
+msgid "Frequency"
+msgstr "التكرار"
+
+msgid "From arrival to your decision"
+msgstr "من وصول المستند حتى قرارك"
+
+msgid "From creation to completion"
+msgstr "من الإنشاء حتى الإنجاز"
+
+msgid "From creation to completion, in days"
+msgstr "من الإنشاء إلى الإنجاز، بالأيام"
+
+msgid "From: {0} · {1}"
+msgstr "من: {0} · {1}"
+
+msgid "Full bundle — same logic as {0}"
+msgstr "الحزمة الكاملة — نفس منطق {0}"
+
+msgid "Full forward"
+msgstr "إحالة كاملة"
+
+msgid "Full handover"
+msgstr "إحالة كاملة"
+
+msgid "Reminder sent to {0}"
+msgstr "أُرسل تذكير إلى {0}"
+
+msgid "Reminder sent to {0} (Notification Log)"
+msgstr "أُرسل تذكير إلى {0} (Notification Log)"
+
+msgid "Reminder via {0}"
+msgstr "تذكير عبر {0}"
+
+msgid "Reminder: {0} is waiting for your decision"
+msgstr "تذكير: {0} بانتظار قرارك"
+
+msgid "Go to: Analytics"
+msgstr "الانتقال إلى: لوحة التحليل"
+
+msgid "Go to: Inbox"
+msgstr "الانتقال إلى: واردة"
+
+msgid "Go to: Today's plan"
+msgstr "الانتقال إلى: خطة اليوم"
+
+msgid "Go to: Waiting for reply"
+msgstr "الانتقال إلى: بانتطار رد"
+
+msgid "Group: {0}"
+msgstr "تجميع: {0}"
+
+msgid "Groups the task, its replies and forwards into one thread"
+msgstr "يجمع المهمة وردودها وإحالاتها في محادثة واحدة"
+
+msgid "HR"
+msgstr "موارد بشرية"
+
+msgid "Has Tag"
+msgstr "لها وسم"
+
+msgid "Has a tag containing"
+msgstr "لها وسم يحتوي"
+
+msgid "Has priority"
+msgstr "أولويتها"
+
+msgid "Hide CC"
+msgstr "إخفاء النسخة"
+
+msgid "Hide checklist"
+msgstr "إخفاء قائمة التحقق"
+
+msgid "High"
+msgstr "عالية"
+
+msgid "History"
+msgstr "السجل"
+
+msgctxt "ToDo Tool"
+msgid "Hold"
+msgstr "تعليق"
+
+msgid "If {0} is set, copy {1} from it; otherwise generate a new ID."
+msgstr "إن كان {0} موجودًا انسخ {1} منه، وإلا أنشئ معرّفًا جديدًا."
+
+msgctxt "ToDo Tool"
+msgid "Inbox"
+msgstr "الواردة"
+
+msgid "Incoming vs completed"
+msgstr "الوارد مقابل المنجز"
+
+msgid "Insights"
+msgstr "رؤى"
+
+msgid "Internal comment"
+msgstr "تعليق داخلي"
+
+msgid "Internal comment — not visible to external recipients"
+msgstr "تعليق داخلي — لا يراه المستلم الخارجي"
+
+msgid "Invalid forward mode"
+msgstr "نوع الإحالة غير صالح"
+
+msgid "Involve (Delegate)"
+msgstr "إشراك (Delegate)"
+
+msgid "Is linked to document type"
+msgstr "مرتبطة بنوع مستند"
+
+msgid "Italic"
+msgstr "مائل"
+
+msgid "Just now"
+msgstr "الآن"
+
+msgid "Keyboard shortcuts"
+msgstr "اختصارات لوحة المفاتيح"
+
+msgctxt "ToDo Tool"
+msgid "Label"
+msgstr "الوسم"
+
+msgid "Last Applied"
+msgstr "آخر تطبيق"
+
+msgid "Last Run"
+msgstr "آخر تشغيل"
+
+msgid "Last Task"
+msgstr "آخر مهمة"
+
+msgid "Last week"
+msgstr "الأسبوع الماضي"
+
+msgid "Link a document"
+msgstr "اربط بمستند"
+
+msgid "Linked to task: {0}"
+msgstr "مرتبط بمهمة: {0}"
+
+msgid "Low"
+msgstr "منخفضة"
+
+msgid "Mark all as read"
+msgstr "تعليم الكل كمقروء"
+
+msgid "Median"
+msgstr "الوسيط"
+
+msgid "Median response time"
+msgstr "وسيط زمن الاستجابة"
+
+msgid "Medium"
+msgstr "متوسطة"
+
+msgid "Member"
+msgstr "العضو"
+
+msgid "Mention a user"
+msgstr "إشارة لمستخدم"
+
+msgid "Mention a user (@)"
+msgstr "إشارة لمستخدم (@)"
+
+msgid "Mentioning…"
+msgstr "إشارة…"
+
+msgctxt "ToDo Tool"
+msgid "Menu"
+msgstr "القائمة"
+
+msgid "Monthly"
+msgstr "شهريًا"
+
+msgctxt "ToDo Tool"
+msgid "More"
+msgstr "المزيد"
+
+msgid "Move down"
+msgstr "تحريك لأسفل"
+
+msgid "Move up"
+msgstr "تحريك لأعلى"
+
+msgid "Moved"
+msgstr "نُقل"
+
+msgid "My day"
+msgstr "يومي"
+
+msgid "My decisions log"
+msgstr "سجلّ قراراتي"
+
+msgid "My open tasks"
+msgstr "مهامي المفتوحة"
+
+msgid "My task is cancelled (not counted as completed) and a new task opens for the recipient in the same thread."
+msgstr "تُلغى مهمتي (ولا تُحسب منجزة) وتُفتح مهمة جديدة للمستلم في نفس السلسلة."
+
+msgid "My team"
+msgstr "فريقي"
+
+msgid "My team ({0})"
+msgstr "فريقي ({0})"
+
+msgid "Navigate the list"
+msgstr "تنقل في القائمة"
+
+msgid "Needs procurement review"
+msgstr "تحتاج مراجعة مشتريات"
+
+msgid "New"
+msgstr "جديد"
+
+msgid "New Template"
+msgstr "قالب جديد"
+
+msgid "New comment"
+msgstr "تعليق جديد"
+
+msgid "New recurring task"
+msgstr "مهمة دورية جديدة"
+
+msgid "New reply on task: {0}"
+msgstr "رد جديد على المهمة: {0}"
+
+msgid "New rule"
+msgstr "قاعدة جديدة"
+
+msgid "New step… (Enter)"
+msgstr "خطوة جديدة… (Enter)"
+
+msgid "New tag… (Enter)"
+msgstr "وسم جديد… (Enter)"
+
+msgid "New task assigned to you: {0}"
+msgstr "تم إسناد مهمة جديدة إليك: {0}"
+
+msgid "New task notification"
+msgstr "إشعار جديد متعلق بمهمة"
+
+msgid "New tasks"
+msgstr "مهام جديدة"
+
+msgid "New template"
+msgstr "قالب جديد"
+
+msgid "New this period"
+msgstr "جديد في هذه الفترة"
+
+msgid "Newest"
+msgstr "الأحدث"
+
+msgid "Next"
+msgstr "التالي"
+
+msgid "Next Run"
+msgstr "التشغيل القادم"
+
+msgid "Next run"
+msgstr "التشغيل القادم"
+
+msgid "No CC"
+msgstr "لا نسخة"
+
+msgid "No action available for your role at this stage"
+msgstr "لا إجراء متاح لدورك في هذه المرحلة"
+
+msgid "No attachments"
+msgstr "لا توجد مرفقات"
+
+msgid "No attachments."
+msgstr "لا مرفقات."
+
+msgid "No comments on this document yet."
+msgstr "لا تعليقات على هذا المستند بعد."
+
+msgid "No comments yet"
+msgstr "لا توجد تعليقات بعد"
+
+msgid "No common action"
+msgstr "لا إجراء مشترك"
+
+msgid "No completed or new tasks in this period."
+msgstr "لا توجد مهام منجزة أو جديدة في هذه الفترة."
+
+msgid "No completed tasks with a due date"
+msgstr "لا توجد مهام منجزة لها تاريخ استحقاق"
+
+msgid "No data in the previous period"
+msgstr "لا بيانات في الفترة السابقة"
+
+msgid "No data yet"
+msgstr "لا بيانات بعد"
+
+msgid "No date"
+msgstr "بدون تاريخ"
+
+msgid "No decisions match this period or filter."
+msgstr "لا قرارات تطابق هذه الفترة أو الفلتر."
+
+msgid "No document to print"
+msgstr "لا يوجد مستند للطباعة"
+
+msgid "No documents here"
+msgstr "لا مستندات هنا"
+
+msgid "No matching results"
+msgstr "لا نتائج مطابقة"
+
+msgid "No matching results."
+msgstr "لا نتائج مطابقة."
+
+msgid "No new notifications"
+msgstr "لا توجد إشعارات جديدة"
+
+msgid "No open tasks are assigned to you right now."
+msgstr "لا توجد مهام مفتوحة مسندة إليك الآن."
+
+msgid "No open tasks assigned to you right now. You completed two tasks today."
+msgstr "لا مهام مفتوحة مسندة إليك الآن. أنجزت مهمتين اليوم."
+
+msgid "No preview available for this file type"
+msgstr "لا تتوفر معاينة لهذا النوع من الملفات"
+
+msgid "No reason recorded"
+msgstr "دون سبب مسجّل"
+
+msgid "No recurring tasks yet."
+msgstr "لا توجد مهام دورية بعد."
+
+msgid "No reply for {0} days"
+msgstr "بلا رد منذ {0} يوم"
+
+msgid "No results for “{0}”"
+msgstr "لا نتائج لـ «{0}»"
+
+msgid "No reverse transition is defined in the Workflow"
+msgstr "لا يوجد انتقال معكوس في الـ Workflow"
+
+msgid "No rules yet."
+msgstr "لا توجد قواعد بعد."
+
+msgid "No status"
+msgstr "بدون حالة"
+
+msgid "No steps yet — add the first step below"
+msgstr "لا خطوات بعد — أضف أول خطوة بالأسفل"
+
+msgid "No task you take part in matches this search."
+msgstr "لا توجد مهمة تشارك فيها تطابق هذا البحث."
+
+msgid "No tasks due"
+msgstr "لا مهام مستحقة"
+
+msgid "No tasks here"
+msgstr "لا مهام هنا"
+
+msgid "No team activity in this period."
+msgstr "لا نشاط للفريق في هذه الفترة."
+
+msgid "No templates match \"{0}\""
+msgstr "لا قوالب تطابق «{0}»"
+
+msgid "No templates yet — start with the \"New Template\" button."
+msgstr "لا قوالب بعد — ابدأ بزر «قالب جديد»."
+
+msgid "No user matches “{0}”"
+msgstr "لا يوجد مستخدم يطابق «{0}»"
+
+msgid "No users available"
+msgstr "لا يوجد مستخدمون متاحون"
+
+msgctxt "ToDo Tool"
+msgid "None"
+msgstr "بدون"
+
+msgid "Normal"
+msgstr "عادي"
+
+msgid "Note with the decision"
+msgstr "ملاحظة مع القرار"
+
+msgid "Nothing awaiting your decision"
+msgstr "لا شيء بانتظار قرارك"
+
+msgid "Nothing due today"
+msgstr "لا شيء مستحق اليوم"
+
+msgid "Nothing matches in “{0}”."
+msgstr "لا يوجد ما يطابق في «{0}»."
+
+msgid "Nothing overdue"
+msgstr "لا توجد مهام متأخرة"
+
+msgctxt "ToDo Tool"
+msgid "Notifications"
+msgstr "الإشعارات"
+
+msgid "Notifications — {0} unread"
+msgstr "الإشعارات — {0} غير مقروء"
+
+msgid "Now {0} — with {1}"
+msgstr "الآن {0} — لدى {1}"
+
+msgid "Now: {0}"
+msgstr "الآن: {0}"
+
+msgid "Number next to the name = open tasks; red = overdue"
+msgstr "الرقم بجانب الاسم = المهام المفتوحة لديه، والأحمر = متأخرة"
+
+msgid "Of decisions"
+msgstr "من القرارات"
+
+msgid "Oldest created"
+msgstr "الأقدم إنشاءً"
+
+msgid "Oldest first"
+msgstr "الأقدم أولًا"
+
+msgid "Oldest open task"
+msgstr "أقدم مهمة مفتوحة"
+
+msgid "On hold until the status of {0} changes"
+msgstr "مُعلَّقة حتى تتغيّر حالة {0}"
+
+msgid "On hold until the status of {0} changes — returns automatically on the first change"
+msgstr "مُعلّقة حتى تتغيّر حالة {0} — تعود تلقائيًا عند أول تغيير"
+
+msgid "On time"
+msgstr "في الموعد"
+
+msgid "On-time rate"
+msgstr "الالتزام بالموعد"
+
+msgid "One line — becomes the first line of the description"
+msgstr "سطر واحد — يصبح أول سطر في description"
+
+msgid "Only a System Manager can add or change rules."
+msgstr "إضافة القواعد وتعديلها لمدير النظام فقط."
+
+msgid "Only a System Manager can change automation rules"
+msgstr "تعديل قواعد الأتمتة لمدير النظام فقط"
+
+msgid "Only open tasks can be forwarded"
+msgstr "يمكن إحالة المهام المفتوحة فقط"
+
+msgid "Only the task creator can change the priority, date, subject and checklist"
+msgstr "الأولوية والتاريخ والموضوع وقائمة التحقق يعدّلها منشئ المهمة فقط"
+
+msgid "Only the task creator can edit priority, date, subject and checklist"
+msgstr "الأولوية والتاريخ والموضوع وقائمة التحقق يعدّلها منشئ المهمة فقط"
+
+msgid "Only the task creator or assignee can add checklist steps"
+msgstr "إضافة خطوات قائمة التحقق متاحة لمنشئ المهمة أو المكلَّف بها فقط"
+
+msgid "Open"
+msgstr "مفتوحة"
+
+msgid "Open dispute"
+msgstr "فتح نزاع"
+
+msgid "Open document"
+msgstr "فتح المستند"
+
+msgid "Open in new tab"
+msgstr "فتح في تبويب جديد"
+
+msgid "Open now"
+msgstr "المفتوحة الآن"
+
+msgid "Open reference"
+msgstr "فتح المرجع"
+
+msgid "Open task"
+msgstr "فتح المهمة"
+
+msgid "Open task aging"
+msgstr "تقادم المهام المفتوحة"
+
+msgid "Open tasks by age"
+msgstr "عمر المهام المفتوحة"
+
+msgid "Opening the task…"
+msgstr "فتح المهمة…"
+
+msgid "Opening “Awaiting reply”…"
+msgstr "فتح «بانتطار رد»…"
+
+msgid "Opens the document in ERPNext"
+msgstr "يفتح المستند في ERPNext"
+
+msgctxt "ToDo Tool"
+msgid "Other"
+msgstr "أخرى"
+
+msgctxt "ToDo Tool"
+msgid "Overdue"
+msgstr "متأخرة"
+
+msgid "Overdue · over 48 hours"
+msgstr "متأخر · أكثر من 48 ساعة"
+
+msgid "Overdue · {0}"
+msgstr "متأخر · {0}"
+
+msgid "Parallel task (delegation) created for {0}"
+msgstr "أُنشئت مهمة موازية (إشراك) إلى {0}"
+
+msgctxt "ToDo Tool"
+msgid "Pause"
+msgstr "إيقاف مؤقت"
+
+msgctxt "ToDo Tool"
+msgid "Pending Approval"
+msgstr "بانتظار الاعتماد"
+
+msgid "Pending {0}"
+msgstr "معلّق {0}"
+
+msgid "Pick a specific date"
+msgstr "اختر تاريخًا معينًا"
+
+msgid "Pick a template to edit, or create a new one"
+msgstr "اختر قالبًا لتعديله، أو أنشئ قالبًا جديدًا"
+
+msgid "Pick a template to load its checklist, or add steps manually."
+msgstr "اختر قالبًا لجلب قائمته، أو أضف الخطوات يدويًا."
+
+msgid "Pick a value to apply it instantly — or type in the field for a text search."
+msgstr "اختر قيمة لتُطبَّق فورًا — أو اكتب في الحقل للبحث النصي."
+
+msgid "Pre-decision checklist"
+msgstr "قائمة التحقق قبل القرار"
+
+msgid "Press again to confirm: {0}"
+msgstr "اضغط مرة أخرى لتأكيد: {0}"
+
+msgid "Preview"
+msgstr "معاينة"
+
+msgid "Preview attachment"
+msgstr "معاينة المرفق"
+
+msgctxt "ToDo Tool"
+msgid "Previous"
+msgstr "السابق"
+
+msgctxt "ToDo Tool"
+msgid "Pricing"
+msgstr "تسعير"
+
+msgid "Print"
+msgstr "طباعة"
+
+msgid "Print window opened — {0}"
+msgstr "فُتحت نافذة الطباعة — {0}"
+
+msgid "Priority"
+msgstr "الأولوية"
+
+msgid "Priority Is"
+msgstr "الأولوية"
+
+msgid "Priority is {0}"
+msgstr "الأولوية {0}"
+
+msgid "Priority {0}"
+msgstr "أولوية {0}"
+
+msgid "Priority — click to change"
+msgstr "الأولوية — اضغط للتبديل"
+
+msgid "Priority: {0}"
+msgstr "الأولوية: {0}"
+
+msgid "Purchase Manager"
+msgstr "مدير المشتريات"
+
+msgid "Purchase User"
+msgstr "مستخدم المشتريات"
+
+msgctxt "ToDo Tool"
+msgid "Purchasing"
+msgstr "مشتريات"
+
+msgid "Qty {0}"
+msgstr "الكمية {0}"
+
+msgid "Quarterly"
+msgstr "ربع سنوي"
+
+msgid "Quick Look"
+msgstr "نظرة سريعة"
+
+msgid "Reads @mentions in the comment and calls {0} to create a real assignment."
+msgstr "يقرأ @mention في التعليق ويستدعي {0} لإنشاء إسناد حقيقي."
+
+msgid "Recently updated"
+msgstr "الأحدث تحديثًا"
+
+#, python-format
+msgid "Recognition: {0} completed {1} tasks with {2}% on time. A word of thanks goes a long way."
+msgstr "تقدير: {0} أنجز {1} مهام بالتزام {2}% بالموعد. كلمة شكر تصنع فرقًا."
+
+msgid "Reconcile the supplier statement before closing"
+msgstr "مطابقة كشف حساب المورد قبل الإغلاق"
+
+msgid "Recurring"
+msgstr "دورية"
+
+msgid "Recurring task \"{0}\" deleted"
+msgstr "حُذفت المهمة الدورية «{0}»"
+
+msgid "Recurring task \"{0}\" saved — next run {1}"
+msgstr "حُفظت المهمة الدورية «{0}» — التشغيل القادم {1}"
+
+msgid "Recurring task?"
+msgstr "مهمة دورية؟"
+
+msgid "Recurring tasks"
+msgstr "مهام دورية"
+
+msgid "Reference Amount Greater Than"
+msgstr "مبلغ المستند أكبر من"
+
+msgid "Reference Document Type"
+msgstr "نوع المستند المرتبط"
+
+msgid "Reject"
+msgstr "رفض"
+
+msgid "Rejected"
+msgstr "مرفوض"
+
+msgid "Rejections"
+msgstr "رفض"
+
+msgid "Remind about a stale task"
+msgstr "تذكير مهمة راكدة"
+
+msgid "Reminder"
+msgstr "تذكير"
+
+msgid "Reminder logged in the conversation"
+msgstr "سُجّل التذكير في المحادثة"
+
+msgid "Reminder sent and logged in the conversation"
+msgstr "أُرسل التذكير وسُجّل في المحادثة"
+
+msgid "Reminder: this task is still awaiting your reply"
+msgstr "تذكير: هذه المهمة ما زالت بانتظار ردك"
+
+msgid "Reminder: this task is still awaiting your reply."
+msgstr "تذكير: هذه المهمة ما زالت بانتظار ردّك."
+
+msgid "Reminder: {0}"
+msgstr "تذكير: {0}"
+
+msgid "Remove assignment"
+msgstr "سحب الإسناد"
+
+msgid "Remove attachment"
+msgstr "إزالة المرفق"
+
+msgid "Remove from plan"
+msgstr "إخراج من الخطة"
+
+msgid "Remove it from the day plan"
+msgstr "أخرجها من خطة اليوم"
+
+msgid "Remove tag"
+msgstr "إزالة الوسم"
+
+msgid "Remove this filter"
+msgstr "أزل هذا الفلتر"
+
+msgid "Removed from today's plan"
+msgstr "أُخرجت من خطة اليوم"
+
+msgid "Repeats"
+msgstr "التكرار"
+
+msgid "Reply visible to everyone (r)"
+msgstr "رد يراه الجميع (r)"
+
+msgid "Reports"
+msgstr "تقارير"
+
+msgid "Required Actions"
+msgstr "الإجراءات المطلوبة"
+
+msgid "Required Server Scripts"
+msgstr "Server Scripts المطلوبة"
+
+msgid "Returns the nine folder counters in one call instead of nine {0} calls."
+msgstr "يعيد عدّادات المجلدات التسعة في استدعاء واحد بدل تسعة {0}."
+
+#, python-format
+msgid "Reviewed the items; the margin allows a 5% discount only."
+msgstr "راجعت البنود، الهامش يسمح بخصم 5% فقط."
+
+msgid "Rule \"{0}\" deleted"
+msgstr "حُذفت القاعدة «{0}»"
+
+msgid "Rule \"{0}\" saved"
+msgstr "حُفظت القاعدة «{0}»"
+
+msgid "Rule applied: {0}"
+msgstr "طُبِّقت القاعدة: {0}"
+
+msgid "Rule is raising the priority…"
+msgstr "القاعدة ترفع الأولوية…"
+
+msgid "Rule name"
+msgstr "اسم القاعدة"
+
+msgid "Rule: {0}"
+msgstr "قاعدة: {0}"
+
+msgid "Rules"
+msgstr "القواعد"
+
+msgid "Rules and recurring tasks"
+msgstr "القواعد والمهام الدورية"
+
+msgid "Rules apply the moment a task is created, before anyone sees it. Create a task linked to a large invoice and the priority and tag are set automatically."
+msgstr "القواعد تُطبّق لحطة إنشاء المهمة، قبل أن يراها أحد. أنشِئ مهمة مرتبطة بفاتورة كبيرة وسترى الأولوية والوسم يُضبطان تلقائيًا."
+
+msgid "Run now"
+msgstr "تشغيل الآن"
+
+msgid "Running action on the document…"
+msgstr "تنفيذ على المستند…"
+
+msgid "Runs"
+msgstr "مرات التشغيل"
+
+msgid "Runs submit/cancel on the reference document and releases snoozes pending on its status."
+msgstr "ينفّذ submit/cancel على المستند المرجعي ويحرّر التأجيلات المعلّقة على حالته."
+
+msgid "Sales Manager"
+msgstr "مدير المبيعات"
+
+msgid "Sales User"
+msgstr "مستخدم المبيعات"
+
+msgid "Same as the previous period"
+msgstr "مثل الفترة السابقة"
+
+msgid "Save"
+msgstr "حفظ"
+
+msgid "Save Changes"
+msgstr "حفظ التعديلات"
+
+msgid "Save as view"
+msgstr "احفظ كعرض"
+
+msgid "Save current search"
+msgstr "احفظ البحث الحالي"
+
+msgid "Save current search as a view"
+msgstr "احفظ البحث الحالي كعرض"
+
+msgid "Saved filters"
+msgstr "فلاتر محفوظة"
+
+msgid "Saving…"
+msgstr "جارٍ الحفظ…"
+
+msgid "Search"
+msgstr "بحث"
+
+msgid "Search all my tasks"
+msgstr "ابحث في كل مهامي"
+
+msgid "Search all users"
+msgstr "البحث في جميع المستخدمين"
+
+msgid "Search by name or email…"
+msgstr "ابحث بالاسم أو البريد…"
+
+msgid "Search documents…"
+msgstr "ابحث في المعاملات…"
+
+msgid "Search for a user…"
+msgstr "ابحث عن مستخدم…"
+
+msgid "Search people"
+msgstr "بحث عن أشخاص"
+
+msgid "Search tags…"
+msgstr "ابحث عن وسم…"
+
+msgid "Search tasks…"
+msgstr "ابحث في المهام…"
+
+msgid "Search templates"
+msgstr "بحث في القوالب"
+
+msgid "Search templates and steps…"
+msgstr "ابحث في القوالب والخطوات…"
+
+msgid "Search users…"
+msgstr "ابحث عن مستخدم…"
+
+msgid "Searching…"
+msgstr "جارٍ البحث…"
+
+msgid "Search…"
+msgstr "ابحث…"
+
+msgid "Select a task to view its details"
+msgstr "اختر مهمة لعرض تفاصيلها"
+
+msgid "Select a transaction to view its workflow and data"
+msgstr "اختر معاملة لعرض مسارها وبياناتها"
+
+msgid "Select for bulk action"
+msgstr "تحديد للإجراء الجماعي"
+
+msgid "Select for bulk approval"
+msgstr "تحديد للاعتماد الجماعي"
+
+msgid "Selected: {0}"
+msgstr "محدَّد: {0}"
+
+msgid "Send"
+msgstr "إرسال"
+
+msgid "Send reminder"
+msgstr "إرسال تذكير"
+
+msgid "Send reply"
+msgstr "إرسال الرد"
+
+msgid "Sender"
+msgstr "المرسل"
+
+msgid "Sending reminder…"
+msgstr "إرسال تذكير…"
+
+msgid "Sends a Web Push to the recipient via Notification Settings."
+msgstr "يرسل Web Push للمستلم عبر Notification Settings."
+
+msgctxt "ToDo Tool"
+msgid "Sent"
+msgstr "مرسلة"
+
+msgid "Sent & following up"
+msgstr "أرسلتُها وأتابعها"
+
+msgid "Sent a reminder about \"{0}\""
+msgstr "أرسلت تذكيرًا بشأن «{0}»"
+
+msgid "Sent a reminder to {0}"
+msgstr "أرسلت تذكيرًا إلى {0}"
+
+msgid "Sent for approval"
+msgstr "مرسلة للاعتماد"
+
+msgid "Separates the public reply from the internal comment"
+msgstr "يفصل الرد العام عن التعليق الداخلي"
+
+msgid "Set Priority"
+msgstr "اضبط الأولوية"
+
+msgid "Set priority"
+msgstr "اضبط الأولوية"
+
+msgctxt "ToDo Tool"
+msgid "Setup"
+msgstr "الإعداد"
+
+msgid "Show all document fields"
+msgstr "عرض كل حقول المستند"
+
+msgid "Show overdue tasks"
+msgstr "عرض المتأخرة"
+
+msgid "Show remaining people"
+msgstr "عرض بقية الأشخاص"
+
+msgid "Show {0} earlier events"
+msgstr "إظهار {0} أحداث سابقة"
+
+msgid "Snooze"
+msgstr "تأجيل"
+
+msgid "Snooze (s)"
+msgstr "تأجيل (s)"
+
+msgid "Snooze pending a document status change"
+msgstr "تأجيل معلّق على تغيّر حالة مستند"
+
+msgid "Snooze rate"
+msgstr "نسبة التأجيل"
+
+msgid "Snooze task"
+msgstr "تأجيل المهمة"
+
+msgid "Snooze until a set time"
+msgstr "تأجيل بموعد محدد"
+
+msgid "Snoozed"
+msgstr "مؤجلة"
+
+msgid "Snoozed until the status of {0} changes"
+msgstr "أُجّلت حتى تتغيّر حالة {0}"
+
+msgid "Snoozed until {0}"
+msgstr "أُجّلت إلى {0}"
+
+msgid "Specific date…"
+msgstr "تاريخ محدد…"
+
+msgid "Stale"
+msgstr "ركود"
+
+msgid "Statistics"
+msgstr "إحصائيات"
+
+msgid "Status"
+msgstr "الحالة"
+
+msgctxt "ToDo Tool"
+msgid "Stock Manager"
+msgstr "مدير المخزون"
+
+msgid "Strategic client"
+msgstr "عميل استراتيجي"
+
+msgid "Subject"
+msgstr "الموضوع"
+
+msgid "Subject (optional — overrides the template)"
+msgstr "الموضوع (اختياري — يتجاوز موضوع القالب)"
+
+msgctxt "ToDo Tool"
+msgid "Submit"
+msgstr "ترحيل"
+
+msgid "Submit for Approval"
+msgstr "إرسال للاعتماد"
+
+msgid "Submit payroll"
+msgstr "ترحيل المسيّر"
+
+msgid "Submit reconciliation entry"
+msgstr "ترحيل قيد التسوية"
+
+msgid "Submitted by me"
+msgstr "أرسلتُها للاعتماد"
+
+msgid "Subtasks and forwards"
+msgstr "المهام الفرعية والإحالات"
+
+msgid "Suggested: people you assigned to recently and your team — type to search everyone"
+msgstr "مقترحون: من أسندت إليهم مؤخرًا وفريقك — اكتب للبحث في الجميع"
+
+msgid "System Administrator"
+msgstr "مدير النظام"
+
+msgid "System Manager"
+msgstr "مدير النظام"
+
+msgid "System User"
+msgstr "مستخدم نظام"
+
+msgid "Tag"
+msgstr "وسم"
+
+msgid "Tag \"{0}\""
+msgstr "وسم «{0}»"
+
+msgid "Tag contains \"{0}\""
+msgstr "الوسم يحتوي «{0}»"
+
+msgctxt "ToDo Tool"
+msgid "Tags"
+msgstr "الوسوم"
+
+msgid "Tags and labels"
+msgstr "الوسوم والتصنيفات"
+
+msgid "Tap a member for their details"
+msgstr "اضغط على عضو لعرض تفاصيله"
+
+msgid "Task Template"
+msgstr "قالب المهمة"
+
+msgid "Task Templates"
+msgstr "قوالب المهام"
+
+msgid "Task age since creation"
+msgstr "عمر المهمة منذ إنشائها"
+
+msgid "Task completed: {0}"
+msgstr "تم إنجاز المهمة: {0}"
+
+msgid "Task created"
+msgstr "أُنشئت المهمة"
+
+msgid "Task forwarded in full to {0}"
+msgstr "أُحيلت المهمة كاملة إلى {0}"
+
+msgid "Task forwarded to {0} ({1})"
+msgstr "أحيلت المهمة إلى {0} ({1})"
+
+msgid "Task link copied"
+msgstr "نُسخ رابط المهمة"
+
+msgid "Task moved back to Inbox"
+msgstr "عادت المهمة إلى الواردة"
+
+msgid "Task order in today's plan"
+msgstr "ترتيب المهمة في خطة اليوم"
+
+msgid "Task snoozed until {0}"
+msgstr "أُجّلت المهمة إلى {0}"
+
+msgid "Task subject"
+msgstr "موضوع المهمة"
+
+msgid "Task template"
+msgstr "قالب المهمة"
+
+msgid "Task templates"
+msgstr "قوالب المهام"
+
+msgid "Team figures are visible only to you as team lead"
+msgstr "أرقام الفريق تظهر لك فقط بصفتك قائد الفريق"
+
+msgid "Team load and cycle time"
+msgstr "حِمل الفريق وزمن دورته"
+
+msgid "Team members"
+msgstr "أعضاء الفريق"
+
+#, python-format
+msgid "Team output is up {0}% compared to the previous period."
+msgstr "ارتفع إنجاز الفريق {0}% مقارنة بالفترة السابقة."
+
+msgid "Template \"{0}\" deleted"
+msgstr "حُذف القالب «{0}»"
+
+msgid "Template \"{0}\" saved"
+msgstr "حُفظ القالب «{0}»"
+
+msgid "Template name"
+msgstr "اسم القالب"
+
+msgid "The day plan gathers overdue tasks and those due today, in the order you set."
+msgstr "تجمع خطة اليوم المهام المتأخرة والمستحقة اليوم، بالترتيب الذي تحدده."
+
+msgid "The recipient must be an active system user"
+msgstr "يجب أن يكون المستلم مستخدم نظام نشطًا"
+
+msgid "The selected items do not share a single action"
+msgstr "العناصر المحددة لا تشترك في إجراء واحد"
+
+msgid "The task is already assigned to this user"
+msgstr "المهمة مسندة إلى هذا المستخدم بالفعل"
+
+msgid "The task stays assigned to me and a parallel task is created — it appears under “Forwarded” and I track its progress."
+msgstr "المهمة تبقى مسندة إليّ وتُنشأ مهمة موازية — تظهر في «مُحالة» وأتابع تقدّمها."
+
+msgid "The team is keeping up"
+msgstr "الفريق يواكب الوارد"
+
+msgid "The team received {0} tasks and completed {1} in this period — incoming work exceeds capacity."
+msgstr "وصل الفريق {0} مهام وأنجز {1} في هذه الفترة — الوارد يفوق الطاقة."
+
+msgid "The template the task was created from"
+msgstr "القالب الذي أُنشئت منه المهمة"
+
+msgid "The title the task is created with"
+msgstr "العنوان الذي تُنشأ به المهمة"
+
+msgid "Then…"
+msgstr "عندها…"
+
+msgid "This action is no longer available — the document status has changed"
+msgstr "الإجراء لم يعد متاحًا — تغيّرت حالة المستند"
+
+msgid "This action is not available for you at this stage"
+msgstr "هذا الإجراء غير متاح لك في هذه المرحلة"
+
+msgid "This file cannot be previewed"
+msgstr "لا يمكن معاينة هذا الملف"
+
+msgid "This list"
+msgstr "هذه القائمة"
+
+msgid "This quarter"
+msgstr "هذا الربع"
+
+msgid "This step already exists in the template"
+msgstr "الخطوة موجودة في القالب"
+
+msgid "This task is not linked to a document you can access"
+msgstr "هذه المهمة غير مرتبطة بمستند لديك صلاحية عليه"
+
+msgid "This user already has an open forwarded copy of this task"
+msgstr "لدى هذا المستخدم نسخة مُحالة مفتوحة من هذه المهمة بالفعل"
+
+msgid "This week"
+msgstr "هذا الأسبوع"
+
+msgid "This year"
+msgstr "هذه السنة"
+
+msgctxt "ToDo Tool"
+msgid "Time"
+msgstr "الوقت"
+
+msgid "Time to complete (median)"
+msgstr "مدة الإنجاز (الوسيط)"
+
+msgid "Times Applied"
+msgstr "مرات التطبيق"
+
+msgid "Title"
+msgstr "العنوان"
+
+msgid "Title updated"
+msgstr "حُدّث العنوان"
+
+msgid "Title updated (PUT ToDo)"
+msgstr "حُدّث العنوان (PUT ToDo)"
+
+msgid "To"
+msgstr "إلى"
+
+msgid "ToDo Recurring Task"
+msgstr "مهمة دورية"
+
+msgid "ToDo Rule"
+msgstr "قاعدة مهام"
+
+msgid "ToDo Tool"
+msgstr "أداة المهام"
+
+msgid "Today · {0}"
+msgstr "اليوم · {0}"
+
+msgid "Today's plan"
+msgstr "خطة اليوم"
+
+msgid "Toggle dark mode"
+msgstr "تبديل الوضع الليلي"
+
+msgctxt "ToDo Tool"
+msgid "Tomorrow"
+msgstr "الغد"
+
+msgid "Transition"
+msgstr "انتقال"
+
+msgid "Try another folder or clear the quick filter."
+msgstr "جرّب مجلدًا آخر أو أزل الفلتر السريع."
+
+msgid "Type a command or search…"
+msgstr "اكتب أمرًا أو ابحث…"
+
+msgid "Unassigned"
+msgstr "غير مسند"
+
+msgid "Under 2 days"
+msgstr "أقل من يومين"
+
+msgid "Undo"
+msgstr "تراجع"
+
+msgid "Undoing — reverse transition to “{0}”"
+msgstr "جارٍ التراجع — انتقال معكوس إلى «{0}»"
+
+msgid "Undone"
+msgstr "تم التراجع"
+
+msgctxt "ToDo Tool"
+msgid "Unread"
+msgstr "غير مقروءة"
+
+msgid "Untitled view"
+msgstr "عرض بلا اسم"
+
+msgid "Up to 3 days"
+msgstr "حتى 3 أيام"
+
+msgid "Update status"
+msgstr "تحديث الحالة"
+
+msgid "Updates {0} by adding {1} without reading/writing the whole document."
+msgstr "يحدّث {0} بإضافة {1} دون قراءة/كتابة كامل المستند."
+
+msgid "Used when no template is set, or overrides the template subject."
+msgstr "يُستخدم عند عدم اختيار قالب، أو يتجاوز موضوع القالب."
+
+msgid "User"
+msgstr "المستخدم"
+
+msgid "View \"{0}\" deleted"
+msgstr "حُذف العرض «{0}»"
+
+msgid "View \"{0}\" saved"
+msgstr "حُفظ العرض «{0}»"
+
+msgid "View details"
+msgstr "عرض التفاصيل"
+
+msgid "View name"
+msgstr "اسم العرض"
+
+msgid "Visible to the internal team only"
+msgstr "مرئي للفريق الداخلي فقط"
+
+msgid "Waited {0} with you"
+msgstr "انتظر لديك {0}"
+
+msgid "Waiting for a reply from {0}"
+msgstr "بانتطار رد {0}"
+
+msgid "Waiting for {0}"
+msgstr "بانتظار {0}"
+
+msgid "Waiting on others"
+msgstr "بانتظار غيري"
+
+msgid "Waiting on others: {0}"
+msgstr "بانتظار الآخرين: {0}"
+
+msgid "Waiting on the team"
+msgstr "بانتطار رد الفريق"
+
+msgid "Waiting on: {0}"
+msgstr "بانتظار: {0}"
+
+msgid "Warehouse"
+msgstr "مستودع"
+
+msgid "Weekly"
+msgstr "أسبوعيًا"
+
+msgid "When the new task… (all filled conditions must match)"
+msgstr "عندما تكون المهمة الجديدة… (يجب أن تتحقق كل الشروط المعبّأة)"
+
+msgid "Which automation rule was applied to the task"
+msgstr "أي قاعدة أتمتة طُبِّقت على المهمة"
+
+msgid "Who forwarded the task"
+msgstr "مَن أحال المهمة"
+
+msgid "With: {0}"
+msgstr "عند: {0}"
+
+msgid "Within a week"
+msgstr "خلال أسبوع"
+
+msgid "Within {0} days"
+msgstr "خلال {0} أيام"
+
+msgid "Workflow ended at “{0}” — {1}"
+msgstr "انتهى المسار عند «{0}» — {1}"
+
+msgid "Working days in a row with a completed task"
+msgstr "أيام عمل متتالية أنجزت فيها مهمة"
+
+msgid "Write a comment first"
+msgstr "اكتب تعليقًا أولًا"
+
+msgid "Write a comment on this document…"
+msgstr "اكتب تعليقًا على هذا المستند…"
+
+msgid "Write a reply…"
+msgstr "اكتب ردًا…"
+
+msgid "Write a reply… type @ to mention a colleague"
+msgstr "اكتب ردًا… اكتب @ للإشارة إلى زميل"
+
+msgid "Write some text first"
+msgstr "اكتب نصًا أولًا"
+
+msgid "Write the task details…"
+msgstr "اكتب تفاصيل المهمة…"
+
+msgid "Yearly"
+msgstr "سنويًا"
+
+msgid "Yesterday"
+msgstr "أمس"
+
+msgid "You approved {0} transactions this week, with an average response time of 4 hours."
+msgstr "اعتمدت {0} معاملة هذا الأسبوع، بمتوسط استجابة 4 ساعات."
+
+msgid "You can only change your own recurring tasks"
+msgstr "يمكنك تعديل مهامك الدورية فقط"
+
+msgid "You can only forward tasks assigned to you or by you"
+msgstr "يمكنك إحالة المهام المسندة إليك أو منك فقط"
+
+msgid "You can select more than one status at a time."
+msgstr "يمكن اختيار أكثر من حالة معًا."
+
+msgid "You cannot delete this view"
+msgstr "لا يمكنك حذف هذا العرض"
+
+msgid "You cannot forward a task to yourself"
+msgstr "لا يمكنك إحالة المهمة إلى نفسك"
+
+msgid "You completed {0} tasks in this period. Keep it up!"
+msgstr "أنجزت {0} مهام في هذه الفترة. واصل!"
+
+msgid "You completed {0} tasks — {1}% more than the previous period. Great momentum!"
+msgstr "أنجزت {0} مهام — بزيادة {1}% عن الفترة السابقة. زخم رائع!"
+
+msgid "You created this — the document is now with {0}"
+msgstr "أنت المُنشئ — المستند الآن عند {0}"
+
+msgid "You do not have access to this task"
+msgstr "ليست لديك صلاحية على هذه المهمة"
+
+msgid "You do not have permission to perform this action"
+msgstr "ليست لديك صلاحية لتنفيذ هذا الإجراء"
+
+msgid "You have been added as CC on task: {0}"
+msgstr "تم إضافتك كـ CC في المهمة: {0}"
+
+msgid "You have not made any workflow decisions yet."
+msgstr "لم تتخذ أي قرار بعد."
+
+msgid "You made {0} decisions this week, with a median response time of {1}."
+msgstr "اتخذت {0} قرارات هذا الأسبوع، بوسيط زمن استجابة {1}."
+
+msgid "You made {0} decisions this week."
+msgstr "اتخذت {0} قرارات هذا الأسبوع."
+
+msgid "You received {0} tasks and completed {1} — your backlog is growing."
+msgstr "وصلتك {0} مهام وأنجزت {1} — المتراكم لديك يزيد."
+
+msgid "You sent the last message in the conversation. The task has exceeded the stale limit ({0} days)."
+msgstr "أنت من أرسل آخر رسالة في المحادثة. المهمة تجاوزت حد الركود ({0} أيام)."
+
+msgid "You sent the last message — the ball is in their court."
+msgstr "أنت من أرسل آخر رسالة — الكرة في ملعبه."
+
+msgid "Your best day in this period: {0} with {1} completed tasks."
+msgstr "أفضل يوم لك في هذه الفترة: {0} بـ {1} مهام منجزة."
+
+msgid "Your decisions log — pick another tab to make a new decision"
+msgstr "سجلّ قراراتك — اختر تبويبًا آخر لاتخاذ قرار جديد"
+
+msgid "Your executed decisions — Workflow Actions with status Completed"
+msgstr "قراراتك المنفَّذة — Workflow Action بحالة Completed"
+
+msgid "Your inbox is empty"
+msgstr "صندوق الوارد فارغ"
+
+msgid "and {0} more — type to narrow down"
+msgstr "و{0} أخرى — اكتب للتضييق"
+
+msgid "completed the task"
+msgstr "أنجزت المهمة"
+
+msgid "daily at {0}"
+msgstr "يوميًا {0}"
+
+msgid "days"
+msgstr "يوم"
+
+msgid "direct reports"
+msgstr "التقارير المباشرة"
+
+msgid "e.g. Finance"
+msgstr "مثال: مالية"
+
+msgid "e.g. Invoice review"
+msgstr "مثال: مراجعة فاتورة"
+
+msgid "e.g. Large invoices"
+msgstr "مثال: فواتير كبيرة"
+
+msgid "e.g. Monthly accounting close"
+msgstr "مثال: الإغلاق المحاسبي الشهري"
+
+msgid "e.g. Needs accounting review"
+msgstr "مثال: يحتاج مراجعة محاسبية"
+
+msgid "e.g. Overdue finance"
+msgstr "مثال: مالية متأخرة"
+
+msgid "e.g. Sales Invoice"
+msgstr "مثال: فاتورة مبيعات"
+
+msgid "every {0} minutes"
+msgstr "كل {0} دقيقة"
+
+msgid "last message is mine"
+msgstr "آخر رسالة منّي"
+
+msgid "more people"
+msgstr "شخص آخر"
+
+msgid "of completed tasks were snoozed at least once"
+msgstr "من المنجَز أُجّل مرة على الأقل"
+
+msgid "of {0} incoming"
+msgstr "من {0} واردة"
+
+msgid "on Comment"
+msgstr "على Comment"
+
+msgid "or"
+msgstr "أو"
+
+msgid "per day"
+msgstr "لكل يوم"
+
+msgid "per month"
+msgstr "لكل شهر"
+
+msgid "per week"
+msgstr "لكل أسبوع"
+
+msgid "r reply · k comment"
+msgstr "r رد · k تعليق"
+
+msgid "r to reply · k to comment"
+msgstr "r للرد · k للتعليق"
+
+msgid "since creation"
+msgstr "منذ الإنشاء"
+
+msgid "tasks"
+msgstr "مهمة"
+
+msgid "the approver"
+msgstr "صاحب القرار"
+
+msgid "the document"
+msgstr "المستند"
+
+msgid "{0} (me)"
+msgstr "{0} (أنا)"
+
+msgid "{0} SAR"
+msgstr "{0} ر.س"
+
+msgid "{0} approved · {1} rejected"
+msgstr "{0} اعتماد · {1} رفض"
+
+msgid "{0} attachments"
+msgstr "{0} مرفق"
+
+msgid "{0} checklist steps · ran {1} times"
+msgstr "{0} خطوات تحقق · نُفّذت {1} مرة"
+
+msgid "{0} comments"
+msgstr "{0} تعليق"
+
+msgid "{0} completed and closed the task"
+msgstr "قام {0} بإنجاز وإغلاق المهمة"
+
+msgid "{0} completed · {1} new"
+msgstr "{0} منجزة · {1} جديدة"
+
+msgid "{0} completed · {1} open"
+msgstr "{0} منجزة · {1} مفتوحة"
+
+msgctxt "ToDo Tool"
+msgid "{0} d"
+msgstr "{0} ي"
+
+msgid "{0} days"
+msgstr "{0} يوم"
+
+msgctxt "ToDo Tool"
+msgid "{0} days ago"
+msgstr "منذ {0} أيام"
+
+msgid "{0} days without a reply from {1}"
+msgstr "مرّ {0} يومًا بلا رد من {1}"
+
+msgid "{0} for read status"
+msgstr "{0} لحالة المقروء"
+
+msgctxt "ToDo Tool"
+msgid "{0} h"
+msgstr "{0} س"
+
+msgid "{0} h {1} min"
+msgstr "{0} س {1} د"
+
+msgid "{0} has {1} open tasks (team median {2}). Consider reassigning some to {3} ({4} open)."
+msgstr "لدى {0} {1} مهام مفتوحة (وسيط الفريق {2}). فكّر في إحالة بعضها إلى {3} ({4} مفتوحة)."
+
+msgid "{0} have had no activity for {1}+ days — a follow-up may help"
+msgstr "{0} بلا أي تحديث منذ {1} أيام أو أكثر — متابعة قد تساعد"
+
+msgctxt "ToDo Tool"
+msgid "{0} hours ago"
+msgstr "منذ {0} ساعة"
+
+msgid "{0} items"
+msgstr "{0} عنصر"
+
+msgid "{0} make sure of the VAT before sending."
+msgstr "{0} تأكد من ضريبة القيمة المضافة قبل الإرسال."
+
+msgid "{0} min"
+msgstr "{0} د"
+
+msgid "{0} of them overdue"
+msgstr "{0} منها متأخرة"
+
+msgid "{0} of your open tasks are overdue (the oldest by {1} days). Start with them or update their due dates."
+msgstr "{0} من مهامك المفتوحة متأخرة (أقدمها بـ {1} يومًا). ابدأ بها أو حدّث مواعيدها."
+
+msgid "{0} open tasks, {1} overdue"
+msgstr "{0} مهام مفتوحة، {1} متأخرة"
+
+msgid "{0} overdue"
+msgstr "{0} متأخر"
+
+msgid "{0} overdue by more than 48 hours"
+msgstr "{0} متأخر عن 48 ساعة"
+
+msgid "{0} overdue — the oldest by {1} days"
+msgstr "{0} متأخرة — أقدمها بـ {1} يومًا"
+
+msgid "{0} past the stale limit"
+msgstr "{0} تجاوزت حد الركود"
+
+msgid "{0} selected"
+msgstr "{0} محدَّد"
+
+msgid "{0} stages"
+msgstr "{0} مراحل"
+
+msgid "{0} steps"
+msgstr "{0} خطوات"
+
+msgid "{0} tasks"
+msgstr "{0} مهمة"
+
+msgid "{0} tasks completed versus {1} in the previous period — planning your day can help you get back on pace."
+msgstr "أنجزت {0} مهام مقابل {1} في الفترة السابقة — «خطة اليوم» تساعدك على استعادة إيقاعك."
+
+msgid "{0} tasks overdue or due today — reorder them in the order you will work on them"
+msgstr "{0} مهمة متأخرة أو مستحقة اليوم — رتّبها بحسب ترتيب إنجازك لها"
+
+msgid "{0} tasks will be created — one per recipient"
+msgstr "سيتم إنشاء {0} مهام — واحدة لكل مستلم"
+
+msgid "{0} tasks · swipe right to complete, left to snooze"
+msgstr "{0} مهمة · اسحب لليمين للإنجاز، لليسار للتأجيل"
+
+msgid "{0} templates · {1} enabled — enabled templates appear when creating a task and in the task checklist"
+msgstr "{0} قالب · {1} مفعّل — المفعّلة تظهر عند إنشاء مهمة وفي قائمة تحقق المهمة"
+
+msgid "{0} times"
+msgstr "{0} مرة"
+
+msgctxt "ToDo Tool"
+msgid "{0} weeks ago"
+msgstr "قبل {0} أسبوع"
+
+msgid "{0} working days in a row with at least one completed task — keep the streak going!"
+msgstr "{0} أيام عمل متتالية أنجزت فيها مهمة على الأقل — حافظ على السلسلة!"
+
+msgid "{0} {1} pts vs previous period"
+msgstr "{0} {1} نقطة عن الفترة السابقة"
+
+msgid "{0} {1}% vs previous period"
+msgstr "{0} {1}% عن الفترة السابقة"
+
+msgid "{0} · next {1} · to {2}"
+msgstr "{0} · التالية {1} · إلى {2}"
+
+msgid "{0} · {1} · inline preview"
+msgstr "{0} · {1} · معاينة داخلية"
+
+msgid "{0} — {1} ({2} → {3})"
+msgstr "{0} — {1} ({2} ← {3})"
+
+msgctxt "ToDo Tool"
+msgid "{0} — {1} is now {2}"
+msgstr "{0} — {1} الآن {2}"
+
+msgid "{0} — {1} items"
+msgstr "{0} — {1} عناصر"
+
+msgid "{0} — {1} open tasks, {2} overdue"
+msgstr "{0} — {1} مهمة مفتوحة، {2} متأخرة"
+
+msgid "{0} — {1} steps"
+msgstr "{0} — {1} خطوات"
+
+msgid "{0} → {1} · compared with {2} → {3}"
+msgstr "{0} ← {1} · مقارنة بـ {2} ← {3}"
+
+msgid "{0}+ days"
+msgstr "{0} أيام وأكثر"
+
+msgid "{0}/{1} steps"
+msgstr "{0}/{1} خطوات"
+
+msgid "{0}: {1} of {2} open tasks are overdue (oldest by {3} days). A quick check-in may help clear blockers."
+msgstr "{0}: {1} من {2} مهام مفتوحة متأخرة (أقدمها بـ {3} يومًا). لقاء سريع قد يزيل العوائق."
+
+msgid "{0}–{1} days"
+msgstr "{0}–{1} أيام"
+
+msgid "— None —"
+msgstr "— لا شيء —"
+
+msgid "“{0}” requires a written reason"
+msgstr "«{0}» يتطلب سببًا مكتوبًا"
+
+msgid "← Awaiting you"
+msgstr "← بانتظارك"
+
+msgid "→ List"
+msgstr "→ القائمة"
+
+msgid "ToDoBox"
+msgstr "صندوق المهام"
+
+msgid "ToDoBox Rule"
+msgstr "قاعدة مهام"
+
+msgid "ToDoBox Recurring Task"
+msgstr "مهمة دورية"
+
+msgid "ToDoBox Task Template"
+msgstr "قالب مهمة"
+
+msgid "ToDoBox Checklist Step"
+msgstr "خطوة قائمة تحقق"
+
+msgid "ToDoBox Checklist Item"
+msgstr "بند قائمة تحقق"
+
+msgid "ToDoBox Saved View"
+msgstr "عرض محفوظ"
+
+msgid "Forwarded Task"
+msgstr "مهمة مُحالة"
+
+msgid "Step is required"
+msgstr "الخطوة مطلوبة"
+
+msgid "You can only change tasks assigned to you or by you"
+msgstr "يمكنك تعديل المهام المسندة إليك أو منك فقط"
+
+msgid "New task"
+msgstr "مهمة جديدة"
+
+msgid "Back to Desk"
+msgstr "العودة إلى سطح المكتب"
+
+msgid "Log out"
+msgstr "تسجيل الخروج"
+
+msgid "No details to show"
+msgstr "لا توجد تفاصيل لعرضها"
+
+msgid "Could not load the document"
+msgstr "تعذّر تحميل المستند"
+
+msgid "Could not create the task"
+msgstr "تعذّر إنشاء المهمة"
+
+msgid "OK"
+msgstr "موافق"
+
+msgid "Uploading {0}…"
+msgstr "جارٍ رفع {0}…"
+
+msgid "Copied to clipboard"
+msgstr "تم النسخ إلى الحافظة"
+
+msgid "No results"
+msgstr "لا توجد نتائج"
+
+msgid "No matching users"
+msgstr "لا يوجد مستخدمون مطابقون"
+
+msgid "Remove {0}"
+msgstr "إزالة {0}"
+
+msgid "Clear"
+msgstr "مسح"
+
+msgid "Open calendar"
+msgstr "فتح التقويم"
+
+msgid "Today"
+msgstr "اليوم"
+
+msgid "in {0} days"
+msgstr "بعد {0} أيام"
+
+msgid "Next week"
+msgstr "الأسبوع القادم"
+
+msgid "End of month"
+msgstr "نهاية الشهر"
+
+msgid "Previous month"
+msgstr "الشهر السابق"
+
+msgid "Next month"
+msgstr "الشهر التالي"
+
+msgid "Choose a date"
+msgstr "اختر تاريخًا"
+
+msgid "Underline"
+msgstr "تسطير"
+
+msgid "Strikethrough"
+msgstr "يتوسطه خط"
+
+msgid "Link"
+msgstr "رابط"
+
+msgid "Quote"
+msgstr "اقتباس"
+
+msgid "Clear formatting"
+msgstr "مسح التنسيق"
+
+msgid "Numbered list"
+msgstr "قائمة مرقّمة"
+
+msgid "Bulleted list"
+msgstr "قائمة نقطية"
+
+msgid "Create tag “{0}”"
+msgstr "إنشاء الوسم «{0}»"
+
+msgid "Type to create a tag"
+msgstr "اكتب لإنشاء وسم"
+
+msgid "Remove tag {0}"
+msgstr "إزالة الوسم {0}"
+
+msgid "Add a step… (Enter)"
+msgstr "أضف خطوة… (Enter)"
+
+msgid "Add a step"
+msgstr "أضف خطوة"
+
+msgid "Step {0}"
+msgstr "الخطوة {0}"
+
+msgid "File size exceeded the maximum allowed size of {0} MB"
+msgstr "حجم الملف تجاوز الحد الأقصى المسموح وهو {0} ميغابايت"
+
+msgid "Upload failed"
+msgstr "فشل الرفع"
+
+msgid "Attach files"
+msgstr "إرفاق ملفات"
+
+msgid "Drop files here"
+msgstr "أفلت الملفات هنا"
+
+msgid "browse"
+msgstr "استعرض"
+
+msgid "You can also paste an image"
+msgstr "يمكنك أيضًا لصق صورة"
+
+msgid "Uploading… {0}%"
+msgstr "جارٍ الرفع… {0}%"
+
+msgid "Pasted image"
+msgstr "صورة ملصقة"
+
+msgid "Draft restored"
+msgstr "تمت استعادة المسودة"
+
+msgid "Urgent"
+msgstr "عاجل"
+
+msgid "1 day"
+msgstr "يوم واحد"
+
+msgid "Search people by name or email…"
+msgstr "ابحث بالاسم أو البريد الإلكتروني…"
+
+msgid "Add people to keep in the loop…"
+msgstr "أضف من يلزم إبقاؤه على اطلاع…"
+
+msgid "What needs to be done?"
+msgstr "ما المطلوب إنجازه؟"
+
+msgid "Add details, context or links…"
+msgstr "أضف التفاصيل أو السياق أو الروابط…"
+
+msgid "Estimate"
+msgstr "التقدير"
+
+msgid "Document type"
+msgstr "نوع المستند"
+
+msgid "No matching documents"
+msgstr "لا توجد مستندات مطابقة"
+
+msgid "Search templates…"
+msgstr "ابحث في القوالب…"
+
+msgid "Template"
+msgstr "القالب"
+
+msgid "No templates yet"
+msgstr "لا توجد قوالب بعد"
+
+msgid "Add tags…"
+msgstr "أضف وسومًا…"
+
+msgid "Add at least one recipient"
+msgstr "أضف مستلمًا واحدًا على الأقل"
+
+msgid "Enter a subject"
+msgstr "أدخل عنوان المهمة"
+
+msgid "Enter a valid date ({0})"
+msgstr "أدخل تاريخًا صحيحًا ({0})"
+
+msgid "Choose a document, or remove the link"
+msgstr "اختر مستندًا أو أزل الربط"
+
+msgid "Wait for the uploads to finish"
+msgstr "انتظر حتى يكتمل رفع الملفات"
+
+msgid "Unsent draft “{0}” from {1}"
+msgstr "مسودة غير مُرسلة «{0}» من {1}"
+
+msgid "You have an unsent draft from {0}"
+msgstr "لديك مسودة غير مُرسلة من {0}"
+
+msgid "Draft saved"
+msgstr "تم حفظ المسودة"
+
+msgid "One task per recipient"
+msgstr "مهمة مستقلة لكل مستلم"
+
+msgid "Collapse"
+msgstr "تصغير"
+
+msgid "Expand"
+msgstr "توسيع"
+
+msgid "Use a template"
+msgstr "استخدم قالبًا"
+
+msgid "Sending…"
+msgstr "جارٍ الإرسال…"
+
+msgid "Send to {0}"
+msgstr "إرسال إلى {0}"
+
+msgid "Discard"
+msgstr "تجاهل"
+
+msgid "Restore"
+msgstr "استعادة"
+
+msgid "Who"
+msgstr "لمن"
+
+msgid "Suggested"
+msgstr "مقترحون"
+
+msgid "CC users are notified and can follow the task"
+msgstr "يُبلَّغ المستخدمون في النسخة ويمكنهم متابعة المهمة"
+
+msgid "What"
+msgstr "ماذا"
+
+msgid "When & how"
+msgstr "متى وكيف"
+
+msgid "Context"
+msgstr "السياق"
+
+msgid "Linked document"
+msgstr "المستند المرتبط"
+
+msgid "Fills in the subject, checklist, priority and estimate"
+msgstr "يملأ العنوان وقائمة التحقق والأولوية والتقدير"
+
+msgid "Close without sending? Your draft is saved and can be restored next time."
+msgstr "الإغلاق دون إرسال؟ حُفظت المسودة ويمكن استعادتها في المرة القادمة."
+
+msgid "Keep editing"
+msgstr "متابعة التحرير"
+
+msgid "Recurring…"
+msgstr "مهمة دورية…"
+
+msgid "Close (Esc)"
+msgstr "إغلاق (Esc)"
+
+msgid "Remove"
+msgstr "إزالة"
+
+msgid "Create a recurring task instead"
+msgstr "إنشاء مهمة دورية بدلًا من ذلك"
+
+msgid "Loading ToDoBox"
+msgstr "جارٍ تحميل ToDoBox"
+
+msgid "Taking longer than usual…"
+msgstr "يستغرق الأمر وقتًا أطول من المعتاد…"
+
+msgid "Couldn't load ToDoBox"
+msgstr "تعذّر تحميل ToDoBox"
+
+msgid "Check your connection and try again."
+msgstr "تحقّق من اتصالك ثم أعد المحاولة."
+
+msgid "Retry"
+msgstr "إعادة المحاولة"
+
+msgid "to move"
+msgstr "للتنقّل"
+
+msgid "new task"
+msgstr "مهمة جديدة"
+
+msgid "Collapse sidebar"
+msgstr "طيّ الشريط الجانبي"
+
+msgid "Expand sidebar"
+msgstr "توسيع الشريط الجانبي"
+
+#: todobox/public/js/hub/compose.js
+msgid "Snooze until"
+msgstr "تأجيل حتى"
+
+#: todobox/public/js/hub/filters.js
+msgid "Due on"
+msgstr "الاستحقاق في"
+
+#: todobox/public/js/hub/stats.js
+msgid "From"
+msgstr "من"
+
+#: todobox/public/js/todobox/controls.js
+msgid "Could not load the date picker"
+msgstr "تعذّر تحميل منتقي التاريخ"
+
+#: todobox/public/js/todobox/controls.js
+msgid "Date"
+msgstr "التاريخ"
+
+#: todobox/public/js/todobox/controls.js
+msgid "Apply"
+msgstr "تطبيق"
+
+#: todobox/public/js/todobox/controls.js
+msgid "Text direction"
+msgstr "اتجاه النص"
+
+#: todobox/public/js/todobox/controls.js
+msgid "Open Link"
+msgstr "فتح الرابط"
+
+#: todobox/public/js/todobox/controls.js
+msgid "Clear Link"
+msgstr "مسح الرابط"
+
+#: todobox/public/js/todobox/frappe_shim.js
+msgid "Your session has expired. Please log in again."
+msgstr "انتهت الجلسة. يرجى تسجيل الدخول مرة أخرى."
+
+#: todobox/public/js/todobox/frappe_shim.js
+msgid "Not permitted"
+msgstr "غير مسموح"
+
+#: todobox/public/js/todobox/frappe_shim.js
+msgid "You do not have enough permissions to complete this action"
+msgstr "ليست لديك صلاحيات كافية لإتمام هذا الإجراء"
+
+#: todobox/public/js/todobox/frappe_shim.js
+msgid "No"
+msgstr "لا"
+
+
+msgid "Save filter"
+msgstr "حفظ الفلتر"
+
+msgid "Name"
+msgstr "الاسم"
+
+msgid "Enter a name for this filter"
+msgstr "أدخل اسمًا لهذا الفلتر"
+
+msgid "Cancel"
+msgstr "إلغاء"
+
+#: todobox/public/js/hub/compose.js
+msgid "Fills in the subject, checklist and priority"
+msgstr "يملأ الموضوع وقائمة التحقق والأولوية"
+#: todobox/public/js/hub/workflow-ui.js
+msgid "a approve · x return · j/k navigate"
+msgstr "a اعتماد · x إرجاع · j/k تنقّل"
+
+#: todobox/public/js/hub/render.js
+msgid "A new task is created for the assignee on each run and is due {0} day(s) later."
+msgstr "تُنشأ مهمة جديدة للمُسنَد إليه في كل دورة، وتستحق بعد {0} يوم."
+
+#: todobox/public/js/hub/render.js
+msgid "Theme"
+msgstr "المظهر"
+
+#: todobox/public/js/hub/render.js
+msgid "Appearance"
+msgstr "الوضع"
+
+#: todobox/public/js/hub/render.js
+msgid "Light"
+msgstr "فاتح"
+
+#: todobox/public/js/hub/render.js
+msgid "Dark"
+msgstr "داكن"
+
+#: todobox/public/js/hub/render.js
+msgid "System"
+msgstr "تلقائي"
+
+#: todobox/public/js/hub/render.js
+msgid "Accent colour"
+msgstr "اللون الرئيسي"
+
+#: todobox/public/js/hub/render.js
+msgid "Blue"
+msgstr "أزرق"
+
+#: todobox/public/js/hub/render.js
+msgid "Teal"
+msgstr "فيروزي"
+
+#: todobox/public/js/hub/render.js
+msgid "Violet"
+msgstr "بنفسجي"
+
+#: todobox/public/js/hub/render.js
+msgid "Green"
+msgstr "أخضر"
+
+#: todobox/public/js/hub/render.js
+msgid "Orange"
+msgstr "برتقالي"
+
+#: todobox/public/js/hub/render.js
+msgid "Rose"
+msgstr "وردي"
+
+#: todobox/public/js/hub/render.js
+msgid "Graphite"
+msgstr "رمادي"
+
+#: todobox/public/js/hub/render.js
+msgid "Theme: {0}"
+msgstr "المظهر: {0}"
+
+#: todobox/public/js/hub/render.js
+msgid "Accent: {0}"
+msgstr "اللون الرئيسي: {0}"
+
+#: todobox/public/js/hub/render.js
+msgid "Custom colour"
+msgstr "لون مخصص"
+
+#: todobox/public/js/hub/data.js
+msgid "Default"
+msgstr "الافتراضي"
+
+#: todobox/public/js/hub/render.js
+msgctxt "Assign by"
+msgid "User"
+msgstr "مستخدم"
+
+#: todobox/public/js/hub/render.js
+msgctxt "Assign by"
+msgid "Role"
+msgstr "الصلاحية"
+
+#: todobox/todobox/doctype/todobox_recurring_task/todobox_recurring_task.json
+msgid "Role"
+msgstr "الصلاحية"
+
+#: todobox/www/todobox.html
+msgid "Assign by"
+msgstr "إسناد حسب"
+
+#: todobox/todobox/doctype/todobox_recurring_task/todobox_recurring_task.json
+msgid "Assign By"
+msgstr "إسناد حسب"
+
+#: todobox/public/js/hub/render.js
+msgid "{0} users"
+msgstr "{0} مستخدم"
+
+#: todobox/public/js/hub/render.js
+msgid "On each run a new task is created for every enabled user with this role, due the same day."
+msgstr "في كل دورة تُنشأ مهمة جديدة لكل مستخدم مُفعَّل لديه هذه الصلاحية، وتستحق في اليوم نفسه."
+
+#: todobox/public/js/hub/render.js
+msgid "On each run a new task is created for the assignee, due the same day."
+msgstr "في كل دورة تُنشأ مهمة جديدة للمُسنَد إليه، وتستحق في اليوم نفسه."
+
+#: todobox/public/js/hub/render.js
+msgid "{0} · next {1}"
+msgstr "{0} · التالية {1}"
+
+#: todobox/public/js/hub/render.js
+msgid "Role: {0}"
+msgstr "الصلاحية: {0}"
+
+#: todobox/public/js/hub/render.js
+msgid "To: {0}"
+msgstr "إلى: {0}"
+
+#: todobox/public/js/hub/render.js
+msgid "One task for every enabled user with this role"
+msgstr "مهمة لكل مستخدم مُفعَّل لديه هذه الصلاحية"
+
+#: todobox/public/js/hub/automation.js
+msgid "No enabled users have this role"
+msgstr "لا يوجد مستخدمون مُفعَّلون لديهم هذه الصلاحية"
+
+#: todobox/public/js/hub/automation.js
+msgid "Created {0} tasks, one for each user with the role"
+msgstr "تم إنشاء {0} مهام، واحدة لكل مستخدم لديه الصلاحية"
+
+#: todobox/todobox/doctype/todobox_recurring_task/todobox_recurring_task.py
+msgid "Choose a role"
+msgstr "اختر الصلاحية"
+
+#: todobox/todobox/doctype/todobox_recurring_task/todobox_recurring_task.py
+msgid "Choose the user to assign the task to"
+msgstr "اختر المستخدم الذي ستُسند إليه المهمة"
+
+#: todobox/todobox/doctype/todobox_recurring_task/todobox_recurring_task.py
+msgid "Tasks cannot be assigned to the role {0}"
+msgstr "لا يمكن إسناد المهام إلى الصلاحية {0}"
+
+#: todobox/todobox/doctype/todobox_recurring_task/todobox_recurring_task.json
+msgid "One task is created for every enabled user with this role on each run."
+msgstr "تُنشأ مهمة لكل مستخدم مُفعَّل لديه هذه الصلاحية في كل دورة."
+
+#: todobox/todobox/doctype/todobox_recurring_task/todobox_recurring_task.json
+msgid "Set automatically from the frequency: the first run is today, then it moves forward by the frequency."
+msgstr "يُحدَّد تلقائيًا من التكرار: أول تشغيل اليوم، ثم يتقدم حسب التكرار."
+
+#: todobox/todobox/doctype/todobox_recurring_task/todobox_recurring_task.json
+msgid "Unused: generated tasks are due on the run date."
+msgstr "غير مستخدم: تستحق المهام المُنشأة في تاريخ التشغيل."
+
+#: todobox/public/js/hub/render.js
+msgid "The task is assigned to this person. Leave empty to create it for every user with the role below."
+msgstr "يتم إسناد المهمة لهذا الشخص. إذا تُرك فارغاً تُنشأ المهمة لكل مستخدم لديه الصلاحية المحددة."
+
+#: todobox/public/js/hub/render.js
+msgid "Used only when no user is set: one task is created for every enabled user with this role."
+msgstr "تُستخدم فقط إذا لم يُحدَّد شخص: تُنشأ مهمة لكل مستخدم مفعّل لديه هذه الصلاحية."
+
+#: todobox/public/js/hub/render.js
+msgid "Choose the user to assign the task to, or a role"
+msgstr "اختر الشخص المسند له المهمة، أو صلاحية"
+
+#: todobox/public/js/hub/doc-tabs.js
+msgid "Task"
+msgstr "المهمة"
+
+#: todobox/public/js/hub/doc-tabs.js
+msgid "Data"
+msgstr "البيانات"
+
+#: todobox/www/todobox.html
+msgid "Loading…"
+msgstr "جارٍ التحميل…"
+
+#: todobox/www/todobox.html
+msgid "Task and linked document"
+msgstr "المهمة والمستند المرتبط"
+
+#: todobox/public/js/hub/compose.js
+msgid "{0} open"
+msgstr "{0} مفتوحة"
+
+#: todobox/public/js/hub/doc-tabs.js
+msgid "ToDo"
+msgstr "المهمة"
+
+msgid "Copy"
+msgstr "نسخ"
+
+msgid "Copied"
+msgstr "تم النسخ"
+
+msgid "Copy {0}"
+msgstr "نسخ {0}"
+
+msgid "Could not copy"
+msgstr "تعذّر النسخ"
+
+msgid "Document data"
+msgstr "بيانات المستند"
+
+msgid "No key fields for this document"
+msgstr "لا توجد حقول رئيسية لهذا المستند"
+
+msgid "Items"
+msgstr "البنود"
+
+msgid "Item"
+msgstr "البند"
+
+msgid "Qty"
+msgstr "الكمية"
+
+msgid "Rate"
+msgstr "السعر"
+
+msgid "Sections"
+msgstr "الأقسام"
+
+msgid "1 row"
+msgstr "صف واحد"
+
+msgid "{0} rows"
+msgstr "{0} صفوف"
+
+#: todobox/public/js/api.js
+msgid "Required action"
+msgstr "إجراء مطلوب"
+
+msgid "All clear for today"
+msgstr "لا شيء متبقٍ لليوم"
+
+msgid "Assigned To"
+msgstr "مسند إلى"
+
+msgid "Attachment"
+msgstr "مرفق"
+
+msgid "Close menu"
+msgstr "إغلاق القائمة"
+
+msgid "Custom"
+msgstr "مخصص"
+
+msgid "Document info"
+msgstr "معلومات المستند"
+
+msgid "Drag to resize, double-click to reset"
+msgstr "اسحب لتغيير الحجم، وانقر مرتين للاستعادة"
+
+msgid "Inbox zero — nice work!"
+msgstr "صندوق الوارد فارغ — عمل رائع!"
+
+msgid "No activity"
+msgstr "لا يوجد نشاط"
+
+msgid "No one assigned"
+msgstr "لا أحد مسند"
+
+msgid "No open tasks are assigned to you right now. Enjoy the calm, or plan what comes next."
+msgstr "لا توجد مهام مفتوحة مسندة إليك الآن. استمتع بالهدوء، أو خطط لما هو قادم."
+
+msgid "No tags"
+msgstr "لا توجد وسوم"
+
+msgid "One task at a time."
+msgstr "مهمة واحدة في كل مرة."
+
+msgid "Open in Desk"
+msgstr "فتح في النظام"
+
+msgid "Open menu"
+msgstr "فتح القائمة"
+
+msgid "Over halfway there. Keep going!"
+msgstr "تجاوزت منتصف الطريق. واصل!"
+
+msgid "Resize sidebar"
+msgstr "تغيير حجم الشريط الجانبي"
+
+msgid "Resize sidebar (double-click to reset)"
+msgstr "تغيير حجم الشريط الجانبي (انقر مرتين للاستعادة)"
+
+msgid "This month"
+msgstr "هذا الشهر"
+
+msgid "You did it — enjoy the rest of your day."
+msgstr "أنجزتها — استمتع ببقية يومك."
+
+msgid "created"
+msgstr "أنشأ"
+
+msgid "last edited"
+msgstr "آخر تعديل"
+
+msgid "now"
+msgstr "الآن"
+
+msgid "{0} of {1} done today"
+msgstr "{0} من {1} أُنجزت اليوم"
+
+msgid "Activity"
+msgstr "النشاط"
+
+msgid "New ToDo"
+msgstr "مهمة جديدة"
+
+msgid "This task is completed — you can only add comments and attachments"
+msgstr "هذه المهمة منجزة — يمكنك فقط إضافة تعليقات ومرفقات"
+
+msgid "Equals"
+msgstr "يساوي"
+
+msgid "Not Equals"
+msgstr "لا يساوي"
+
+msgid "Like"
+msgstr "يشبه"
+
+msgid "Not Like"
+msgstr "لا يشبه"
+
+msgid "In"
+msgstr "ضمن"
+
+msgid "Not In"
+msgstr "ليس ضمن"
+
+msgid "Between"
+msgstr "بين"
+
+msgid "Is Set"
+msgstr "محدد"
+
+msgid "Is Not Set"
+msgstr "غير محدد"
+
+msgid "and"
+msgstr "و"
+
+msgid "{0} {1}"
+msgstr "{0} {1}"
+
+msgid "{0} {1} {2}"
+msgstr "{0} {1} {2}"
+
+msgid "Reference document type"
+msgstr "نوع المستند المرجعي"
+
+msgid "Optional: the rule then applies only to tasks linked to this document type, and can test its fields."
+msgstr "اختياري: عندها تُطبَّق القاعدة فقط على المهام المرتبطة بنوع المستند هذا، ويمكنها اختبار حقوله."
+
+msgid "Match"
+msgstr "المطابقة"
+
+msgid "All conditions (AND)"
+msgstr "كل الشروط (و)"
+
+msgid "Any condition (OR)"
+msgstr "أي شرط (أو)"
+
+msgid "No conditions: every task linked to a {0} matches."
+msgstr "لا شروط: كل مهمة مرتبطة بـ {0} تطابق."
+
+msgid "No conditions yet."
+msgstr "لا شروط بعد."
+
+msgid "Add condition"
+msgstr "إضافة شرط"
+
+msgid "Field"
+msgstr "الحقل"
+
+msgid "Select a field…"
+msgstr "اختر حقلًا…"
+
+msgid "Condition"
+msgstr "الشرط"
+
+msgid "Value"
+msgstr "القيمة"
+
+msgid "Values separated by commas"
+msgstr "قيم مفصولة بفواصل"
+
+msgid "Text, % matches anything"
+msgstr "نص، و% تطابق أي شيء"
+
+msgid "Where"
+msgstr "حيث"
+
+msgid "Remove condition"
+msgstr "إزالة الشرط"
+
+msgid "Yes"
+msgstr "نعم"
+
+msgid "When a new task is created and matches…"
+msgstr "عند إنشاء مهمة جديدة تطابق…"
+
+msgid "Invalid condition: {0}"
+msgstr "شرط غير صالح: {0}"
+
+msgid "Condition on {0}: set it as the Reference Document Type first"
+msgstr "شرط على {0}: حدّده أولًا كنوع المستند المرجعي"
+
+msgid "{0} is not a field of {1}"
+msgstr "{0} ليس حقلًا في {1}"
+
+msgid "Operator must be one of {0}"
+msgstr "يجب أن يكون المعامل أحد {0}"
+
+msgid "Operator 'is' takes 'set' or 'not set'"
+msgstr "المعامل 'is' يقبل 'set' أو 'not set'"
+
+msgid "Enter at least one value for {0}"
+msgstr "أدخل قيمة واحدة على الأقل لـ {0}"
+
+msgid "Enter both dates for {0}"
+msgstr "أدخل التاريخين لـ {0}"
+
+msgid "DocType {0} not found"
+msgstr "نوع المستند {0} غير موجود"
+
+msgid "ID"
+msgstr "المعرّف"
+
+msgid "Created On"
+msgstr "تاريخ الإنشاء"
+
+msgid "Last Updated On"
+msgstr "آخر تحديث في"
+
+msgid "Document Status"
+msgstr "حالة المستند"
+
+msgid "All: every condition must match (AND). Any: at least one condition must match (OR)."
+msgstr "الكل: يجب أن تتحقق كل الشروط (و). أي: يكفي أن يتحقق شرط واحد (أو)."
+
+msgid "Conditions on the new ToDo, or on its reference document when a Reference Document Type is set."
+msgstr "شروط على المهمة الجديدة، أو على مستندها المرجعي عند تحديد نوع المستند المرجعي."
+
+msgid "Optional: the rule only applies to ToDos linked to this document type, and can test its fields."
+msgstr "اختياري: تُطبَّق القاعدة فقط على المهام المرتبطة بنوع المستند هذا، ويمكنها اختبار حقوله."
+
+msgid "The rule applies only to tasks linked to this document type. Pick one to add conditions on its fields."
+msgstr "تنطبق القاعدة فقط على المهام المرتبطة بهذا النوع من المستندات. اختره لإضافة شروط على حقوله."
+
+msgid "Delete the rule \"{0}\"?"
+msgstr "حذف القاعدة \"{0}\"؟"
+
+msgid "Delete the recurring task \"{0}\"?"
+msgstr "حذف المهمة المتكررة \"{0}\"؟"
+
+msgid "Add tags"
+msgstr "إضافة وسوم"
+
+msgid "Classic"
+msgstr "كلاسيكي"
+
+msgid "Indigo"
+msgstr "نيلي"
+
+msgid "Maroon"
+msgstr "عنّابي"
+
+msgid "Brown"
+msgstr "بني"
+
+msgid "Change language"
+msgstr "تغيير اللغة"
+
+msgid "Loading..."
+msgstr "جارٍ التحميل..."
+
+
+msgid "Language {0} is not enabled"
+msgstr "اللغة {0} غير مفعّلة"
+
+msgid "Search languages…"
+msgstr "ابحث عن لغة…"
+
+msgid "Language"
+msgstr "اللغة"
+
+msgid "Appearance and display"
+msgstr "المظهر والعرض"
+
+msgid "Display"
+msgstr "العرض"
+
+msgid "Mention a colleague"
+msgstr "الإشارة إلى زميل"
+
+msgid "Mentioned {0}"
+msgstr "أشار إلى {0}"
+
+msgid "{0} mentioned you in: {1}"
+msgstr "أشار إليك {0} في: {1}"
+
+msgid "Enter to send · Shift+Enter for new line"
+msgstr "Enter للإرسال · Shift+Enter لسطر جديد"
+
+msgid "Could not send, please try again"
+msgstr "تعذّر الإرسال، يُرجى المحاولة مرة أخرى"
+
+msgid "Beta"
+msgstr "تجريبي"
+
+msgid "Beta version — new features are coming in the next release"
+msgstr "نسخة تجريبية — ميزات جديدة قادمة في الإصدار القادم"
+
+msgid "Notification sounds: On"
+msgstr "أصوات الإشعارات: مفعّلة"
+
+msgid "Notification sounds: Off"
+msgstr "أصوات الإشعارات: متوقفة"
+
+msgid "{0} · {1} (moved to My decisions log)"
+msgstr "{0} · {1} (نُقل إلى سجلّ قراراتي)"
+
+msgid "More features coming soon"
+msgstr "ميزات جديدة قريباً"

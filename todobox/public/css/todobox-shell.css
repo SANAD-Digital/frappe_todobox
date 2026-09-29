@@ -1,0 +1,348 @@
+/* =============================================================================
+   ToDoBox — app shell (Frappe Desk v15 look): navbar, sidebar, list rows,
+   detail pills and small motivating touches. Design only.
+   Every Frappe variable is read with a local fallback (this page does not load
+   desk.css), so the look follows Frappe when its tokens exist and the ToDoBox
+   palette (todobox-theme.css) otherwise. Much of the markup carries inline
+   styles, which is why some overrides below need !important.
+   ============================================================================= */
+
+:root {
+	--tb-text: var(--text-color, var(--fg));
+	--tb-muted: var(--text-muted, var(--fg3));
+	--tb-light: var(--text-light, var(--fg2));
+	--tb-border: var(--border-color, var(--line));
+	--tb-radius: var(--border-radius, 8px);
+	--tb-radius-full: var(--border-radius-full, 999px);
+	--tb-navbar-bg: var(--navbar-bg, var(--panel));
+	--tb-control-bg: var(--control-bg, var(--sunk));
+	--tb-control-bg-on-focus: var(--control-bg-on-gray, var(--panel));
+	--tb-sidebar-hover: var(--sidebar-hover-color, var(--gray-100, color-mix(in srgb, var(--fg) 5%, var(--bg))));
+	--tb-sidebar-select: var(--sidebar-select-color, color-mix(in srgb, var(--fg) 8%, var(--bg)));
+	--tb-highlight: var(--highlight-color, color-mix(in srgb, var(--fg) 3.5%, var(--panel2)));
+	--tb-checkbox-border: var(--gray-400, color-mix(in srgb, var(--fg) 26%, var(--panel)));
+	--tb-focus: 0 0 0 2px var(--panel), 0 0 0 4px color-mix(in srgb, var(--primary) 45%, transparent);
+	--tb-ease-out: cubic-bezier(.2, .8, .2, 1);
+	--tb-spring: cubic-bezier(.34, 1.56, .64, 1);
+}
+
+/* ------------------------------------------------------------------- navbar -- */
+.tt-navbar {
+	height: 48px !important;
+	background: var(--tb-navbar-bg) !important;
+	border-bottom: 1px solid var(--tb-border) !important;
+	gap: 10px !important;
+	padding-inline: 12px 16px !important;
+	font-family: var(--font);
+}
+@media (max-width: 759px) { .tt-navbar { height: 52px !important; gap: 6px !important; padding-inline: 6px 8px !important; } }
+.tt-brand { gap: 8px !important; margin-inline-end: 6px; }
+.tt-brand > span { font-size: 16px !important; font-weight: 700 !important; letter-spacing: -0.2px !important; }
+.tt-brand .tt-brand-box { font-weight: 400 !important; }
+.tt-brand img { width: 22px; height: 22px; }
+
+/* Frappe page-head sidebar toggle */
+.sidebar-toggle-btn {
+	flex: 0 0 32px; width: 32px; height: 32px; padding: 0; display: grid; place-items: center;
+	background: transparent; border: 0; border-radius: var(--tb-radius); cursor: pointer;
+	color: var(--tb-light);
+	transition: background-color .12s var(--ease), color .12s var(--ease);
+}
+.sidebar-toggle-btn:hover { background: var(--tb-sidebar-hover); color: var(--tb-text); }
+.sidebar-toggle-btn:active { background: var(--tb-sidebar-select); }
+.sidebar-toggle-btn .sidebar-toggle-icon { width: 18px; height: 18px; }
+[dir="rtl"] .sidebar-toggle-btn .sidebar-toggle-icon { transform: scaleX(-1); }
+.sidebar-toggle-btn[aria-expanded="false"] { color: var(--tb-muted); }
+@media (max-width: 759px) { .sidebar-toggle-btn { flex-basis: 40px; width: 40px; height: 40px; } }
+
+/* awesomebar */
+.tt-search.awesomebar {
+	height: 32px !important; border-radius: var(--tb-radius) !important;
+	background: var(--tb-control-bg) !important; border: 1px solid transparent !important;
+	transition: background-color .12s var(--ease), border-color .12s var(--ease), box-shadow .12s var(--ease);
+}
+.tt-search.awesomebar:hover { background: color-mix(in srgb, var(--fg) 7%, var(--tb-navbar-bg)) !important; }
+.tt-search.awesomebar:focus-within {
+	background: var(--tb-control-bg-on-focus) !important; border-color: var(--tb-border) !important;
+	box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 18%, transparent);
+}
+.tt-search.awesomebar input { font-size: 13px !important; color: var(--tb-text); }
+.tt-search.awesomebar input::placeholder { color: var(--tb-muted); opacity: 1; }
+
+/* Frappe .avatar */
+.avatar.tt-avatar {
+	width: 28px !important; height: 28px !important; border-radius: 50% !important;
+	display: grid !important; place-items: center; overflow: hidden;
+	font-size: 11px !important; font-weight: 600 !important; letter-spacing: 0;
+	box-shadow: 0 0 0 1px color-mix(in srgb, var(--fg) 8%, transparent);
+	transition: box-shadow .12s var(--ease);
+}
+[data-user-menu] > button:hover .avatar.tt-avatar,
+[data-user-menu] > button[aria-expanded="true"] .avatar.tt-avatar { box-shadow: 0 0 0 2px var(--tb-sidebar-select); }
+[data-user-menu] > button { border-radius: 50% !important; }
+
+/* ------------------------------------------------------------------ sidebar -- */
+.desk-sidebar.tt-nav {
+	/* a touch lighter than the canvas */
+	background: color-mix(in srgb, var(--bg) 55%, var(--panel)) !important;
+	padding: 8px 8px 12px !important;
+	gap: 1px !important;
+	font-family: var(--font);
+}
+.desk-sidebar .tt-nav-item,
+.desk-sidebar .tt-nav-sv > button:first-child {
+	height: 30px !important; flex-basis: 30px !important;
+	padding: 0 8px !important; gap: 8px !important;
+	font-size: 13px !important; font-weight: 400 !important;
+	color: var(--tb-text) !important; background: transparent !important;
+	border-radius: var(--tb-radius) !important; box-shadow: none !important;
+	transition: background-color .12s var(--ease), color .12s var(--ease);
+}
+.desk-sidebar .tt-nav-item:hover,
+.desk-sidebar .tt-nav-sv:hover { background: var(--tb-sidebar-hover) !important; }
+.desk-sidebar .tt-nav-item[data-on="1"] {
+	background: var(--tb-sidebar-select) !important;
+	font-weight: 500 !important;
+	color: var(--tb-text) !important;
+}
+.desk-sidebar .tt-nav-sv[style*="var(--sunk)"] { background: var(--tb-sidebar-select) !important; }
+.desk-sidebar .tt-nav-sv[style*="var(--sunk)"] > button:first-child { font-weight: 500 !important; }
+.desk-sidebar .tt-nav-item svg[data-ic],
+.desk-sidebar .tt-nav-sv svg[data-ic] { color: var(--tb-light) !important; }
+.desk-sidebar .tt-nav-item[data-on="1"] svg[data-ic] { color: var(--tb-text) !important; }
+.desk-sidebar .tt-nav-item[data-on="1"]::before {
+	content: ""; position: absolute; inset-block: 7px; inset-inline-start: 0;
+	width: 3px; border-radius: 0 3px 3px 0; background: var(--primary);
+}
+[dir="rtl"] .desk-sidebar .tt-nav-item[data-on="1"]::before { border-radius: 3px 0 0 3px; }
+.desk-sidebar[data-collapsed="1"] .tt-nav-item[data-on="1"]::before { display: none; }
+
+/* section labels (Frappe .standard-sidebar-label) */
+.desk-sidebar .tt-nav-sec {
+	font-size: 11px !important; font-weight: 600 !important; color: var(--tb-muted) !important;
+	letter-spacing: .05em; padding-inline: 8px !important;
+}
+.desk-sidebar > div[style*="height:1px"] { background: transparent !important; margin: 4px 0 !important; }
+
+/* counts: muted pill badges */
+.desk-sidebar .tt-nav-count {
+	min-width: 20px !important; height: 18px !important; padding: 0 6px !important;
+	border-radius: var(--tb-radius-full) !important;
+	background: color-mix(in srgb, var(--fg) 6%, var(--bg)) !important;
+	color: var(--tb-muted) !important; font-size: 11px !important; font-weight: 500 !important;
+}
+.desk-sidebar .tt-nav-item[data-on="1"] .tt-nav-count { background: var(--panel) !important; color: var(--tb-light) !important; }
+.desk-sidebar .tt-nav-count[style*="--dot:var(--red)"] { color: var(--red) !important; background: var(--red-soft) !important; }
+.desk-sidebar .tt-nav-count[style*="--dot:var(--primary)"] { color: var(--primary) !important; background: var(--primary-soft) !important; }
+.desk-sidebar.tt-nav[data-collapsed="1"] .tt-nav-count,
+.desk-sidebar.tt-nav[data-collapsed="1"] .tt-nav-item .tt-nav-count { background: var(--dot, var(--fg3)) !important; }
+
+/* "New task" — Frappe primary button */
+.desk-sidebar .tt-nav-new {
+	height: 32px !important; flex-basis: 32px !important; border-radius: var(--tb-radius) !important;
+	font-size: 13px !important; font-weight: 500 !important;
+	transition: filter .12s var(--ease), transform .12s var(--ease), box-shadow .12s var(--ease);
+}
+.desk-sidebar .tt-nav-new:hover { box-shadow: 0 2px 8px -2px color-mix(in srgb, var(--primary) 55%, transparent) !important; }
+.desk-sidebar .tt-nav-new:active { transform: translateY(1px); }
+
+/* collapse toggle: the round edge button (todobox-theme.css) sits above the resize handle */
+.tt-nav-wrap .tt-nav-edge { z-index: 8; }
+
+/* resize handle on the sidebar's inner edge */
+.sidebar-resize-handle {
+	position: absolute; inset-block: 0; inset-inline-end: -4px; z-index: 7;
+	width: 8px; cursor: col-resize; touch-action: none; outline: none;
+}
+.sidebar-resize-handle::after {
+	content: ""; position: absolute; inset-block: 0; inset-inline-start: 3px; width: 2px;
+	background: var(--primary); opacity: 0; transition: opacity .15s var(--ease) .1s;
+}
+.sidebar-resize-handle:hover::after,
+.sidebar-resize-handle.is-dragging::after { opacity: .55; }
+.sidebar-resize-handle:focus-visible::after { opacity: 1; transition-delay: 0s; }
+.tt-nav-wrap[data-collapsed="1"] .sidebar-resize-handle { display: none; }
+html.tt-resizing, html.tt-resizing * { cursor: col-resize !important; user-select: none !important; }
+html.tt-resizing .tt-nav { transition: none !important; }
+
+/* phone drawer: off-canvas overlay with a soft backdrop */
+.tt-nav-backdrop {
+	background: rgba(12, 14, 18, .38) !important;
+	-webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px);
+	animation: tt-fadein .18s var(--ease) both;
+}
+@media (max-width: 759px) {
+	.desk-sidebar.tt-nav { background: var(--panel) !important; padding: 12px 10px max(12px, env(safe-area-inset-bottom)) !important; }
+	[dir="ltr"] .desk-sidebar.tt-nav { border-radius: 0 14px 14px 0; }
+	[dir="rtl"] .desk-sidebar.tt-nav { border-radius: 14px 0 0 14px; }
+	.desk-sidebar .tt-nav-item, .desk-sidebar .tt-nav-sv > button:first-child { height: 40px !important; flex-basis: 40px !important; font-size: 14px !important; }
+}
+
+/* ------------------------------------------------------------ list (Frappe) -- */
+.tt-list-pane { background: var(--panel) !important; }
+.tt-list-pane > div[aria-live] { padding: 0 !important; gap: 0 !important; }
+.tt-list-pane > div[aria-live] > div[style*="overflow:hidden"] { border-radius: 0 !important; }
+.tt-list-pane .list-row {
+	border-radius: 0 !important;
+	border-bottom: 1px solid var(--tb-border);
+	padding-inline-end: 14px !important;
+}
+.tt-list-pane .list-row:hover { background: var(--tb-highlight) !important; }
+.tt-list-pane .list-row[style*="var(--sel)"] {
+	background: var(--sel) !important;
+	box-shadow: inset 3px 0 0 var(--primary);
+}
+[dir="rtl"] .tt-list-pane .list-row[style*="var(--sel)"] { box-shadow: inset -3px 0 0 var(--primary); }
+.tt-list-pane .list-row[data-unread="1"] { background-image: linear-gradient(color-mix(in srgb, var(--primary) 3%, transparent), color-mix(in srgb, var(--primary) 3%, transparent)); }
+
+/* muted meta: Inter with tabular figures instead of a monospace face */
+.tt-list-pane .list-row span[style*="tabular-nums"],
+.tt-list-pane span[style*="tabular-nums"] { color: var(--tb-muted) !important; }
+
+/* chips → Frappe indicator pills */
+.tt-list-pane .list-row span[style^="display:inline-flex;align-items:center;gap:4px;"] {
+	border-radius: var(--tb-radius-full) !important; padding: 0 8px !important; font-weight: 500 !important;
+}
+.tt-list-pane .list-row span[style^="display:inline-flex;align-items:center;gap:4px;"][style*="color:var(--red)"]::before,
+.tt-list-pane .list-row span[style^="display:inline-flex;align-items:center;gap:4px;"][style*="color:var(--amber)"]::before,
+.tt-list-pane .list-row span[style^="display:inline-flex;align-items:center;gap:4px;"][style*="color:var(--primary)"]::before {
+	content: ""; width: 6px; height: 6px; flex: 0 0 6px; border-radius: 50%; background: currentColor;
+}
+
+/* priority bar reads as a Frappe indicator */
+.tt-list-pane .list-row[data-prio="high"] > div:first-child { background: var(--red) !important; }
+.tt-list-pane .list-row[data-prio="medium"] > div:first-child { background: var(--amber) !important; }
+
+/* Frappe checkbox */
+.tt-check.list-row-checkbox {
+	width: 16px !important; height: 16px !important; flex: 0 0 16px !important;
+	border-radius: 4px !important; border-width: 1px !important;
+}
+/* selecting a row ticks its checkbox instantly: no fade, no pop */
+.tt-check.list-row-checkbox, .tt-check.list-row-checkbox * { transition: none !important; animation: none !important; }
+.tt-check.list-row-checkbox[data-checked="0"] { border-color: var(--tb-checkbox-border) !important; background: var(--panel) !important; }
+.tt-check.list-row-checkbox[data-checked="0"]:hover { border-color: var(--primary) !important; }
+.tt-check.list-row-checkbox:focus-visible { outline: none !important; box-shadow: var(--tb-focus); }
+.tt-check.list-row-checkbox svg { width: 10px !important; height: 10px !important; stroke-width: 2.6; }
+
+/* row hover actions */
+.tt-row-act { transition: background-color .12s var(--ease), color .12s var(--ease), transform .15s var(--tb-spring); }
+.tt-row-act[data-act="complete"]:hover { color: var(--green) !important; background: var(--green-soft) !important; }
+.tt-row-act:focus-visible { outline: none !important; box-shadow: var(--tb-focus); }
+
+/* --------------------------------------------- completion: check pop + strike -- */
+@keyframes tb-pop { 0% { transform: scale(1); } 40% { transform: scale(1.28); } 70% { transform: scale(.92); } 100% { transform: scale(1); } }
+@keyframes tb-strike { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes tb-done-row { 0%, 60% { opacity: 1; } 100% { opacity: .55; } }
+@keyframes tb-ring-burst { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--green) 45%, transparent); } 100% { box-shadow: 0 0 0 10px transparent; } }
+
+.tt-row-act.is-popping,
+.tt-check.is-popping { animation: tb-pop .42s var(--tb-spring), tb-ring-burst .5s ease-out; }
+.tt-row-act.is-popping[data-act="complete"] { color: var(--on-accent) !important; background: var(--green) !important; }
+
+.tt-row.is-completing,
+.tt-day-row.is-completing { animation: tb-done-row .9s var(--ease) both; }
+.tt-list-pane .list-row.is-completing,
+.tt-day-row.is-completing { background: var(--green-soft) !important; transition: background-color .15s var(--ease); }
+.tt-row.is-completing::after,
+.tt-day-row.is-completing::after {
+	content: ""; position: absolute; top: 50%; inset-inline: 48px 16px; height: 1.5px; border-radius: 2px;
+	background: var(--green); transform-origin: left center; animation: tb-strike .32s var(--tb-ease-out) .05s both;
+	pointer-events: none;
+}
+[dir="rtl"] .tt-row.is-completing::after,
+[dir="rtl"] .tt-day-row.is-completing::after { transform-origin: right center; }
+.tt-day-row { position: relative; transition: border-color .12s var(--ease), box-shadow .12s var(--ease); }
+.tt-day-row:hover { border-color: color-mix(in srgb, var(--fg) 16%, var(--line2)) !important; box-shadow: var(--shadow-sm); }
+
+/* checklist ticks */
+/* ticking any checkbox is instant: no fade, no pop */
+.tt-ck > span, .tt-ck > span *, .tmc-check-box, .tmc-check-box *, input[type="checkbox"], input[type="checkbox"]::before, input[type="checkbox"]::after { transition: none !important; animation: none !important; }
+.tt-ck:hover { background: var(--tb-highlight) !important; }
+.tt-ck:focus-visible { outline: none !important; box-shadow: var(--tb-focus); }
+
+/* ------------------------------------------------------------ detail pane -- */
+.tt-detail-pane { font-family: var(--font); }
+.indicator-pill {
+	display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 10px;
+	border-radius: var(--tb-radius-full); font-size: 12px; font-weight: 500; line-height: 1; white-space: nowrap;
+	color: var(--fg2); background: var(--sunk);
+}
+.indicator-pill::before { content: ""; width: 6px; height: 6px; flex: 0 0 6px; border-radius: 50%; background: currentColor; }
+.indicator-pill[data-tone="red"] { color: var(--red); background: var(--red-soft); }
+.indicator-pill[data-tone="orange"] { color: var(--amber); background: var(--amber-soft); }
+.indicator-pill[data-tone="green"] { color: var(--green); background: var(--green-soft); }
+.indicator-pill[data-tone="blue"] { color: var(--primary); background: var(--primary-soft); }
+.indicator-pill[data-tone="gray"] { color: var(--fg2); background: var(--sunk); }
+
+/* ----------------------------------------------------- today's progress ring -- */
+@property --p { syntax: "<number>"; inherits: false; initial-value: 0; }
+.tt-day-progress {
+	display: flex; align-items: center; gap: 12px; flex: 0 0 auto;
+	padding: 8px 14px 8px 8px; padding-inline: 8px 14px;
+	border: 1px solid var(--tb-border); border-radius: var(--radius-lg, 12px); background: var(--panel2);
+}
+.tt-ring {
+	--p: 0; position: relative; width: 44px; height: 44px; flex: 0 0 44px; border-radius: 50%;
+	display: grid; place-items: center;
+	background: conic-gradient(var(--green) calc(var(--p) * 1%), color-mix(in srgb, var(--fg) 8%, var(--panel2)) 0);
+	transition: --p .7s var(--tb-ease-out);
+}
+[dir="rtl"] .tt-ring { transform: scaleX(-1); }
+[dir="rtl"] .tt-ring-val { transform: scaleX(-1); }
+.tt-ring::before { content: ""; position: absolute; inset: 5px; border-radius: 50%; background: var(--panel2); }
+.tt-ring-val { position: relative; font-size: 11px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--tb-text); }
+.tt-day-progress-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.tt-day-progress-label { font-size: 13px; font-weight: 600; color: var(--tb-text); }
+.tt-day-progress-note { font-size: 12px; color: var(--tb-muted); }
+.tt-day-progress[data-complete="1"] { border-color: color-mix(in srgb, var(--green) 35%, var(--tb-border)); background: var(--green-soft); }
+.tt-day-progress[data-complete="1"] .tt-ring::before { background: var(--green-soft); }
+.tt-day-progress[data-complete="1"] .tt-ring { animation: tb-ring-burst 1s ease-out .3s; }
+.tt-day-progress[data-complete="1"] .tt-day-progress-note { color: var(--green); }
+
+/* ------------------------------------------------------- inbox-zero empty state -- */
+@keyframes tb-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+@keyframes tb-twinkle { 0%, 100% { opacity: .35; transform: scale(.8); } 50% { opacity: 1; transform: scale(1.15); } }
+.tt-empty[data-zero="1"] .tt-empty-art { animation: tb-float 4s ease-in-out infinite; }
+.tt-empty[data-zero="1"] .tt-empty-art .a-accent { transform-box: fill-box; transform-origin: center; animation: tb-twinkle 2.4s ease-in-out infinite; }
+.tt-empty[data-zero="1"] .tt-empty-art .a-accent:nth-of-type(2) { animation-delay: .8s; }
+.tt-empty[data-zero="1"] .tt-empty-art .a-accent:nth-of-type(3) { animation-delay: 1.6s; }
+.tt-empty[data-zero="1"] .tt-empty-art .a-ok { transform-box: fill-box; transform-origin: center; animation: tb-pop .6s var(--tb-spring) .2s both; }
+.tt-empty[data-zero="1"] .tt-empty-title { font-size: 16px; }
+
+/* ----------------------------------------------------------------- focus / a11y -- */
+.sidebar-toggle-btn:focus-visible,
+.desk-sidebar .tt-nav-item:focus-visible,
+.desk-sidebar .tt-nav-new:focus-visible,
+.desk-sidebar .tt-nav-sv button:focus-visible,
+.tt-navbar button:focus-visible { outline: none !important; box-shadow: var(--tb-focus) !important; }
+
+/* dark mode (Frappe [data-theme="dark"] mirrors ToDoBox [data-dark="1"]) */
+:root[data-theme="dark"],
+:root[data-dark="1"] {
+	--tb-sidebar-hover: var(--sidebar-hover-color, color-mix(in srgb, var(--fg) 6%, var(--bg)));
+	--tb-sidebar-select: var(--sidebar-select-color, color-mix(in srgb, var(--fg) 11%, var(--bg)));
+	--tb-highlight: var(--highlight-color, color-mix(in srgb, var(--fg) 4%, var(--panel)));
+	--tb-checkbox-border: var(--gray-600, color-mix(in srgb, var(--fg) 32%, var(--panel)));
+}
+:root[data-theme="dark"] .avatar.tt-avatar { box-shadow: 0 0 0 1px rgba(255, 255, 255, .08); }
+:root[data-theme="dark"] .tt-nav-backdrop { background: rgba(0, 0, 0, .55) !important; }
+
+@media (prefers-reduced-motion: reduce) {
+	.tt-ring { transition: none; }
+	.tt-row.is-completing, .tt-day-row.is-completing,
+	.tt-row-act.is-popping, .tt-check.is-popping, .tt-ck.is-popping > span:first-child,
+	.tt-empty[data-zero="1"] .tt-empty-art, .tt-empty[data-zero="1"] .tt-empty-art .a-accent,
+	.tt-empty[data-zero="1"] .tt-empty-art .a-ok, .tt-day-progress[data-complete="1"] .tt-ring,
+	.tt-nav-backdrop { animation: none !important; }
+	.tt-row.is-completing::after, .tt-day-row.is-completing::after { animation: none; transform: none; }
+	.sidebar-resize-handle::after, .sidebar-toggle-btn { transition: none; }
+}
+
+/* completed tasks are read-only: checklist steps can't be toggled */
+.tt-ck:disabled { cursor: default !important; opacity: .85; }
+
+/* brand: "Box" a shade lighter than "ToDo" */
+/* wordmark: the same ink in every accent theme (logo navy; light ink on dark) */
+.tt-brand span, .tt-brand .tt-brand-box { color: #16233F !important; }
+[data-dark="1"] .tt-brand span, [data-dark="1"] .tt-brand .tt-brand-box { color: #E9ECF5 !important; }

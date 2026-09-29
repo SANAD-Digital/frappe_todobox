@@ -1,0 +1,68 @@
+{
+ "app": "todobox",
+ "charts": [],
+ "content": "[{\"id\":\"tbx0\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Open ToDoBox\",\"col\":3}},{\"id\":\"tbx1\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"ToDo\",\"col\":3}},{\"id\":\"tbx2\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Automation Rules\",\"col\":3}},{\"id\":\"tbx3\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Task Templates\",\"col\":3}},{\"id\":\"tbx4\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Recurring Tasks\",\"col\":3}}]",
+ "creation": "2026-09-22 10:00:00.000000",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "inbox",
+ "idx": 0,
+ "indicator_color": "",
+ "is_hidden": 0,
+ "label": "ToDoBox",
+ "link_type": "DocType",
+ "links": [],
+ "modified": "2026-09-22 10:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "ToDoBox",
+ "name": "ToDoBox",
+ "number_cards": [],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [],
+ "sequence_id": 50.0,
+ "shortcuts": [
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Open ToDoBox",
+   "type": "URL",
+   "url": "/todobox"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "ToDo",
+   "type": "DocType",
+   "link_to": "ToDo"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Automation Rules",
+   "type": "DocType",
+   "link_to": "ToDoBox Rule"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Task Templates",
+   "type": "DocType",
+   "link_to": "ToDoBox Task Template"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Recurring Tasks",
+   "type": "DocType",
+   "link_to": "ToDoBox Recurring Task"
+  }
+ ],
+ "title": "ToDoBox",
+ "type": "Workspace"
+}

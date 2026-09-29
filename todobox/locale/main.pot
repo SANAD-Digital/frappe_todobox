@@ -1,0 +1,3165 @@
+# Translations template for ToDoBox.
+# Copyright (C) 2026 SANAD Digital
+# This file is distributed under the same license as the ToDoBox project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ToDoBox 0.1.0\n"
+"Report-Msgid-Bugs-To: dev@sanad.digital\n"
+"POT-Creation-Date: 2026-09-19 14:01+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: dev@sanad.digital\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.16.0\n"
+
+msgid "0-3 days"
+msgstr ""
+
+msgid "0–3 days"
+msgstr ""
+
+msgid "1 day ago"
+msgstr ""
+
+msgid "1 hour ago"
+msgstr ""
+
+msgid "1 week ago"
+msgstr ""
+
+msgid "15 days or more"
+msgstr ""
+
+msgid "15+ days"
+msgstr ""
+
+msgid "2 weeks ago"
+msgstr ""
+
+msgid "3 weeks ago"
+msgstr ""
+
+msgid "30 days"
+msgstr ""
+
+msgid "4 to 7 days"
+msgstr ""
+
+msgid "4-7 days"
+msgstr ""
+
+msgid "4–7 days"
+msgstr ""
+
+msgid "7 days"
+msgstr ""
+
+msgid "8 to 14 days"
+msgstr ""
+
+msgid "8+ days"
+msgstr ""
+
+msgid "8–14 days"
+msgstr ""
+
+msgid "90 days"
+msgstr ""
+
+msgid "A single aggregate query for cycle time, aging and member workload."
+msgstr ""
+
+msgid "A task has been forwarded to you: {0}"
+msgstr ""
+
+msgid "Accounts Manager"
+msgstr ""
+
+msgid "Accounts User"
+msgstr ""
+
+msgid "Acting as {0} — {1}"
+msgstr ""
+
+msgid "Action '{0}' executed on {1}"
+msgstr ""
+
+msgid "Actions"
+msgstr ""
+
+msgid "Add"
+msgstr ""
+
+msgid "Add Tag"
+msgstr ""
+
+msgid "Add a note with the decision… (required when rejecting or returning)"
+msgstr ""
+
+msgid "Add a recipient and a subject"
+msgstr ""
+
+msgid "Add a step…"
+msgstr ""
+
+msgid "Add at least one action"
+msgstr ""
+
+msgid "Add at least one condition"
+msgstr ""
+
+msgid "Add checklist"
+msgstr ""
+
+msgid "Add comment"
+msgstr ""
+
+msgid "Add filter"
+msgstr ""
+
+msgid "Add recipients"
+msgstr ""
+
+msgid "Add step"
+msgstr ""
+
+msgid "Add tag"
+msgstr ""
+
+msgid "Add the tag"
+msgstr ""
+
+msgid "Add to CC"
+msgstr ""
+
+msgid "Add what you typed in the decision bar as a comment"
+msgstr ""
+
+msgid "Added attachment {0}"
+msgstr ""
+
+msgid "Added steps from template \"{0}\""
+msgstr ""
+
+msgid "All"
+msgstr ""
+
+msgid "All are moving"
+msgstr ""
+
+msgid "All fields"
+msgstr ""
+
+msgid "All filled conditions must match (AND)."
+msgstr ""
+
+msgid "All my tasks"
+msgstr ""
+
+msgid "All results"
+msgstr ""
+
+msgid "All statuses"
+msgstr ""
+
+msgid "All {0}"
+msgstr ""
+
+msgid "Amount above {0}"
+msgstr ""
+
+msgid "Analytics"
+msgstr ""
+
+msgid "Any"
+msgstr ""
+
+msgid "Applied"
+msgstr ""
+
+msgid "Apply action + comment"
+msgstr ""
+
+msgid "Approval path"
+msgstr ""
+
+msgid "Approvals"
+msgstr ""
+
+msgid "Approve"
+msgstr ""
+
+msgid "Approve a document from within the task"
+msgstr ""
+
+msgid "Approve for payment"
+msgstr ""
+
+msgid "Approve order"
+msgstr ""
+
+msgid "Approve profile"
+msgstr ""
+
+msgid "Approve request"
+msgstr ""
+
+msgid "Approved"
+msgstr ""
+
+msgid "Assign To"
+msgstr ""
+
+msgid "Assign to"
+msgstr ""
+
+msgid "Assigned By"
+msgstr ""
+
+msgid "Assignee"
+msgstr ""
+
+msgid "Assigner"
+msgstr ""
+
+msgid "Assignment"
+msgstr ""
+
+msgid "Assignments, replies and alerts will appear here as soon as they arrive."
+msgstr ""
+
+msgid "Attach file"
+msgstr ""
+
+msgid "Attach file (a)"
+msgstr ""
+
+msgid "Attached {0} file(s)"
+msgstr ""
+
+msgid "Attachment"
+msgstr ""
+
+msgid "Attachment ({0})"
+msgstr ""
+
+msgid "Attachment preview"
+msgstr ""
+
+msgid "Attachments"
+msgstr ""
+
+msgid "Automation"
+msgstr ""
+
+msgid "Automation rule"
+msgstr ""
+
+msgid "Average cycle time {0} days — the highest on the team, with {1} open tasks, {2} of them overdue. Review their workload before the next assignment."
+msgstr ""
+
+msgid "Average {0} days"
+msgstr ""
+
+msgid "Awaiting my decision"
+msgstr ""
+
+msgid "Awaiting my decision (user or role)"
+msgstr ""
+
+msgid "Awaiting reply"
+msgstr ""
+
+msgid "Awaiting {0}"
+msgstr ""
+
+msgid "Award to supplier"
+msgstr ""
+
+msgid "Back"
+msgstr ""
+
+msgid "Back from snooze — status of {0} changed"
+msgstr ""
+
+msgid "Back to list"
+msgstr ""
+
+msgid "Back to team"
+msgstr ""
+
+msgid "Backlog grew by {0}"
+msgstr ""
+
+msgid "Based on {0} tasks completed over 6 weeks"
+msgstr ""
+
+msgid "Basis for cycle time and aging calculations"
+msgstr ""
+
+msgid "Be the first to comment on this document — your comment is saved on the document in ERPNext."
+msgstr ""
+
+msgid "Bold"
+msgstr ""
+
+msgid "Bottleneck: {0}"
+msgstr ""
+
+msgid "Buttons available to me now"
+msgstr ""
+
+msgid "By priority"
+msgstr ""
+
+msgid "CC"
+msgstr ""
+
+msgid "CC ({0})"
+msgstr ""
+
+msgid "CC to me"
+msgstr ""
+
+msgid "CC:"
+msgstr ""
+
+msgid "Calculating…"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Cancel snooze"
+msgstr ""
+
+msgid "Cancelled"
+msgstr ""
+
+msgid "Change"
+msgstr ""
+
+msgid "Change sorting"
+msgstr ""
+
+msgid "Change the filter or tab above."
+msgstr ""
+
+msgid "Check the account statement against the recorded invoices and let me know of any difference."
+msgstr ""
+
+msgid "Checklist"
+msgstr ""
+
+msgid "Checklist inside the task (steps from {0})"
+msgstr ""
+
+msgid "Checklist step not found"
+msgstr ""
+
+msgid "Checklist template"
+msgstr ""
+
+msgid "Checklist — from template"
+msgstr ""
+
+msgid "Choose a recipient"
+msgstr ""
+
+msgid "Choose a task template or enter a subject"
+msgstr ""
+
+msgid "Clear all"
+msgstr ""
+
+msgid "Clear search"
+msgstr ""
+
+msgid "Clear selection"
+msgstr ""
+
+msgid "Clears {0} for tasks whose snooze has ended and broadcasts {1}."
+msgstr ""
+
+msgid "Click again to delete"
+msgstr ""
+
+msgid "Close"
+msgstr ""
+
+msgid "Close request"
+msgstr ""
+
+msgid "Closes my task and opens a new task for the recipient in the same thread."
+msgstr ""
+
+msgid "Code"
+msgstr ""
+
+msgid "Comfortable"
+msgstr ""
+
+msgid "Command palette"
+msgstr ""
+
+msgid "Comment"
+msgstr ""
+
+msgid "Comment added to the document"
+msgstr ""
+
+msgid "Comment and mention"
+msgstr ""
+
+msgid "Comment cannot be empty"
+msgstr ""
+
+msgid "Comment for the internal team only (k)"
+msgstr ""
+
+msgid "Comment on the document"
+msgstr ""
+
+msgid "Commenting…"
+msgstr ""
+
+msgid "Comments"
+msgstr ""
+
+msgid "Compact"
+msgstr ""
+
+msgid "Compact view"
+msgstr ""
+
+msgid "Compared with your own previous period — not with colleagues"
+msgstr ""
+
+msgid "Complete"
+msgstr ""
+
+msgid "Complete (e)"
+msgstr ""
+
+msgid "Complete a task today to start a streak"
+msgstr ""
+
+msgid "Complete selected task"
+msgstr ""
+
+msgid "Complete with comment"
+msgstr ""
+
+msgid "Complete with comment (e)"
+msgstr ""
+
+msgid "Completed"
+msgstr ""
+
+msgid "Completed \"{0}…\""
+msgstr ""
+
+msgid "Completed On"
+msgstr ""
+
+msgid "Completed in the period and open now · median days to complete"
+msgstr ""
+
+msgid "Completed later as: {0}"
+msgstr ""
+
+msgid "Completed per week"
+msgstr ""
+
+msgid "Completed vs new tasks"
+msgstr ""
+
+msgid "Completed: {0}"
+msgstr ""
+
+msgid "Completing…"
+msgstr ""
+
+msgid "Completion streak"
+msgstr ""
+
+msgid "Conditions"
+msgstr ""
+
+msgid "Confirm Delete"
+msgstr ""
+
+msgid "Confirm?"
+msgstr ""
+
+msgid "Copies the template and checklist on each cycle and sets the due date."
+msgstr ""
+
+msgid "Copy (CC)"
+msgstr ""
+
+msgid "Copy task link"
+msgstr ""
+
+msgid "Could not complete the action"
+msgstr ""
+
+msgid "Could not copy the link"
+msgstr ""
+
+msgid "Could not open the attachment dialog"
+msgstr ""
+
+msgid "Could not run"
+msgstr ""
+
+msgid "Could not save the template"
+msgstr ""
+
+msgid "Could not save the view"
+msgstr ""
+
+msgid "Could not send the reminder"
+msgstr ""
+
+msgid "Could not upload the file"
+msgstr ""
+
+msgid "Create Template"
+msgstr ""
+
+msgid "Create a new task"
+msgstr ""
+
+msgid "Create ready-made templates with checklists to use when creating tasks"
+msgstr ""
+
+msgid "Create task from it"
+msgstr ""
+
+msgid "Create with an automation rule"
+msgstr ""
+
+msgid "Created \"{0}\" with a {1}-step checklist"
+msgstr ""
+
+msgid "Created By"
+msgstr ""
+
+msgid "Created an assignment from the mention"
+msgstr ""
+
+msgid "Created an assignment from the mention (assign_to.add)"
+msgstr ""
+
+msgid "Created {0} task(s)"
+msgstr ""
+
+msgid "Creating…"
+msgstr ""
+
+msgid "Ctrl+Enter to send"
+msgstr ""
+
+msgid "Current User"
+msgstr ""
+
+msgid "Custom"
+msgstr ""
+
+msgid "Custom fields on the ToDo DocType"
+msgstr ""
+
+msgid "Cycle time by priority"
+msgstr ""
+
+msgid "Cycle time — median"
+msgstr ""
+
+msgid "Daily"
+msgstr ""
+
+msgid "Dark mode"
+msgstr ""
+
+msgid "Data"
+msgstr ""
+
+msgid "Day Plan"
+msgstr ""
+
+msgid "Days since creation · red = overdue"
+msgstr ""
+
+msgid "Decided within 24 h"
+msgstr ""
+
+msgid "Decision on"
+msgstr ""
+
+msgid "Decision reverted"
+msgstr ""
+
+msgid "Decisions"
+msgstr ""
+
+msgid "Delegate"
+msgstr ""
+
+msgid "Delegation"
+msgstr ""
+
+msgid "Delete"
+msgstr ""
+
+msgid "Delete step"
+msgstr ""
+
+msgid "Delete view"
+msgstr ""
+
+msgid "Description"
+msgstr ""
+
+msgid "Detailed view"
+msgstr ""
+
+msgid "Details"
+msgstr ""
+
+msgid "Detects tasks I assigned with no reply for more than {0} and sends a digest."
+msgstr ""
+
+msgid "Disable recurrence {0}"
+msgstr ""
+
+msgid "Disable rule {0}"
+msgstr ""
+
+msgid "Disable template"
+msgstr ""
+
+msgid "Disabled"
+msgstr ""
+
+msgid "Disabled — not shown when creating a task"
+msgstr ""
+
+msgid "Do not change"
+msgstr ""
+
+msgid "Document"
+msgstr ""
+
+msgid "Document Type"
+msgstr ""
+
+msgid "Document amount greater than"
+msgstr ""
+
+msgid "Document deleted"
+msgstr ""
+
+msgid "Document items/attachments/trail"
+msgstr ""
+
+msgid "Document not found"
+msgstr ""
+
+msgid "Document preview"
+msgstr ""
+
+msgid "Document status changed"
+msgstr ""
+
+msgid "Document status changed — list refreshed"
+msgstr ""
+
+msgid "Document type is {0}"
+msgstr ""
+
+msgid "Documents you created that have not reached their final status — where they stopped and with whom"
+msgstr ""
+
+msgid "Done"
+msgstr ""
+
+msgid "Done — {0}"
+msgstr ""
+
+msgid "Down"
+msgstr ""
+
+msgid "Download"
+msgstr ""
+
+msgid "Draft"
+msgstr ""
+
+msgid "Drag to reorder"
+msgstr ""
+
+msgid "Due"
+msgstr ""
+
+msgid "Due After (Days)"
+msgstr ""
+
+msgid "Due after (days)"
+msgstr ""
+
+msgid "Due after (days) cannot be negative"
+msgstr ""
+
+msgid "Due date"
+msgstr ""
+
+msgid "Due soonest"
+msgstr ""
+
+msgid "Due today"
+msgstr ""
+
+msgid "Due: {0}"
+msgstr ""
+
+msgid "ERPNext setup blueprint"
+msgstr ""
+
+msgid "ERPNext setup schema"
+msgstr ""
+
+msgid "Each cycle creates a new task from its template with the full checklist. \"Run now\" creates it immediately without waiting for the schedule."
+msgstr ""
+
+msgid "Edit"
+msgstr ""
+
+msgid "Edit due date"
+msgstr ""
+
+msgid "Edit recurring task"
+msgstr ""
+
+msgid "Edit rule"
+msgstr ""
+
+msgid "Enable price list"
+msgstr ""
+
+msgid "Enable recurrence {0}"
+msgstr ""
+
+msgid "Enable rule {0}"
+msgstr ""
+
+msgid "Enable supplier"
+msgstr ""
+
+msgid "Enable template"
+msgstr ""
+
+msgid "Enabled"
+msgstr ""
+
+msgid "Enabled — shown when creating a task"
+msgstr ""
+
+msgid "Enabled templates appear when creating a task and in the task checklist"
+msgstr ""
+
+msgid "Endpoints —"
+msgstr ""
+
+msgid "Enter a rule name"
+msgstr ""
+
+msgid "Enter a template name"
+msgstr ""
+
+msgid "Enter a title"
+msgstr ""
+
+msgid "Enter a view name"
+msgstr ""
+
+msgid "Enter the step text"
+msgstr ""
+
+msgid "Every approval or rejection you made, from the tool or from the document form — last 180 days"
+msgstr ""
+
+#, python-format
+msgid "Excellent reliability: {0}% of your tasks were done on or before their due date."
+msgstr ""
+
+msgid "Excellent responsiveness"
+msgstr ""
+
+msgid "File"
+msgstr ""
+
+msgid "Files attached to this document in ERPNext will appear here."
+msgstr ""
+
+msgid "Filter"
+msgstr ""
+
+msgid "Filters"
+msgstr ""
+
+msgid "Filters & sorting"
+msgstr ""
+
+msgid "Finance"
+msgstr ""
+
+msgid "Folder filters"
+msgstr ""
+
+msgid "Folders"
+msgstr ""
+
+msgid "Follow-up"
+msgstr ""
+
+msgid "Forward"
+msgstr ""
+
+msgid "Forward (f)"
+msgstr ""
+
+msgid "Forward reason (logged as a comment in the thread)"
+msgstr ""
+
+msgid "Forward reason: {0}"
+msgstr ""
+
+msgid "Forward selected task"
+msgstr ""
+
+msgid "Forward task"
+msgstr ""
+
+msgid "Forward then complete"
+msgstr ""
+
+msgid "Forwarded"
+msgstr ""
+
+msgid "Forwarded the task to {0} ({1})"
+msgstr ""
+
+msgid "Forwarding…"
+msgstr ""
+
+msgid "Frequency"
+msgstr ""
+
+msgid "From arrival to your decision"
+msgstr ""
+
+msgid "From creation to completion"
+msgstr ""
+
+msgid "From creation to completion, in days"
+msgstr ""
+
+msgid "From: {0} · {1}"
+msgstr ""
+
+msgid "Full bundle — same logic as {0}"
+msgstr ""
+
+msgid "Full forward"
+msgstr ""
+
+msgid "Full handover"
+msgstr ""
+
+msgid "Reminder sent to {0}"
+msgstr ""
+
+msgid "Reminder sent to {0} (Notification Log)"
+msgstr ""
+
+msgid "Reminder via {0}"
+msgstr ""
+
+msgid "Reminder: {0} is waiting for your decision"
+msgstr ""
+
+msgid "Go to: Analytics"
+msgstr ""
+
+msgid "Go to: Inbox"
+msgstr ""
+
+msgid "Go to: Today's plan"
+msgstr ""
+
+msgid "Go to: Waiting for reply"
+msgstr ""
+
+msgid "Group: {0}"
+msgstr ""
+
+msgid "Groups the task, its replies and forwards into one thread"
+msgstr ""
+
+msgid "HR"
+msgstr ""
+
+msgid "Has Tag"
+msgstr ""
+
+msgid "Has a tag containing"
+msgstr ""
+
+msgid "Has priority"
+msgstr ""
+
+msgid "Hide CC"
+msgstr ""
+
+msgid "Hide checklist"
+msgstr ""
+
+msgid "High"
+msgstr ""
+
+msgid "History"
+msgstr ""
+
+msgid "Hold"
+msgstr ""
+
+msgid "If {0} is set, copy {1} from it; otherwise generate a new ID."
+msgstr ""
+
+msgid "Inbox"
+msgstr ""
+
+msgid "Incoming vs completed"
+msgstr ""
+
+msgid "Insights"
+msgstr ""
+
+msgid "Internal comment"
+msgstr ""
+
+msgid "Internal comment — not visible to external recipients"
+msgstr ""
+
+msgid "Invalid forward mode"
+msgstr ""
+
+msgid "Involve (Delegate)"
+msgstr ""
+
+msgid "Is linked to document type"
+msgstr ""
+
+msgid "Italic"
+msgstr ""
+
+msgid "Just now"
+msgstr ""
+
+msgid "Keyboard shortcuts"
+msgstr ""
+
+msgid "Label"
+msgstr ""
+
+msgid "Last Applied"
+msgstr ""
+
+msgid "Last Run"
+msgstr ""
+
+msgid "Last Task"
+msgstr ""
+
+msgid "Last week"
+msgstr ""
+
+msgid "Link a document"
+msgstr ""
+
+msgid "Linked to task: {0}"
+msgstr ""
+
+msgid "List"
+msgstr ""
+
+msgid "Low"
+msgstr ""
+
+msgid "Mark all as read"
+msgstr ""
+
+msgid "Me"
+msgstr ""
+
+msgid "Median"
+msgstr ""
+
+msgid "Median response time"
+msgstr ""
+
+msgid "Medium"
+msgstr ""
+
+msgid "Member"
+msgstr ""
+
+msgid "Mention a user"
+msgstr ""
+
+msgid "Mention a user (@)"
+msgstr ""
+
+msgid "Mentioning…"
+msgstr ""
+
+msgid "Menu"
+msgstr ""
+
+msgid "Monthly"
+msgstr ""
+
+msgid "More"
+msgstr ""
+
+msgid "Move down"
+msgstr ""
+
+msgid "Move up"
+msgstr ""
+
+msgid "Moved"
+msgstr ""
+
+msgid "My day"
+msgstr ""
+
+msgid "My decisions log"
+msgstr ""
+
+msgid "My open tasks"
+msgstr ""
+
+msgid "My task is cancelled (not counted as completed) and a new task opens for the recipient in the same thread."
+msgstr ""
+
+msgid "My team"
+msgstr ""
+
+msgid "My team ({0})"
+msgstr ""
+
+msgid "Navigate the list"
+msgstr ""
+
+msgid "Needs procurement review"
+msgstr ""
+
+msgid "New"
+msgstr ""
+
+msgid "New Template"
+msgstr ""
+
+msgid "New comment"
+msgstr ""
+
+msgid "New recurring task"
+msgstr ""
+
+msgid "New reply on task: {0}"
+msgstr ""
+
+msgid "New rule"
+msgstr ""
+
+msgid "New step… (Enter)"
+msgstr ""
+
+msgid "New tag… (Enter)"
+msgstr ""
+
+msgid "New task"
+msgstr ""
+
+msgid "New task assigned to you: {0}"
+msgstr ""
+
+msgid "New task notification"
+msgstr ""
+
+msgid "New tasks"
+msgstr ""
+
+msgid "New template"
+msgstr ""
+
+msgid "New this period"
+msgstr ""
+
+msgid "Newest"
+msgstr ""
+
+msgid "Next"
+msgstr ""
+
+msgid "Next Run"
+msgstr ""
+
+msgid "Next run"
+msgstr ""
+
+msgid "No CC"
+msgstr ""
+
+msgid "No action available for your role at this stage"
+msgstr ""
+
+msgid "No attachments"
+msgstr ""
+
+msgid "No attachments."
+msgstr ""
+
+msgid "No comments on this document yet."
+msgstr ""
+
+msgid "No comments yet"
+msgstr ""
+
+msgid "No common action"
+msgstr ""
+
+msgid "No completed or new tasks in this period."
+msgstr ""
+
+msgid "No completed tasks with a due date"
+msgstr ""
+
+msgid "No data in the previous period"
+msgstr ""
+
+msgid "No data yet"
+msgstr ""
+
+msgid "No date"
+msgstr ""
+
+msgid "No decisions match this period or filter."
+msgstr ""
+
+msgid "No document to print"
+msgstr ""
+
+msgid "No documents here"
+msgstr ""
+
+msgid "No matching results"
+msgstr ""
+
+msgid "No matching results."
+msgstr ""
+
+msgid "No new notifications"
+msgstr ""
+
+msgid "No open tasks are assigned to you right now."
+msgstr ""
+
+msgid "No open tasks assigned to you right now. You completed two tasks today."
+msgstr ""
+
+msgid "No preview available for this file type"
+msgstr ""
+
+msgid "No reason recorded"
+msgstr ""
+
+msgid "No recurring tasks yet."
+msgstr ""
+
+msgid "No reply for {0} days"
+msgstr ""
+
+msgid "No results for “{0}”"
+msgstr ""
+
+msgid "No reverse transition is defined in the Workflow"
+msgstr ""
+
+msgid "No rules yet."
+msgstr ""
+
+msgid "No status"
+msgstr ""
+
+msgid "No steps yet — add the first step below"
+msgstr ""
+
+msgid "No task you take part in matches this search."
+msgstr ""
+
+msgid "No tasks due"
+msgstr ""
+
+msgid "No tasks here"
+msgstr ""
+
+msgid "No team activity in this period."
+msgstr ""
+
+msgid "No templates match \"{0}\""
+msgstr ""
+
+msgid "No templates yet — start with the \"New Template\" button."
+msgstr ""
+
+msgid "No user matches “{0}”"
+msgstr ""
+
+msgid "No users available"
+msgstr ""
+
+msgid "None"
+msgstr ""
+
+msgid "Normal"
+msgstr ""
+
+msgid "Note with the decision"
+msgstr ""
+
+msgid "Nothing awaiting your decision"
+msgstr ""
+
+msgid "Nothing due today"
+msgstr ""
+
+msgid "Nothing matches in “{0}”."
+msgstr ""
+
+msgid "Nothing overdue"
+msgstr ""
+
+msgid "Notifications"
+msgstr ""
+
+msgid "Notifications — {0} unread"
+msgstr ""
+
+msgid "Now"
+msgstr ""
+
+msgid "Now {0} — with {1}"
+msgstr ""
+
+msgid "Now: {0}"
+msgstr ""
+
+msgid "Number next to the name = open tasks; red = overdue"
+msgstr ""
+
+msgid "Of decisions"
+msgstr ""
+
+msgid "Oldest created"
+msgstr ""
+
+msgid "Oldest first"
+msgstr ""
+
+msgid "Oldest open task"
+msgstr ""
+
+msgid "On hold until the status of {0} changes"
+msgstr ""
+
+msgid "On hold until the status of {0} changes — returns automatically on the first change"
+msgstr ""
+
+msgid "On time"
+msgstr ""
+
+msgid "On-time rate"
+msgstr ""
+
+msgid "One line — becomes the first line of the description"
+msgstr ""
+
+msgid "Only a System Manager can add or change rules."
+msgstr ""
+
+msgid "Only a System Manager can change automation rules"
+msgstr ""
+
+msgid "Only open tasks can be forwarded"
+msgstr ""
+
+msgid "Only the task creator can change the priority, date, subject and checklist"
+msgstr ""
+
+msgid "Only the task creator can edit priority, date, subject and checklist"
+msgstr ""
+
+msgid "Open"
+msgstr ""
+
+msgid "Open dispute"
+msgstr ""
+
+msgid "Open document"
+msgstr ""
+
+msgid "Open in new tab"
+msgstr ""
+
+msgid "Open now"
+msgstr ""
+
+msgid "Open reference"
+msgstr ""
+
+msgid "Open task"
+msgstr ""
+
+msgid "Open task aging"
+msgstr ""
+
+msgid "Open tasks by age"
+msgstr ""
+
+msgid "Opening the task…"
+msgstr ""
+
+msgid "Opening “Awaiting reply”…"
+msgstr ""
+
+msgid "Opens the document in ERPNext"
+msgstr ""
+
+msgid "Other"
+msgstr ""
+
+msgid "Overdue"
+msgstr ""
+
+msgid "Overdue · over 48 hours"
+msgstr ""
+
+msgid "Overdue · {0}"
+msgstr ""
+
+msgid "Parallel task (delegation) created for {0}"
+msgstr ""
+
+msgid "Pause"
+msgstr ""
+
+msgid "Pending Approval"
+msgstr ""
+
+msgid "Pending {0}"
+msgstr ""
+
+msgid "Pick a specific date"
+msgstr ""
+
+msgid "Pick a template to edit, or create a new one"
+msgstr ""
+
+msgid "Pick a template to load its checklist, or add steps manually."
+msgstr ""
+
+msgid "Pick a value to apply it instantly — or type in the field for a text search."
+msgstr ""
+
+msgid "Pre-decision checklist"
+msgstr ""
+
+msgid "Press again to confirm: {0}"
+msgstr ""
+
+msgid "Preview"
+msgstr ""
+
+msgid "Preview attachment"
+msgstr ""
+
+msgid "Previous"
+msgstr ""
+
+msgid "Pricing"
+msgstr ""
+
+msgid "Print"
+msgstr ""
+
+msgid "Print window opened — {0}"
+msgstr ""
+
+msgid "Priority"
+msgstr ""
+
+msgid "Priority Is"
+msgstr ""
+
+msgid "Priority is {0}"
+msgstr ""
+
+msgid "Priority {0}"
+msgstr ""
+
+msgid "Priority — click to change"
+msgstr ""
+
+msgid "Priority: {0}"
+msgstr ""
+
+msgid "Purchase Manager"
+msgstr ""
+
+msgid "Purchase User"
+msgstr ""
+
+msgid "Purchasing"
+msgstr ""
+
+msgid "Qty {0}"
+msgstr ""
+
+msgid "Quarterly"
+msgstr ""
+
+msgid "Quick Look"
+msgstr ""
+
+msgid "Reads @mentions in the comment and calls {0} to create a real assignment."
+msgstr ""
+
+msgid "Recently updated"
+msgstr ""
+
+#, python-format
+msgid "Recognition: {0} completed {1} tasks with {2}% on time. A word of thanks goes a long way."
+msgstr ""
+
+msgid "Reconcile the supplier statement before closing"
+msgstr ""
+
+msgid "Recurring"
+msgstr ""
+
+msgid "Recurring task \"{0}\" deleted"
+msgstr ""
+
+msgid "Recurring task \"{0}\" saved — next run {1}"
+msgstr ""
+
+msgid "Recurring task?"
+msgstr ""
+
+msgid "Recurring tasks"
+msgstr ""
+
+msgid "Reference Amount Greater Than"
+msgstr ""
+
+msgid "Reference Document Type"
+msgstr ""
+
+msgid "Reject"
+msgstr ""
+
+msgid "Rejected"
+msgstr ""
+
+msgid "Rejections"
+msgstr ""
+
+msgid "Remind about a stale task"
+msgstr ""
+
+msgid "Reminder"
+msgstr ""
+
+msgid "Reminder logged in the conversation"
+msgstr ""
+
+msgid "Reminder sent and logged in the conversation"
+msgstr ""
+
+msgid "Reminder: this task is still awaiting your reply"
+msgstr ""
+
+msgid "Reminder: this task is still awaiting your reply."
+msgstr ""
+
+msgid "Reminder: {0}"
+msgstr ""
+
+msgid "Remove assignment"
+msgstr ""
+
+msgid "Remove attachment"
+msgstr ""
+
+msgid "Remove from plan"
+msgstr ""
+
+msgid "Remove it from the day plan"
+msgstr ""
+
+msgid "Remove tag"
+msgstr ""
+
+msgid "Remove this filter"
+msgstr ""
+
+msgid "Removed from today's plan"
+msgstr ""
+
+msgid "Repeats"
+msgstr ""
+
+msgid "Reply"
+msgstr ""
+
+msgid "Reply visible to everyone (r)"
+msgstr ""
+
+msgid "Reports"
+msgstr ""
+
+msgid "Required Actions"
+msgstr ""
+
+msgid "Required Server Scripts"
+msgstr ""
+
+msgid "Returns the nine folder counters in one call instead of nine {0} calls."
+msgstr ""
+
+#, python-format
+msgid "Reviewed the items; the margin allows a 5% discount only."
+msgstr ""
+
+msgid "Rule"
+msgstr ""
+
+msgid "Rule \"{0}\" deleted"
+msgstr ""
+
+msgid "Rule \"{0}\" saved"
+msgstr ""
+
+msgid "Rule Name"
+msgstr ""
+
+msgid "Rule applied: {0}"
+msgstr ""
+
+msgid "Rule is raising the priority…"
+msgstr ""
+
+msgid "Rule name"
+msgstr ""
+
+msgid "Rule: {0}"
+msgstr ""
+
+msgid "Rules"
+msgstr ""
+
+msgid "Rules and recurring tasks"
+msgstr ""
+
+msgid "Rules apply the moment a task is created, before anyone sees it. Create a task linked to a large invoice and the priority and tag are set automatically."
+msgstr ""
+
+msgid "Run now"
+msgstr ""
+
+msgid "Running action on the document…"
+msgstr ""
+
+msgid "Runs"
+msgstr ""
+
+msgid "Runs submit/cancel on the reference document and releases snoozes pending on its status."
+msgstr ""
+
+msgid "Sales Manager"
+msgstr ""
+
+msgid "Sales User"
+msgstr ""
+
+msgid "Same as the previous period"
+msgstr ""
+
+msgid "Save"
+msgstr ""
+
+msgid "Save Changes"
+msgstr ""
+
+msgid "Save as view"
+msgstr ""
+
+msgid "Save current search"
+msgstr ""
+
+msgid "Save current search as a view"
+msgstr ""
+
+msgid "Saved filters"
+msgstr ""
+
+msgid "Saving…"
+msgstr ""
+
+msgid "Search"
+msgstr ""
+
+msgid "Search all my tasks"
+msgstr ""
+
+msgid "Search all users"
+msgstr ""
+
+msgid "Search by name or email…"
+msgstr ""
+
+msgid "Search documents…"
+msgstr ""
+
+msgid "Search for a user…"
+msgstr ""
+
+msgid "Search people"
+msgstr ""
+
+msgid "Search tags…"
+msgstr ""
+
+msgid "Search tasks…"
+msgstr ""
+
+msgid "Search templates"
+msgstr ""
+
+msgid "Search templates and steps…"
+msgstr ""
+
+msgid "Search users…"
+msgstr ""
+
+msgid "Searching…"
+msgstr ""
+
+msgid "Search…"
+msgstr ""
+
+msgid "Select a task to view its details"
+msgstr ""
+
+msgid "Select a transaction to view its workflow and data"
+msgstr ""
+
+msgid "Select for bulk action"
+msgstr ""
+
+msgid "Select for bulk approval"
+msgstr ""
+
+msgid "Selected: {0}"
+msgstr ""
+
+msgid "Send"
+msgstr ""
+
+msgid "Send reminder"
+msgstr ""
+
+msgid "Send reply"
+msgstr ""
+
+msgid "Sender"
+msgstr ""
+
+msgid "Sending reminder…"
+msgstr ""
+
+msgid "Sends a Web Push to the recipient via Notification Settings."
+msgstr ""
+
+msgid "Sent"
+msgstr ""
+
+msgid "Sent & following up"
+msgstr ""
+
+msgid "Sent a reminder about \"{0}\""
+msgstr ""
+
+msgid "Sent a reminder to {0}"
+msgstr ""
+
+msgid "Sent for approval"
+msgstr ""
+
+msgid "Separates the public reply from the internal comment"
+msgstr ""
+
+msgid "Set Priority"
+msgstr ""
+
+msgid "Set priority"
+msgstr ""
+
+msgid "Setup"
+msgstr ""
+
+msgid "Show all document fields"
+msgstr ""
+
+msgid "Show overdue tasks"
+msgstr ""
+
+msgid "Show remaining people"
+msgstr ""
+
+msgid "Show {0} earlier events"
+msgstr ""
+
+msgid "Snooze"
+msgstr ""
+
+msgid "Snooze (s)"
+msgstr ""
+
+msgid "Snooze pending a document status change"
+msgstr ""
+
+msgid "Snooze rate"
+msgstr ""
+
+msgid "Snooze task"
+msgstr ""
+
+msgid "Snooze until a set time"
+msgstr ""
+
+msgid "Snoozed"
+msgstr ""
+
+msgid "Snoozed until the status of {0} changes"
+msgstr ""
+
+msgid "Snoozed until {0}"
+msgstr ""
+
+msgid "Specific date…"
+msgstr ""
+
+msgid "Stale"
+msgstr ""
+
+msgid "Statistics"
+msgstr ""
+
+msgid "Status"
+msgstr ""
+
+msgid "Stock Manager"
+msgstr ""
+
+msgid "Strategic client"
+msgstr ""
+
+msgid "Subject"
+msgstr ""
+
+msgid "Subject (optional — overrides the template)"
+msgstr ""
+
+msgid "Submit"
+msgstr ""
+
+msgid "Submit for Approval"
+msgstr ""
+
+msgid "Submit payroll"
+msgstr ""
+
+msgid "Submit reconciliation entry"
+msgstr ""
+
+msgid "Submitted by me"
+msgstr ""
+
+msgid "Subtasks and forwards"
+msgstr ""
+
+msgid "Suggested: people you assigned to recently and your team — type to search everyone"
+msgstr ""
+
+msgid "System Administrator"
+msgstr ""
+
+msgid "System Manager"
+msgstr ""
+
+msgid "System User"
+msgstr ""
+
+msgid "Tag"
+msgstr ""
+
+msgid "Tag \"{0}\""
+msgstr ""
+
+msgid "Tag contains \"{0}\""
+msgstr ""
+
+msgid "Tags"
+msgstr ""
+
+msgid "Tags and labels"
+msgstr ""
+
+msgid "Tap a member for their details"
+msgstr ""
+
+msgid "Task Template"
+msgstr ""
+
+msgid "Task Templates"
+msgstr ""
+
+msgid "Task age since creation"
+msgstr ""
+
+msgid "Task completed: {0}"
+msgstr ""
+
+msgid "Task created"
+msgstr ""
+
+msgid "Task forwarded in full to {0}"
+msgstr ""
+
+msgid "Task forwarded to {0} ({1})"
+msgstr ""
+
+msgid "Task link copied"
+msgstr ""
+
+msgid "Task moved back to Inbox"
+msgstr ""
+
+msgid "Task order in today's plan"
+msgstr ""
+
+msgid "Task snoozed until {0}"
+msgstr ""
+
+msgid "Task subject"
+msgstr ""
+
+msgid "Task template"
+msgstr ""
+
+msgid "Task templates"
+msgstr ""
+
+msgid "Team figures are visible only to you as team lead"
+msgstr ""
+
+msgid "Team load and cycle time"
+msgstr ""
+
+msgid "Team members"
+msgstr ""
+
+#, python-format
+msgid "Team output is up {0}% compared to the previous period."
+msgstr ""
+
+msgid "Template \"{0}\" deleted"
+msgstr ""
+
+msgid "Template \"{0}\" saved"
+msgstr ""
+
+msgid "Template name"
+msgstr ""
+
+msgid "Text"
+msgstr ""
+
+msgid "The day plan gathers overdue tasks and those due today, in the order you set."
+msgstr ""
+
+msgid "The recipient must be an active system user"
+msgstr ""
+
+msgid "The selected items do not share a single action"
+msgstr ""
+
+msgid "The task is already assigned to this user"
+msgstr ""
+
+msgid "The task stays assigned to me and a parallel task is created — it appears under “Forwarded” and I track its progress."
+msgstr ""
+
+msgid "The team is keeping up"
+msgstr ""
+
+msgid "The team received {0} tasks and completed {1} in this period — incoming work exceeds capacity."
+msgstr ""
+
+msgid "The template the task was created from"
+msgstr ""
+
+msgid "The title the task is created with"
+msgstr ""
+
+msgid "Then…"
+msgstr ""
+
+msgid "This action is no longer available — the document status has changed"
+msgstr ""
+
+msgid "This action is not available for you at this stage"
+msgstr ""
+
+msgid "This file cannot be previewed"
+msgstr ""
+
+msgid "This list"
+msgstr ""
+
+msgid "This month"
+msgstr ""
+
+msgid "This quarter"
+msgstr ""
+
+msgid "This step already exists in the template"
+msgstr ""
+
+msgid "This task is not linked to a document you can access"
+msgstr ""
+
+msgid "This user already has an open forwarded copy of this task"
+msgstr ""
+
+msgid "This week"
+msgstr ""
+
+msgid "This year"
+msgstr ""
+
+msgid "Time"
+msgstr ""
+
+msgid "Time to complete (median)"
+msgstr ""
+
+msgid "Times Applied"
+msgstr ""
+
+msgid "Title"
+msgstr ""
+
+msgid "Title updated"
+msgstr ""
+
+msgid "Title updated (PUT ToDo)"
+msgstr ""
+
+msgid "To"
+msgstr ""
+
+msgid "ToDo Recurring Task"
+msgstr ""
+
+msgid "ToDo Rule"
+msgstr ""
+
+msgid "ToDo Tool"
+msgstr ""
+
+msgid "Today"
+msgstr ""
+
+msgid "Today · {0}"
+msgstr ""
+
+msgid "Today's plan"
+msgstr ""
+
+msgid "Toggle dark mode"
+msgstr ""
+
+msgid "Tomorrow"
+msgstr ""
+
+msgid "Transition"
+msgstr ""
+
+msgid "Try another folder or clear the quick filter."
+msgstr ""
+
+msgid "Type a command or search…"
+msgstr ""
+
+msgid "Unassigned"
+msgstr ""
+
+msgid "Under 2 days"
+msgstr ""
+
+msgid "Undo"
+msgstr ""
+
+msgid "Undoing — reverse transition to “{0}”"
+msgstr ""
+
+msgid "Undone"
+msgstr ""
+
+msgid "Unread"
+msgstr ""
+
+msgid "Untitled view"
+msgstr ""
+
+msgid "Up"
+msgstr ""
+
+msgid "Up to 3 days"
+msgstr ""
+
+msgid "Update status"
+msgstr ""
+
+msgid "Updates {0} by adding {1} without reading/writing the whole document."
+msgstr ""
+
+msgid "Urgent"
+msgstr ""
+
+msgid "Used when no template is set, or overrides the template subject."
+msgstr ""
+
+msgid "User"
+msgstr ""
+
+msgid "View \"{0}\" deleted"
+msgstr ""
+
+msgid "View \"{0}\" saved"
+msgstr ""
+
+msgid "View details"
+msgstr ""
+
+msgid "View name"
+msgstr ""
+
+msgid "Visible to the internal team only"
+msgstr ""
+
+msgid "Waited {0} with you"
+msgstr ""
+
+msgid "Waiting for a reply from {0}"
+msgstr ""
+
+msgid "Waiting for {0}"
+msgstr ""
+
+msgid "Waiting on others"
+msgstr ""
+
+msgid "Waiting on others: {0}"
+msgstr ""
+
+msgid "Waiting on the team"
+msgstr ""
+
+msgid "Waiting on: {0}"
+msgstr ""
+
+msgid "Warehouse"
+msgstr ""
+
+msgid "Weekly"
+msgstr ""
+
+msgid "When the new task… (all filled conditions must match)"
+msgstr ""
+
+msgid "Which automation rule was applied to the task"
+msgstr ""
+
+msgid "Who forwarded the task"
+msgstr ""
+
+msgid "With: {0}"
+msgstr ""
+
+msgid "Within a week"
+msgstr ""
+
+msgid "Within {0} days"
+msgstr ""
+
+msgid "Workflow ended at “{0}” — {1}"
+msgstr ""
+
+msgid "Working days in a row with a completed task"
+msgstr ""
+
+msgid "Write a comment first"
+msgstr ""
+
+msgid "Write a comment on this document…"
+msgstr ""
+
+msgid "Write a reply…"
+msgstr ""
+
+msgid "Write a reply… type @ to mention a colleague"
+msgstr ""
+
+msgid "Write some text first"
+msgstr ""
+
+msgid "Write the task details…"
+msgstr ""
+
+msgid "Yearly"
+msgstr ""
+
+msgid "Yesterday"
+msgstr ""
+
+msgid "You approved {0} transactions this week, with an average response time of 4 hours."
+msgstr ""
+
+msgid "You can only change your own recurring tasks"
+msgstr ""
+
+msgid "You can only forward tasks assigned to you or by you"
+msgstr ""
+
+msgid "You can select more than one status at a time."
+msgstr ""
+
+msgid "You cannot delete this view"
+msgstr ""
+
+msgid "You cannot forward a task to yourself"
+msgstr ""
+
+msgid "You completed {0} tasks in this period. Keep it up!"
+msgstr ""
+
+msgid "You completed {0} tasks — {1}% more than the previous period. Great momentum!"
+msgstr ""
+
+msgid "You created this — the document is now with {0}"
+msgstr ""
+
+msgid "You do not have access to this task"
+msgstr ""
+
+msgid "You do not have permission to perform this action"
+msgstr ""
+
+msgid "You have been added as CC on task: {0}"
+msgstr ""
+
+msgid "You have not made any workflow decisions yet."
+msgstr ""
+
+msgid "You made {0} decisions this week, with a median response time of {1}."
+msgstr ""
+
+msgid "You made {0} decisions this week."
+msgstr ""
+
+msgid "You received {0} tasks and completed {1} — your backlog is growing."
+msgstr ""
+
+msgid "You sent the last message in the conversation. The task has exceeded the stale limit ({0} days)."
+msgstr ""
+
+msgid "You sent the last message — the ball is in their court."
+msgstr ""
+
+msgid "Your best day in this period: {0} with {1} completed tasks."
+msgstr ""
+
+msgid "Your decisions log — pick another tab to make a new decision"
+msgstr ""
+
+msgid "Your executed decisions — Workflow Actions with status Completed"
+msgstr ""
+
+msgid "Your inbox is empty"
+msgstr ""
+
+msgid "and {0} more — type to narrow down"
+msgstr ""
+
+msgid "completed the task"
+msgstr ""
+
+msgid "daily at {0}"
+msgstr ""
+
+msgid "days"
+msgstr ""
+
+msgid "direct reports"
+msgstr ""
+
+msgid "e.g. Finance"
+msgstr ""
+
+msgid "e.g. Invoice review"
+msgstr ""
+
+msgid "e.g. Large invoices"
+msgstr ""
+
+msgid "e.g. Monthly accounting close"
+msgstr ""
+
+msgid "e.g. Needs accounting review"
+msgstr ""
+
+msgid "e.g. Overdue finance"
+msgstr ""
+
+msgid "e.g. Sales Invoice"
+msgstr ""
+
+msgid "every {0} minutes"
+msgstr ""
+
+msgid "last message is mine"
+msgstr ""
+
+msgid "more people"
+msgstr ""
+
+msgid "now"
+msgstr ""
+
+msgid "of completed tasks were snoozed at least once"
+msgstr ""
+
+msgid "of {0} incoming"
+msgstr ""
+
+msgid "on Comment"
+msgstr ""
+
+msgid "or"
+msgstr ""
+
+msgid "per day"
+msgstr ""
+
+msgid "per month"
+msgstr ""
+
+msgid "per week"
+msgstr ""
+
+msgid "r reply · k comment"
+msgstr ""
+
+msgid "r to reply · k to comment"
+msgstr ""
+
+msgid "since creation"
+msgstr ""
+
+msgid "tasks"
+msgstr ""
+
+msgid "the approver"
+msgstr ""
+
+msgid "the document"
+msgstr ""
+
+msgid "{0} (me)"
+msgstr ""
+
+msgid "{0} SAR"
+msgstr ""
+
+msgid "{0} approved · {1} rejected"
+msgstr ""
+
+msgid "{0} attachments"
+msgstr ""
+
+msgid "{0} checklist steps · ran {1} times"
+msgstr ""
+
+msgid "{0} comments"
+msgstr ""
+
+msgid "{0} completed and closed the task"
+msgstr ""
+
+msgid "{0} completed · {1} new"
+msgstr ""
+
+msgid "{0} completed · {1} open"
+msgstr ""
+
+msgid "{0} d"
+msgstr ""
+
+msgid "{0} days"
+msgstr ""
+
+msgid "{0} days ago"
+msgstr ""
+
+msgid "{0} days without a reply from {1}"
+msgstr ""
+
+msgid "{0} for read status"
+msgstr ""
+
+msgid "{0} h"
+msgstr ""
+
+msgid "{0} h {1} min"
+msgstr ""
+
+msgid "{0} has {1} open tasks (team median {2}). Consider reassigning some to {3} ({4} open)."
+msgstr ""
+
+msgid "{0} have had no activity for {1}+ days — a follow-up may help"
+msgstr ""
+
+msgid "{0} hours ago"
+msgstr ""
+
+msgid "{0} items"
+msgstr ""
+
+msgid "{0} make sure of the VAT before sending."
+msgstr ""
+
+msgid "{0} min"
+msgstr ""
+
+msgid "{0} of them overdue"
+msgstr ""
+
+msgid "{0} of your open tasks are overdue (the oldest by {1} days). Start with them or update their due dates."
+msgstr ""
+
+msgid "{0} open tasks, {1} overdue"
+msgstr ""
+
+msgid "{0} overdue"
+msgstr ""
+
+msgid "{0} overdue by more than 48 hours"
+msgstr ""
+
+msgid "{0} overdue — the oldest by {1} days"
+msgstr ""
+
+msgid "{0} past the stale limit"
+msgstr ""
+
+msgid "{0} selected"
+msgstr ""
+
+msgid "{0} stages"
+msgstr ""
+
+msgid "{0} steps"
+msgstr ""
+
+msgid "{0} tasks"
+msgstr ""
+
+msgid "{0} tasks completed versus {1} in the previous period — planning your day can help you get back on pace."
+msgstr ""
+
+msgid "{0} tasks overdue or due today — reorder them in the order you will work on them"
+msgstr ""
+
+msgid "{0} tasks will be created — one per recipient"
+msgstr ""
+
+msgid "{0} tasks · swipe right to complete, left to snooze"
+msgstr ""
+
+msgid "{0} templates · {1} enabled — enabled templates appear when creating a task and in the task checklist"
+msgstr ""
+
+msgid "{0} times"
+msgstr ""
+
+msgid "{0} weeks ago"
+msgstr ""
+
+msgid "{0} working days in a row with at least one completed task — keep the streak going!"
+msgstr ""
+
+msgid "{0} {1} pts vs previous period"
+msgstr ""
+
+msgid "{0} {1}% vs previous period"
+msgstr ""
+
+msgid "{0} · next {1} · to {2}"
+msgstr ""
+
+msgid "{0} · {1} · inline preview"
+msgstr ""
+
+msgid "{0} — {1} ({2} → {3})"
+msgstr ""
+
+msgid "{0} — {1} is now {2}"
+msgstr ""
+
+msgid "{0} — {1} items"
+msgstr ""
+
+msgid "{0} — {1} open tasks, {2} overdue"
+msgstr ""
+
+msgid "{0} — {1} steps"
+msgstr ""
+
+msgid "{0} → {1} · compared with {2} → {3}"
+msgstr ""
+
+msgid "{0}+ days"
+msgstr ""
+
+msgid "{0}/{1} steps"
+msgstr ""
+
+msgid "{0}: {1} of {2} open tasks are overdue (oldest by {3} days). A quick check-in may help clear blockers."
+msgstr ""
+
+msgid "{0}–{1} days"
+msgstr ""
+
+msgid "— None —"
+msgstr ""
+
+msgid "“{0}” requires a written reason"
+msgstr ""
+
+msgid "← Awaiting you"
+msgstr ""
+
+msgid "→ List"
+msgstr ""
+
+msgid "ToDoBox"
+msgstr ""
+
+msgid "ToDoBox Rule"
+msgstr ""
+
+msgid "ToDoBox Recurring Task"
+msgstr ""
+
+msgid "ToDoBox Task Template"
+msgstr ""
+
+msgid "ToDoBox Checklist Step"
+msgstr ""
+
+msgid "ToDoBox Checklist Item"
+msgstr ""
+
+msgid "ToDoBox Saved View"
+msgstr ""
+
+msgid "Forwarded Task"
+msgstr ""
+
+msgid "Step is required"
+msgstr ""
+
+msgid "You can only change tasks assigned to you or by you"
+msgstr ""
+
+msgid "Back to Desk"
+msgstr ""
+
+msgid "Log out"
+msgstr ""
+
+msgid "No details to show"
+msgstr ""
+
+msgid "Could not load the document"
+msgstr ""
+
+msgid "Could not create the task"
+msgstr ""
+
+msgid "OK"
+msgstr ""
+
+msgid "Uploading {0}…"
+msgstr ""
+
+msgid "Copied to clipboard"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "No results"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "No matching users"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Remove {0}"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Clear"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Open calendar"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "in {0} days"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Next week"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "End of month"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Previous month"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Next month"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Choose a date"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Underline"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Strikethrough"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Link"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Quote"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Clear formatting"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Numbered list"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Bulleted list"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Create tag “{0}”"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Type to create a tag"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Remove tag {0}"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Add a step… (Enter)"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Add a step"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Step {0}"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "File size exceeded the maximum allowed size of {0} MB"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Upload failed"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Attach files"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Drop files here"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "browse"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "You can also paste an image"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Uploading… {0}%"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Pasted image"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Draft restored"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "1 day"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Search people by name or email…"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Add people to keep in the loop…"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "What needs to be done?"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Add details, context or links…"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Estimate"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Document type"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "No matching documents"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Search templates…"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Template"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "No templates yet"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Add tags…"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Add at least one recipient"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Enter a subject"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Enter a valid date ({0})"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Choose a document, or remove the link"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Wait for the uploads to finish"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Unsent draft “{0}” from {1}"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "You have an unsent draft from {0}"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Draft saved"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "One task per recipient"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Collapse"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Expand"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Use a template"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Sending…"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Send to {0}"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Discard"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Restore"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Who"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Suggested"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "CC users are notified and can follow the task"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "What"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "When & how"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Context"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Linked document"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Fills in the subject, checklist, priority and estimate"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Close without sending? Your draft is saved and can be restored next time."
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Keep editing"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Recurring…"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Close (Esc)"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Remove"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Create a recurring task instead"
+msgstr ""
+
+#: todobox/public/js/hub/render.js
+msgid "Collapse sidebar"
+msgstr ""
+
+#: todobox/public/js/hub/render.js
+msgid "Expand sidebar"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Snooze until"
+msgstr ""
+
+#: todobox/public/js/hub/filters.js
+msgid "Due on"
+msgstr ""
+
+#: todobox/public/js/hub/stats.js
+msgid "From"
+msgstr ""
+
+#: todobox/public/js/todobox/controls.js
+msgid "Could not load the date picker"
+msgstr ""
+
+#: todobox/public/js/todobox/controls.js
+msgid "Date"
+msgstr ""
+
+#: todobox/public/js/todobox/controls.js
+msgid "Apply"
+msgstr ""
+
+#: todobox/public/js/todobox/controls.js
+msgid "Text direction"
+msgstr ""
+
+#: todobox/public/js/todobox/controls.js
+msgid "Open Link"
+msgstr ""
+
+#: todobox/public/js/todobox/controls.js
+msgid "Clear Link"
+msgstr ""
+
+#: todobox/public/js/todobox/frappe_shim.js
+msgid "Your session has expired. Please log in again."
+msgstr ""
+
+#: todobox/public/js/todobox/frappe_shim.js
+msgid "Not permitted"
+msgstr ""
+
+#: todobox/public/js/todobox/frappe_shim.js
+msgid "You do not have enough permissions to complete this action"
+msgstr ""
+
+#: todobox/public/js/todobox/frappe_shim.js
+msgid "No"
+msgstr ""
+
+
+#: todobox/www/todobox.html
+msgid "Save filter"
+msgstr ""
+
+#: todobox/www/todobox.html
+msgid "Name"
+msgstr ""
+
+#: todobox/www/todobox.html
+msgid "Enter a name for this filter"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "Fills in the subject, checklist and priority"
+msgstr ""
+#: todobox/public/js/hub/workflow-ui.js
+msgid "a approve · x return · j/k navigate"
+msgstr ""
+
+#: todobox/public/js/hub/render.js
+msgid "A new task is created for the assignee on each run and is due {0} day(s) later."
+msgstr ""
+
+#: todobox/public/js/hub/render.js
+msgid "Theme"
+msgstr ""
+
+#: todobox/public/js/hub/render.js
+msgid "Appearance"
+msgstr ""
+
+#: todobox/public/js/hub/render.js
+msgid "Light"
+msgstr ""
+
+#: todobox/public/js/hub/render.js
+msgid "Dark"
+msgstr ""
+
+#: todobox/public/js/hub/render.js
+msgid "System"
+msgstr ""
+
+#: todobox/public/js/hub/render.js
+msgid "Accent colour"
+msgstr ""
+
+#: todobox/public/js/hub/render.js
+msgid "Blue"
+msgstr ""
+
+#: todobox/public/js/hub/render.js
+msgid "Teal"
+msgstr ""
+
+#: todobox/public/js/hub/render.js
+msgid "Violet"
+msgstr ""
+
+#: todobox/public/js/hub/render.js
+msgid "Green"
+msgstr ""
+
+#: todobox/public/js/hub/render.js
+msgid "Orange"
+msgstr ""
+
+#: todobox/public/js/hub/render.js
+msgid "Rose"
+msgstr ""
+
+#: todobox/public/js/hub/render.js
+msgid "Graphite"
+msgstr ""
+
+#: todobox/public/js/hub/render.js
+msgid "Theme: {0}"
+msgstr ""
+
+#: todobox/public/js/hub/render.js
+msgid "Accent: {0}"
+msgstr ""
+
+#: todobox/public/js/hub/render.js
+msgid "Custom colour"
+msgstr ""
+
+#: todobox/public/js/hub/data.js
+msgid "Default"
+msgstr ""
+
+#: todobox/public/js/hub/render.js
+msgctxt "Assign by"
+msgid "User"
+msgstr ""
+
+#: todobox/public/js/hub/render.js
+msgctxt "Assign by"
+msgid "Role"
+msgstr ""
+
+#: todobox/todobox/doctype/todobox_recurring_task/todobox_recurring_task.json
+msgid "Role"
+msgstr ""
+
+#: todobox/www/todobox.html
+msgid "Assign by"
+msgstr ""
+
+#: todobox/todobox/doctype/todobox_recurring_task/todobox_recurring_task.json
+msgid "Assign By"
+msgstr ""
+
+#: todobox/public/js/hub/render.js
+msgid "{0} users"
+msgstr ""
+
+#: todobox/public/js/hub/render.js
+msgid "On each run a new task is created for every enabled user with this role, due the same day."
+msgstr ""
+
+#: todobox/public/js/hub/render.js
+msgid "On each run a new task is created for the assignee, due the same day."
+msgstr ""
+
+#: todobox/public/js/hub/render.js
+msgid "{0} · next {1}"
+msgstr ""
+
+#: todobox/public/js/hub/render.js
+msgid "Role: {0}"
+msgstr ""
+
+#: todobox/public/js/hub/render.js
+msgid "To: {0}"
+msgstr ""
+
+#: todobox/public/js/hub/render.js
+msgid "One task for every enabled user with this role"
+msgstr ""
+
+#: todobox/public/js/hub/automation.js
+msgid "No enabled users have this role"
+msgstr ""
+
+#: todobox/public/js/hub/automation.js
+msgid "Created {0} tasks, one for each user with the role"
+msgstr ""
+
+#: todobox/todobox/doctype/todobox_recurring_task/todobox_recurring_task.py
+msgid "Choose a role"
+msgstr ""
+
+#: todobox/todobox/doctype/todobox_recurring_task/todobox_recurring_task.py
+msgid "Choose the user to assign the task to"
+msgstr ""
+
+#: todobox/todobox/doctype/todobox_recurring_task/todobox_recurring_task.py
+msgid "Tasks cannot be assigned to the role {0}"
+msgstr ""
+
+#: todobox/todobox/doctype/todobox_recurring_task/todobox_recurring_task.json
+msgid "One task is created for every enabled user with this role on each run."
+msgstr ""
+
+#: todobox/todobox/doctype/todobox_recurring_task/todobox_recurring_task.json
+msgid "Set automatically from the frequency: the first run is today, then it moves forward by the frequency."
+msgstr ""
+
+#: todobox/todobox/doctype/todobox_recurring_task/todobox_recurring_task.json
+msgid "Unused: generated tasks are due on the run date."
+msgstr ""
+
+#: todobox/public/js/hub/render.js
+msgid "The task is assigned to this person. Leave empty to create it for every user with the role below."
+msgstr ""
+
+#: todobox/public/js/hub/render.js
+msgid "Used only when no user is set: one task is created for every enabled user with this role."
+msgstr ""
+
+#: todobox/public/js/hub/render.js
+msgid "Choose the user to assign the task to, or a role"
+msgstr ""
+
+#: todobox/public/js/hub/doc-tabs.js
+msgid "Task"
+msgstr ""
+
+#: todobox/www/todobox.html
+msgid "Loading…"
+msgstr ""
+
+#: todobox/www/todobox.html
+msgid "Task and linked document"
+msgstr ""
+
+#: todobox/public/js/hub/compose.js
+msgid "{0} open"
+msgstr ""
+
+#: todobox/public/js/hub/doc-tabs.js
+msgid "ToDo"
+msgstr ""
+
+msgid "Copy"
+msgstr ""
+
+msgid "Copied"
+msgstr ""
+
+msgid "Copy {0}"
+msgstr ""
+
+msgid "Could not copy"
+msgstr ""
+
+msgid "Document data"
+msgstr ""
+
+msgid "No key fields for this document"
+msgstr ""
+
+msgid "Items"
+msgstr ""
+
+msgid "Item"
+msgstr ""
+
+msgid "Qty"
+msgstr ""
+
+msgid "Rate"
+msgstr ""
+
+msgid "Sections"
+msgstr ""
+
+msgid "1 row"
+msgstr ""
+
+msgid "{0} rows"
+msgstr ""
+
+#: todobox/public/js/api.js
+msgid "Required action"
+msgstr ""
+
+msgid "Mention a colleague"
+msgstr ""
+
+msgid "Mentioned {0}"
+msgstr ""
+
+msgid "{0} mentioned you in: {1}"
+msgstr ""

@@ -1,0 +1,355 @@
+/* =============================================================================
+   ToDoBox — "New task" drawer layout (the Frappe controls in it: todobox_controls.css)
+   Frappe v16 (espresso) form look — 12px muted labels above 32px grey-filled
+   controls with an 8px radius and a soft focus ring — on the app's own tokens
+   (--primary, --line, --panel, --fg2 …), so dark mode follows automatically.
+   Logical properties only: the same rules serve RTL and LTR.
+   ============================================================================= */
+:root {
+	--tmc-ctl-bg: color-mix(in srgb, var(--sunk, #ecebe7) 72%, var(--panel, #fff));
+	--tmc-ctl-bg-hover: var(--sunk, #e9e8e3);
+	--tmc-ring: 0 0 0 2px color-mix(in srgb, var(--primary, #3f4ea8) 22%, transparent);
+	--tmc-radius: 8px;
+	--tmc-h: 32px;
+	--tmc-shadow-pop: 0 10px 30px rgba(20, 22, 28, .14), 0 2px 6px rgba(20, 22, 28, .08);
+}
+:root[data-dark="1"] {
+	--tmc-ctl-bg: var(--sunk, #22262d);
+	--tmc-ctl-bg-hover: color-mix(in srgb, var(--sunk, #22262d) 80%, #fff);
+	--tmc-ring: 0 0 0 2px color-mix(in srgb, var(--primary, #8593e6) 35%, transparent);
+	--tmc-shadow-pop: 0 12px 34px rgba(0, 0, 0, .5), 0 2px 6px rgba(0, 0, 0, .3);
+}
+
+/* ------------------------------------------------------------ drawer shell -- */
+.tmc-backdrop {
+	position: fixed; inset: 0; z-index: 40;
+	background: rgba(12, 14, 18, .32);
+	animation: tmc-fade .18s var(--ease, ease);
+}
+.tmc {
+	position: fixed; inset-block: 0; inset-inline-start: 0; z-index: 41;
+	width: 560px; max-width: 100vw;
+	display: flex; flex-direction: column;
+	background: var(--panel); color: var(--fg);
+	border-inline-end: 1px solid var(--line);
+	box-shadow: 0 0 48px rgba(0, 0, 0, .18);
+	font-size: 13px;
+	outline: none;
+	animation: tmc-in-ltr .22s var(--ease, ease);
+	transition: width .2s var(--ease, ease);
+}
+[dir="rtl"] .tmc { animation-name: tmc-in-rtl; }
+.tmc.is-wide { width: min(880px, 100vw); }
+/* expanded = full page: covers the whole viewport, fields centred in a comfortable column */
+.tmc.is-full { inset: 0; width: 100vw; max-width: none; height: 100dvh; border: 0; box-shadow: none; animation-name: tmc-fade; }
+@keyframes tmc-in-ltr { from { transform: translateX(-28px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes tmc-in-rtl { from { transform: translateX(28px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes tmc-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes tmc-spin { to { transform: rotate(360deg); } }
+
+.tmc-ic { width: 14px; height: 14px; flex: 0 0 auto; stroke-width: 1.8; }
+
+.tmc-head {
+	flex: 0 0 auto; display: flex; align-items: center; gap: 10px;
+	padding: 12px 14px 12px 18px; padding-inline: 18px 12px;
+	border-block-end: 1px solid var(--line);
+	background: var(--panel);
+}
+.tmc-head-ic {
+	width: 30px; height: 30px; display: grid; place-items: center; flex: 0 0 auto;
+	border-radius: 9px; background: var(--primary-soft); color: var(--primary);
+}
+.tmc-head-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.tmc-title { margin: 0; font-size: 15px; font-weight: 700; line-height: 1.3; }
+.tmc-head-sub { font-size: 11.5px; color: var(--fg3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.tmc-body {
+	flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
+	padding: 4px 18px 22px;
+}
+.tmc.is-wide .tmc-body { padding-inline: 28px; }
+/* one column of fields, no section headings or dividers */
+.tmc-sec { padding-block: 0; }
+.tmc-sec:first-child { padding-block-start: 16px; }
+
+.tmc-field { margin-block-end: 4px; min-width: 0; }
+/* the Frappe label sits on the first line: the CC toggle goes at its end */
+.tmc-field-to { position: relative; }
+.tmc-field-to > .tmc-link-toggle { position: absolute; inset-block-start: -2px; inset-inline-end: 0; z-index: 1; }
+.tmc-label-row { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.tmc-label {
+	display: block; margin-block-end: 6px;
+	font-size: 12px; font-weight: 500; color: var(--fg2); line-height: 1.3;
+}
+.tmc-reqd::after { content: " *"; color: var(--red); }
+.tmc-help { margin-block-start: 5px; font-size: 11.5px; line-height: 1.5; color: var(--fg3); }
+.tmc-help-err { color: var(--red); }
+
+.tmc-link-toggle {
+	border: 0; background: transparent; padding: 2px 4px; margin-inline-end: -4px; cursor: pointer;
+	font-size: 12px; font-weight: 500; color: var(--primary); border-radius: 6px;
+}
+.tmc-link-toggle:hover { background: var(--primary-soft); }
+
+/* Suggested recipients */
+.tmc-suggest { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-block-start: 8px; }
+.tmc-suggest-label { font-size: 11.5px; color: var(--fg3); margin-inline-end: 2px; }
+.tmc-suggest-chip {
+	display: inline-flex; align-items: center; gap: 5px; height: 26px; padding-inline: 8px 5px;
+	border: 1px dashed var(--line2); border-radius: 99px; background: transparent; cursor: pointer;
+	font-size: 12px; color: var(--fg2);
+}
+.tmc-suggest-chip .tmc-ic { width: 11px; height: 11px; }
+.tmc-suggest-chip:hover { border-style: solid; border-color: var(--primary-line); color: var(--primary); background: var(--primary-soft); }
+
+/* Restore banner / close confirmation */
+.tmc-banner, .tmc-confirm {
+	flex: 0 0 auto; display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
+	padding: 9px 18px; font-size: 12.5px;
+}
+.tmc-banner { background: var(--primary-soft); color: var(--fg); border-block-end: 1px solid var(--primary-line); }
+.tmc-banner .tmc-ic { color: var(--primary); }
+.tmc-banner-text, .tmc-confirm-text { flex: 1 1 200px; min-width: 0; line-height: 1.5; }
+.tmc-confirm { background: var(--amber-soft); border-block-start: 1px solid color-mix(in srgb, var(--amber) 30%, transparent); }
+
+/* Context: add chips + sub-panels */
+.tmc-add-row { display: flex; flex-wrap: wrap; gap: 6px; margin-block-end: 12px; }
+.tmc-add-chip {
+	display: inline-flex; align-items: center; gap: 6px; height: 28px; padding-inline: 10px 12px;
+	background: transparent; border: 1px dashed var(--line2); border-radius: 99px; cursor: pointer;
+	font-size: 12px; color: var(--fg2); transition: background .12s, color .12s, border-color .12s;
+}
+.tmc-add-chip .tmc-ic { width: 13px; height: 13px; color: var(--fg3); }
+.tmc-add-chip:hover, .tmc-add-chip:focus-visible { border-style: solid; border-color: var(--primary-line); color: var(--primary); background: var(--primary-soft); outline: none; }
+.tmc-add-chip:hover .tmc-ic { color: var(--primary); }
+.tmc-sub {
+	margin-block-end: 12px; padding: 10px 12px 12px;
+	border: 1px solid var(--line); border-radius: 10px; background: var(--panel2);
+	animation: tmc-fade .15s var(--ease, ease);
+}
+.tmc-sub .tmc-field { margin-block-end: 0; }
+.tmc-sub-head { display: flex; align-items: center; gap: 7px; margin-block-end: 9px; color: var(--fg2); }
+.tmc-sub-head > .tmc-ic { color: var(--fg3); }
+.tmc-sub-title { flex: 1; font-size: 12px; font-weight: 600; color: var(--fg); }
+.tmc-count { font-size: 11px; color: var(--fg3); font-variant-numeric: tabular-nums; }
+.tmc-sub .tmc-input { background: var(--panel); }
+.tmc-sub .tmc-input:hover { background: var(--panel); border-color: var(--line2); }
+.tmc-sub .tmc-input { border-color: var(--line); }
+
+/* Footer */
+.tmc-foot {
+	flex: 0 0 auto; display: flex; align-items: center; gap: 10px;
+	padding: 10px 14px; padding-inline: 12px 16px;
+	padding-block-end: max(10px, env(safe-area-inset-bottom));
+	border-block-start: 1px solid var(--line); background: var(--panel);
+}
+.tmc-foot-info { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-end; gap: 1px; text-align: end; }
+.tmc-notice { font-size: 11.5px; color: var(--fg2); }
+.tmc-notice:empty { display: none; }
+.tmc-kbd-hint { font-size: 11px; color: var(--fg3); direction: ltr; unicode-bidi: isolate; font-family: inherit; font-variant-numeric: tabular-nums; }
+
+/* ------------------------------------------------------------------ buttons -- */
+.tmc-btn {
+	display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+	height: 32px; padding-inline: 12px; border-radius: var(--tmc-radius);
+	border: 1px solid var(--line2); background: var(--panel); color: var(--fg);
+	font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap;
+	transition: background .12s, border-color .12s, box-shadow .12s, opacity .12s;
+}
+.tmc-btn:hover { background: var(--tmc-ctl-bg); }
+.tmc-btn:focus-visible { outline: none; box-shadow: var(--tmc-ring); }
+.tmc-btn-sm { height: 28px; padding-inline: 10px; font-size: 12px; }
+.tmc-btn-ghost { border-color: transparent; background: transparent; color: var(--fg2); }
+.tmc-btn-ghost:hover { background: var(--tmc-ctl-bg); color: var(--fg); }
+.tmc-btn-primary { background: var(--primary); border-color: var(--primary); color: var(--primary-ink); font-weight: 600; }
+.tmc-btn-primary:hover { background: color-mix(in srgb, var(--primary) 88%, #000); }
+.tmc-btn-danger { background: var(--red); border-color: var(--red); color: #fff; }
+.tmc-btn-danger:hover { background: color-mix(in srgb, var(--red) 88%, #000); }
+.tmc-send { height: 34px; padding-inline: 16px; min-width: 96px; box-shadow: 0 1px 2px rgba(0, 0, 0, .1); }
+.tmc-send[disabled] { opacity: .75; cursor: progress; }
+.tmc-spinner {
+	display: none; width: 14px; height: 14px; border-radius: 50%;
+	border: 2px solid currentColor; border-inline-end-color: transparent;
+	animation: tmc-spin .7s linear infinite;
+}
+.tmc-send.is-busy .tmc-spinner { display: inline-block; }
+.tmc-send.is-busy .tmc-send-ic { display: none; }
+[dir="rtl"] .tmc-send-ic { transform: scaleX(-1); }
+
+.tmc-icon-btn {
+	width: 30px; height: 30px; flex: 0 0 auto; display: inline-grid; place-items: center; padding: 0;
+	border: 0; border-radius: 7px; background: transparent; color: var(--fg2); cursor: pointer;
+}
+.tmc-icon-btn:hover { background: var(--tmc-ctl-bg); color: var(--fg); }
+.tmc-icon-btn:focus-visible { outline: none; box-shadow: var(--tmc-ring); }
+.tmc-icon-btn[disabled] { opacity: .35; cursor: default; background: transparent; }
+.tmc-icon-btn.tmc-sm { width: 24px; height: 24px; border-radius: 6px; }
+.tmc-icon-btn.tmc-sm .tmc-ic { width: 12px; height: 12px; }
+.tmc-danger:hover { color: var(--red); background: var(--red-soft); }
+
+/* ----------------------------------------------------------------- controls -- */
+.tmc-input {
+	width: 100%; min-height: var(--tmc-h); height: var(--tmc-h); padding: 0 10px;
+	border: 1px solid transparent; border-radius: var(--tmc-radius);
+	background: var(--tmc-ctl-bg); color: var(--fg);
+	font: inherit; font-size: 13px; line-height: 1.4; outline: none;
+	transition: background .12s, border-color .12s, box-shadow .12s;
+}
+.tmc-input::placeholder { color: var(--fg3); opacity: 1; }
+.tmc-input:hover { background: var(--tmc-ctl-bg-hover); }
+.tmc-input:focus {
+	background: var(--panel); border-color: var(--primary-line); box-shadow: var(--tmc-ring);
+}
+.has-error .tmc-input {
+	border-color: color-mix(in srgb, var(--red) 55%, transparent);
+	box-shadow: 0 0 0 2px color-mix(in srgb, var(--red) 14%, transparent);
+}
+.tmc-input[disabled] { opacity: .55; cursor: not-allowed; }
+
+.tmc-ava {
+	display: inline-grid; place-items: center; flex: 0 0 auto; overflow: hidden;
+	border-radius: 50%; color: #fff; font-weight: 600; line-height: 1;
+}
+.tmc-ava img { width: 100%; height: 100%; object-fit: cover; }
+/* workload pills (suggested chips + To/CC dropdown): "N open" and, when late, a red "N overdue" */
+.tmc-loads { display: inline-flex; align-items: center; gap: 3px; flex: 0 0 auto; }
+.tmc-load {
+	min-width: 20px; height: 18px; padding: 0 6px; display: inline-grid; place-items: center; flex: 0 0 auto;
+	/* neutral app tokens only: inside .tm-frappe (the To/CC list) Frappe redefines --primary */
+	border-radius: 99px; background: color-mix(in srgb, var(--fg) 9%, transparent); color: var(--fg);
+	font-size: 10.5px; font-weight: 600; line-height: 1; white-space: nowrap; font-variant-numeric: tabular-nums;
+}
+.tmc-load.is-zero { background: transparent; box-shadow: inset 0 0 0 1px var(--line2); color: var(--fg3); }
+.tmc-load.is-over { background: var(--red); color: #fff; }
+.tmc-load.is-empty { display: none; }
+
+/* Checklist */
+.tmc-check-list { display: flex; flex-direction: column; gap: 2px; }
+.tmc-check-row {
+	display: flex; align-items: center; gap: 6px; min-height: 32px; padding-inline: 2px 4px;
+	border-radius: 7px; transition: background .1s;
+}
+.tmc-check-row:hover, .tmc-check-row:focus-within { background: var(--panel); }
+.tmc-check-row.is-drag { opacity: .45; }
+.tmc-check-row.is-over { box-shadow: inset 0 2px 0 var(--primary); }
+.tmc-check-grip {
+	width: 14px; flex: 0 0 auto; color: var(--fg3); font-size: 11px; letter-spacing: -2px; line-height: 1;
+	cursor: grab; user-select: none; opacity: 0; text-align: center;
+}
+.tmc-check-row:hover .tmc-check-grip { opacity: 1; }
+.tmc-check-box {
+	width: 15px; height: 15px; flex: 0 0 auto; display: grid; place-items: center;
+	border: 1.5px solid var(--line2); border-radius: 4px; color: var(--fg3);
+}
+.tmc-check-box.is-ghost { border-style: dashed; }
+.tmc-check-box .tmc-ic { width: 9px; height: 9px; }
+.tmc-check-input {
+	flex: 1; min-width: 0; height: 28px; padding: 0 6px;
+	border: 0; border-radius: 6px; outline: none; background: transparent; color: var(--fg); font: inherit; font-size: 13px;
+}
+.tmc-check-input:focus { background: var(--panel); box-shadow: var(--tmc-ring); }
+.tmc-check-acts { display: inline-flex; gap: 1px; opacity: 0; transition: opacity .1s; }
+.tmc-check-row:hover .tmc-check-acts, .tmc-check-row:focus-within .tmc-check-acts { opacity: 1; }
+.tmc-check-add { display: flex; align-items: center; gap: 6px; margin-block-start: 6px; padding-inline-start: 22px; }
+.tmc-check.is-empty .tmc-check-add { margin-block-start: 0; }
+.tmc-check-new.tmc-input { height: 30px; }
+
+/* Attachments */
+.tmc-hidden { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.tmc-drop {
+	display: flex; align-items: center; flex-wrap: wrap; gap: 4px 8px; padding: 12px 14px;
+	border: 1.5px dashed var(--line2); border-radius: 10px; background: var(--panel);
+	color: var(--fg2); font-size: 12.5px; cursor: pointer; transition: border-color .12s, background .12s;
+}
+.tmc-drop > .tmc-ic { width: 16px; height: 16px; color: var(--fg3); }
+.tmc-drop:hover, .tmc-drop:focus-visible, .tmc-drop.is-over { border-color: var(--primary); background: var(--primary-soft); outline: none; }
+.tmc-drop-text b { color: var(--fg); font-weight: 600; }
+.tmc-drop-link { color: var(--primary); text-decoration: underline; text-underline-offset: 2px; }
+.tmc-drop-sub { flex-basis: 100%; padding-inline-start: 24px; font-size: 11.5px; color: var(--fg3); }
+.tmc-files { display: flex; flex-direction: column; gap: 6px; margin-block-start: 8px; }
+.tmc-files:empty { display: none; }
+.tmc-file {
+	display: flex; align-items: center; gap: 9px; padding: 7px 8px 7px 10px; padding-inline: 10px 6px;
+	border: 1px solid var(--line); border-radius: 8px; background: var(--panel);
+}
+.tmc-file > .tmc-ic { color: var(--fg3); }
+.tmc-file-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.tmc-file-name { font-size: 12.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tmc-file-sub { font-size: 11px; color: var(--fg3); font-variant-numeric: tabular-nums; }
+.tmc-file.is-error { border-color: color-mix(in srgb, var(--red) 40%, transparent); }
+.tmc-file.is-error .tmc-file-sub { color: var(--red); }
+.tmc-file-bar { display: block; height: 3px; border-radius: 99px; background: var(--sunk); overflow: hidden; }
+.tmc-file-bar > span { display: block; height: 100%; background: var(--primary); transition: width .15s; }
+
+/* --------------------------------------------------------------- phones -- */
+@media (max-width: 759px) {
+	.tmc, .tmc.is-wide { width: 100vw; border: 0; box-shadow: none; animation-name: tmc-up; }
+	[dir="rtl"] .tmc { animation-name: tmc-up; }
+	@keyframes tmc-up { from { transform: translateY(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+	.tmc-expand { display: none; }
+	.tmc-head { padding-block-start: max(12px, env(safe-area-inset-top)); }
+	.tmc-body { padding-inline: 16px; }
+	.tmc-input, .tmc-check-input { font-size: 16px; }
+	.tmc-input { --tmc-h: 38px; }
+	.tmc-check-acts, .tmc-check-grip { opacity: 1; }
+	.tmc-kbd-hint, .tmc-hide-sm { display: none; }
+	.tmc-send { height: 40px; min-width: 120px; }
+}
+@media (pointer: coarse) {
+	.tmc-check-acts { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+	.tmc, .tmc-backdrop, .tmc-sub { animation: none; }
+}
+
+/* the app's global :focus-visible outline would double our focus ring */
+.tmc .tmc-input:focus-visible, .tmc .tmc-check-input:focus-visible, .tmc:focus-visible { outline: none; }
+
+/* due date | priority side by side (column break); stacks on narrow screens */
+.tmc-cols-2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 16px; align-items: start; }
+@media (max-width: 560px) { .tmc-cols-2 { grid-template-columns: minmax(0, 1fr); } }
+/* never scroll sideways: grid cells may shrink, Frappe controls fill (not exceed) their cell */
+.tmc-body { overflow-x: hidden; }
+.tmc-cols-2 > * { min-width: 0; }
+.tmc-cols-2 .frappe-control, .tmc-cols-2 .form-group, .tmc-cols-2 .control-input,
+.tmc-cols-2 input, .tmc-cols-2 select { max-width: 100%; min-width: 0; box-sizing: border-box; }
+
+/* ------------------------------------------------ other create / edit forms -- */
+/* Automation (rule, recurring task), task template editor, "Save filter": the same Frappe
+   controls and spacing as the drawer — each field a .tmc-field holding a TMControls field
+   (Frappe label, description and required asterisk), side-by-side fields in .tm-fx-grid */
+.tm-fx-form {
+	display: flex; flex-direction: column; min-width: 0;
+	padding: 14px 16px 16px; margin-block-end: 14px;
+	background: var(--panel2); border: 1px solid var(--primary-line); border-radius: 11px;
+}
+.tm-fx-form-head { display: flex; align-items: center; gap: 8px; margin-block-end: 12px; }
+.tm-fx-form-title { flex: 1; min-width: 0; font-size: 13px; font-weight: 700; }
+.tm-fx-sec { margin-block: 6px 10px; font-size: 12px; font-weight: 600; color: var(--fg2); }
+.tm-fx-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(190px, 100%), 1fr)); column-gap: 16px; align-items: start; }
+.tm-fx-grid > * { min-width: 0; }
+.tm-fx-hint { margin-block: 2px 12px; font-size: 11.5px; line-height: 1.6; color: var(--fg3); }
+.tm-fx-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+/* never wider than the form: Frappe controls fill (not exceed) their cell */
+.tm-fx-form .frappe-control, .tm-fx-form .form-group, .tm-fx-form .control-input,
+.tm-fx-grid .frappe-control, .tm-fx-grid .form-group, .tm-fx-grid .control-input { max-width: 100%; min-width: 0; }
+/* a Check beside a Select: line its box up with the select, not with the label above it */
+.tm-fx-check { padding-block-start: 32px; }
+/* "Save filter" in the nav: the error line sits right under the field */
+.tm-fx-sv .tm-frappe .form-group { margin-block-end: 0; }
+.tm-fx-sv-strip { flex: 1 1 200px; min-width: 0; }
+.tm-fx-sv-strip .tm-frappe .form-group { margin-block-end: 0; }
+/* the details editor in these inline forms: shorter than the drawer's (still resizable) */
+.tm-fx-form .tm-frappe .ql-snow .ql-editor { height: 160px; }
+.tm-fx-page .tm-frappe .ql-snow .ql-editor { height: 200px; }
+
+/* full page (expanded, and always on phones): header, fields and footer share one centred ~820px column */
+.tmc.is-wide.is-full .tmc-head, .tmc.is-wide.is-full .tmc-foot, .tmc.is-wide.is-full .tmc-banner { padding-inline: max(16px, calc((100% - 820px) / 2)) !important; }
+.tmc.is-wide.is-full .tmc-body { padding-inline: max(16px, calc((100% - 820px) / 2)); }
+.tmc.is-wide.is-full .tmc-sec:first-child { padding-block-start: 22px; }
+.tmc.is-wide.is-full { inset: 0 !important; top: 0 !important; width: 100vw !important; max-width: none !important; border-radius: 0 !important; }
+/* phones: the compose is always full page, so the expand/collapse toggle is not needed */
+@media (max-width: 759px) {
+	.tmc .tmc-icon-btn.tmc-expand { display: none !important; }
+	.tmc.is-wide.is-full .tmc-head { padding-block-start: max(14px, env(safe-area-inset-top)) !important; }
+}

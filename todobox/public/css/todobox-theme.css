@@ -1,0 +1,398 @@
+/* =============================================================================
+   ToDoBox — design tokens & visual polish (Frappe v16 "espresso" flavoured).
+   Loaded in <head> before first paint, so every surface (splash, app, dialogs)
+   shares one palette. Component markup mostly uses inline styles that read
+   these variables; the rules below only refine what tokens cannot express.
+   ============================================================================= */
+
+:root {
+	/* ONE palette: espresso neutral greys + a single calm blue + semantic red/amber/green.
+	   Text is soft ink on off-white (never #000 on #fff); every text token passes WCAG AA. */
+	--bg: #f7f7f7;          /* app canvas / sidebar */
+	--panel: #ffffff;       /* detail pane, cards, dialogs */
+	--panel2: #fafafa;      /* list pane (one step off the detail pane) */
+	--sunk: #f1f1f1;        /* inputs, neutral chips, tracks */
+	--hover: #f3f3f3;
+	--fg: #262626;          /* 14.5:1 on --panel */
+	--fg2: #575757;         /* 7.2:1 */
+	--fg3: #6b6b6b;         /* ≥4.6:1 on every light surface — smallest text still AA */
+	--line: #ececec;        /* quiet separators */
+	--line2: #e0e0e0;       /* control borders, pane divider */
+
+	/* the only accent: a calm, slightly muted blue; hover/selected tints are derived from it */
+	--primary: #2f63c0;     /* 5.9:1 with white text */
+	--primary-ink: #ffffff;
+	--on-accent: #ffffff;   /* text/icons on red/green/amber/primary fills */
+	--primary-soft: #edf2fb;
+	--primary-line: #c8d6f0;
+	--sel: #eef3fb;         /* selected row */
+
+	/* semantic — used only for meaning (overdue, priority, success) */
+	--red: #c03a3a;
+	--red-soft: #fcefef;
+	--amber: #9a5a0c;
+	--amber-soft: #fbf3e6;
+	--green: #2b7a50;
+	--green-soft: #eaf5ee;
+	/* legacy accent names alias the single palette (no extra hues) */
+	--purple: var(--primary);
+	--purple-soft: var(--primary-soft);
+
+	/* avatars / tag dots: a restrained, muted set (ink on a soft tint of itself) */
+	--ava-1: #4f6591;
+	--ava-2: #5b6b5e;
+	--ava-3: #8a6a48;
+	--ava-4: #6c5f7a;
+	--ava-5: #8a5656;
+	--ava-6: #5e6670;
+
+	/* shape, depth, motion */
+	--radius-sm: 6px;
+	--radius: 8px;
+	--radius-lg: 12px;
+	--shadow-sm: 0 1px 2px rgba(0, 0, 0, .05);
+	--shadow: 0 1px 2px rgba(0, 0, 0, .04), 0 2px 6px -2px rgba(0, 0, 0, .05);
+	--shadow-lg: 0 12px 32px -12px rgba(0, 0, 0, .18), 0 2px 6px rgba(0, 0, 0, .04);
+	--ring: 0 0 0 2px var(--panel), 0 0 0 4px color-mix(in srgb, var(--primary) 50%, transparent);
+	--ease: cubic-bezier(.2, 0, 0, 1);
+
+	/* type — the Frappe font */
+	/* the Frappe font: --font-stack comes from Frappe's own CSS */
+	--font: var(--font-stack, "InterVariable", "Inter", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif);
+
+	/* density */
+	--row-py: 8px;
+	--row-lh: 1.5;
+	--card-gap: 1px;
+	--nav-w: 240px;
+	--nav-w-collapsed: 56px;
+}
+
+:root[data-dark="1"] {
+	--bg: #171717;
+	--panel: #1f1f1f;
+	--panel2: #1b1b1b;
+	--sunk: #2a2a2a;
+	--hover: #262626;
+	--fg: #e5e5e5;          /* 13:1 on --panel */
+	--fg2: #b0b0b0;
+	--fg3: #969696;         /* ≥4.8:1 on every dark surface */
+	--line: #2b2b2b;
+	--line2: #383838;
+
+	--primary: #7ea4e6;
+	--primary-ink: #111a2b;
+	--on-accent: #161616;
+	--primary-soft: #243044;
+	--primary-line: #3b5075;
+	--sel: #232c3a;
+	--red: #ec8b8b;
+	--red-soft: #3a2323;
+	--amber: #dfa85f;
+	--amber-soft: #352a19;
+	--green: #74c49a;
+	--green-soft: #1d3326;
+
+	--ava-1: #93a8d2;
+	--ava-2: #9fb0a2;
+	--ava-3: #c9a883;
+	--ava-4: #ad9fbd;
+	--ava-5: #cf9a9a;
+	--ava-6: #a3abb5;
+
+	--shadow-sm: 0 1px 2px rgba(0, 0, 0, .35);
+	--shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 2px 6px -2px rgba(0, 0, 0, .35);
+	--shadow-lg: 0 16px 40px -12px rgba(0, 0, 0, .55), 0 0 0 1px rgba(255, 255, 255, .04);
+}
+
+/* ---------- accent themes (html[data-accent]; "blue" = the defaults above) ----------
+   Light --primary: >=5:1 with white text. Dark --primary: >=7:1 with --on-accent
+   (#161616) and >=6.5:1 on --panel (#1f1f1f). --ring derives from --primary. */
+:root[data-accent="teal"] { --primary: #10736e; --primary-soft: #e8f4f3; --primary-line: #bddcd9; --sel: #edf6f5; }
+:root[data-accent="indigo"] { --primary: #323567; --primary-soft: #ededf3; --primary-line: #c9cad9; --sel: #f1f1f6; }
+:root[data-accent="green"] { --primary: #2e7a4b; --primary-soft: #ebf5ee; --primary-line: #c2dfcb; --sel: #eff6f1; }
+:root[data-accent="orange"] { --primary: #b0520f; --primary-soft: #fbf0e8; --primary-line: #edd0bb; --sel: #fbf3ec; }
+:root[data-accent="maroon"] { --primary: #673232; --primary-soft: #f4eded; --primary-line: #dcc9c9; --sel: #f6f1f1; }
+:root[data-accent="brown"] { --primary: #705638; --primary-soft: #f4f0eb; --primary-line: #ddd2c5; --sel: #f7f3ef; }
+:root[data-accent="graphite"] { --primary: #3f3f46; --primary-soft: #f1f1f2; --primary-line: #d4d4d8; --sel: #f3f3f4; }
+
+:root[data-dark="1"][data-accent="teal"] { --primary: #6cc0ba; --primary-ink: #0f2624; --primary-soft: #1d3432; --primary-line: #2f5b57; --sel: #202e2d; }
+:root[data-dark="1"][data-accent="indigo"] { --primary: #a9acdf; --primary-ink: #181a33; --primary-soft: #272940; --primary-line: #43466e; --sel: #25263a; }
+:root[data-dark="1"][data-accent="green"] { --primary: #84c69c; --primary-ink: #13261a; --primary-soft: #1f3326; --primary-line: #35593f; --sel: #212e25; }
+:root[data-dark="1"][data-accent="orange"] { --primary: #e5a06b; --primary-ink: #2b1a0c; --primary-soft: #3a2a1d; --primary-line: #66462c; --sel: #322a22; }
+:root[data-dark="1"][data-accent="maroon"] { --primary: #dc9e9e; --primary-ink: #2b1414; --primary-soft: #3a2626; --primary-line: #664141; --sel: #332828; }
+:root[data-dark="1"][data-accent="brown"] { --primary: #d0b597; --primary-ink: #251a0e; --primary-soft: #362d23; --primary-line: #625140; --sel: #302922; }
+:root[data-dark="1"][data-accent="graphite"] { --primary: #d4d4d8; --primary-ink: #18181b; --primary-soft: #2e2e32; --primary-line: #4a4a50; --sel: #2a2a2d; }
+
+/* custom accent: --cu-l / --cu-d are set on <html> (already contrast-fitted in JS) */
+:root[data-accent="custom"] {
+	--primary: var(--cu-l, #2f63c0);
+	--primary-soft: color-mix(in srgb, var(--primary) 9%, #ffffff);
+	--primary-line: color-mix(in srgb, var(--primary) 28%, #ffffff);
+	--sel: color-mix(in srgb, var(--primary) 5%, #ffffff);
+}
+:root[data-dark="1"][data-accent="custom"] {
+	--primary: var(--cu-d, #7ea4e6);
+	--primary-ink: color-mix(in srgb, var(--primary) 12%, #111111);
+	--primary-soft: color-mix(in srgb, var(--primary) 16%, #1f1f1f);
+	--primary-line: color-mix(in srgb, var(--primary) 35%, #1f1f1f);
+	--sel: color-mix(in srgb, var(--primary) 12%, #1f1f1f);
+}
+
+/* background tint: every accent softly colours the canvas, sidebar and controls so the
+   whole app shares one calm hue (reading surfaces --panel stay neutral for text).
+   Same mix ratios are used for the half-circle swatches in the theme picker. */
+:root:not([data-dark="1"]):not([data-accent="classic"]):not([data-accent="todobox"]) {
+	--bg: color-mix(in srgb, var(--primary) 6%, #f7f7f7);
+	--panel2: color-mix(in srgb, var(--primary) 3%, #fafafa);
+	--sunk: color-mix(in srgb, var(--primary) 6%, #f1f1f1);
+	--hover: color-mix(in srgb, var(--primary) 6%, #f3f3f3);
+	--line: color-mix(in srgb, var(--primary) 7%, #ececec);
+	--line2: color-mix(in srgb, var(--primary) 9%, #e0e0e0);
+}
+/* selected task / workflow action: clearly deeper than --hover so the selection never
+   looks lighter than a row under the pointer */
+:root:not([data-dark="1"])[data-accent] { --sel: color-mix(in srgb, var(--primary) 5%, #ffffff); }
+:root[data-dark="1"][data-accent] { --sel: color-mix(in srgb, var(--primary) 12%, #1f1f1f); }
+:root[data-dark="1"]:not([data-accent="classic"]):not([data-accent="todobox"]) {
+	--bg: color-mix(in srgb, var(--primary) 5%, #171717);
+	--panel2: color-mix(in srgb, var(--primary) 4%, #1b1b1b);
+	--sunk: color-mix(in srgb, var(--primary) 6%, #2a2a2a);
+	--hover: color-mix(in srgb, var(--primary) 6%, #262626);
+	--line: color-mix(in srgb, var(--primary) 6%, #2b2b2b);
+	--line2: color-mix(in srgb, var(--primary) 8%, #383838);
+}
+
+/* ToDoBox theme (the default) — built from the logo: navy ink tile (#16233F), amber lid
+   (#E9973F) and cream body (#FAF9F7). Navy is the action colour, amber the highlight;
+   neutrals are warm. Colours only. */
+:root:not([data-dark="1"])[data-accent="todobox"] {
+	--bg: #FAF9F7; --panel: #FFFFFF; --panel2: #FCFBFA; --sunk: #F2F0EC; --hover: #F2F0EC;
+	--fg: #2D2A26; --fg2: #4A4640; --fg3: #6E6A62; --line: #E4E1DB; --line2: #D9D5CD;
+	--primary: #16233F; --primary-ink: #FFFFFF; --on-accent: #FFFFFF;
+	--primary-soft: #ECEEF3; --primary-line: #C3C9D6; --sel: #F1F2F6;
+	--red: #B22F2F; --red-soft: #FCEAEA; --amber: #8F520F; --amber-soft: #FDF1E3; --green: #0A7453; --green-soft: #E4F5EE;
+	--shadow-sm: 0 1px 2px rgba(22, 35, 63, .05);
+	--shadow: 0 1px 2px rgba(22, 35, 63, .05), 0 2px 6px -2px rgba(22, 35, 63, .06);
+	--shadow-lg: 0 1px 2px rgba(22, 35, 63, .05), 0 8px 24px rgba(22, 35, 63, .08);
+}
+:root[data-dark="1"][data-accent="todobox"] {
+	--bg: #12151C; --panel: #1A1F2B; --panel2: #161A23; --sunk: #0E1117; --hover: #202634;
+	--fg: #E6E3DD; --fg2: #C4C0B8; --fg3: #9A968E; --line: #2A3140; --line2: #343C4D;
+	--primary: #B4C2E3; --primary-ink: #12151C; --on-accent: #12151C;
+	--primary-soft: #232C42; --primary-line: #3A4868; --sel: #1F2638;
+	--red: #F58A8A; --red-soft: #3A2024; --amber: #F2B26A; --amber-soft: #3A2C1C; --green: #4FD6A6; --green-soft: #16332B;
+}
+
+/* smooth theme switches (instant for reduced-motion users) */
+html { transition: background-color .18s ease, color .18s ease; }
+@media (prefers-reduced-motion: reduce) { html { transition: none; } }
+
+:root[data-density="comfortable"] { --row-py: 10px; --row-lh: 1.55; --card-gap: 2px; }
+
+html, body { margin: 0; padding: 0; background: var(--bg); color: var(--fg); }
+body { line-height: 1.5; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }
+.tt-app { font-feature-settings: "cv11", "ss01"; letter-spacing: -.003em; }
+[lang^="ar"] .tt-app, [dir="rtl"] .tt-app { letter-spacing: 0; }
+
+/* numbers line up in tables and lists */
+.tt-app [style*="tabular-nums"] { letter-spacing: 0; }
+
+/* ------------------------------------------------------------------ top bar -- */
+.tt-search {
+	transition: border-color .15s var(--ease), box-shadow .15s var(--ease), background-color .15s var(--ease);
+}
+.tt-search:hover { border-color: var(--line2) !important; }
+.tt-search:focus-within {
+	background: var(--panel) !important;
+	border-color: var(--primary-line) !important;
+	box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 14%, transparent);
+}
+.tt-search input::placeholder { color: var(--fg3); }
+.tt-kbd {
+	flex: 0 0 auto; display: inline-flex; align-items: center; gap: 2px; height: 20px; padding: 0 6px;
+	border: 1px solid var(--line2); border-bottom-width: 2px; border-radius: 5px; background: var(--panel);
+	color: var(--fg3); font: 500 10.5px/1 var(--font); letter-spacing: .02em; white-space: nowrap; cursor: pointer;
+}
+.tt-kbd:hover { color: var(--fg); }
+@media (max-width: 759px) { .tt-kbd { display: none; } }
+
+/* ------------------------------------------------------------------ sidebar -- */
+.tt-nav-item { transition: background-color .12s var(--ease), color .12s var(--ease); }
+.tt-nav-item:not([data-on="1"]):hover { background: var(--hover) !important; }
+[data-dark="1"] .tt-nav-item:not([data-on="1"]):hover { background: var(--sunk) !important; }
+.tt-nav-item svg[data-ic] { color: var(--fg2); }
+.tt-nav-item[data-on="1"] svg[data-ic] { color: var(--primary); }
+.tt-nav-sec {
+	font-size: 11px !important; font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
+	color: var(--fg3) !important;
+}
+[dir="rtl"] .tt-nav-sec { letter-spacing: 0; text-transform: none; font-size: 12px !important; }
+
+/* count badges: never shrink, clip or overflow the row (1–3+ digits, LTR/RTL, every state) */
+.tt-nav-item { min-width: 0; overflow: hidden; }
+.tt-nav-count { flex: 0 0 auto !important; max-width: none; }
+
+/* sidebar collapse toggle — replicates Frappe v16 desk (.body-sidebar .sidebar-toggle-btn):
+   24px circle straddling the sidebar's inner edge, 80px from the bottom, 12px chevron,
+   shown only while the sidebar is hovered (or the button has keyboard focus) */
+.tt-nav-wrap { position: relative; display: flex; flex: 0 0 auto; min-height: 0; }
+.tt-nav-edge {
+	position: absolute; bottom: 80px; inset-inline-end: -12px; z-index: 6;
+	width: 24px; height: 24px; padding: 0; display: flex; align-items: center; justify-content: center;
+	border-radius: 50%; border: 1px solid var(--line); background: var(--bg); color: var(--fg);
+	box-shadow: 0 1px 4px rgba(0, 0, 0, .1); cursor: pointer;
+	opacity: 0; pointer-events: none; /* stays in the tab order (Frappe hides it with visibility) */
+	transition: opacity .15s ease;
+}
+.tt-nav-edge svg { width: 12px !important; height: 12px !important; stroke-width: 2; }
+.tt-nav-edge:hover { background: var(--hover); }
+.tt-nav-wrap:hover .tt-nav-edge, .tt-nav-edge:focus-visible { opacity: 1; pointer-events: auto; }
+@media (hover: none) and (pointer: coarse) { .tt-nav-edge { opacity: 1; pointer-events: auto; } }
+
+/* one close (×) button for every dialog / sheet / popover */
+.tt-x, .tm-msg-x, .tm-ql-close {
+	flex: 0 0 auto; width: 28px !important; height: 28px !important; padding: 0 !important; display: grid !important; place-items: center;
+	border: 0 !important; border-radius: 7px !important; background: transparent !important; color: var(--fg3) !important;
+	cursor: pointer; font-size: 18px; line-height: 1;
+	transition: background-color .12s var(--ease), color .12s var(--ease);
+}
+.tt-x:hover, .tm-msg-x:hover, .tm-ql-close:hover { background: var(--sunk) !important; color: var(--fg) !important; }
+.tt-x svg { width: 14px; height: 14px; }
+
+/* compact Frappe-like fields (saved filter editor, small forms) */
+.tt-form { display: flex; flex-direction: column; gap: 10px; }
+.tt-field { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.tt-label { font-size: 12px; color: var(--fg2); font-weight: 500; }
+.tt-label .req { color: var(--red); margin-inline-start: 2px; }
+.tt-input {
+	width: 100%; height: 32px; padding: 0 10px; border: 1px solid transparent; border-radius: 8px;
+	background: color-mix(in srgb, var(--sunk) 72%, var(--panel)); color: var(--fg); font: inherit; font-size: 13px; outline: none;
+	transition: background-color .12s, border-color .12s, box-shadow .12s;
+}
+.tt-input:focus-visible { outline: none; }
+.tt-input::placeholder { color: var(--fg3); opacity: 1; }
+.tt-input:hover { background: var(--sunk); }
+.tt-input:focus { background: var(--panel); border-color: var(--primary-line); box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 22%, transparent); }
+.tt-field[data-err="1"] .tt-input { border-color: color-mix(in srgb, var(--red) 55%, transparent); box-shadow: 0 0 0 2px color-mix(in srgb, var(--red) 14%, transparent); }
+.tt-err { font-size: 11.5px; color: var(--red); line-height: 1.4; }
+.tt-actions { display: flex; justify-content: flex-end; gap: 8px; }
+.tt-btn-p, .tt-btn-s {
+	height: 30px; padding: 0 12px; display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+	border-radius: 8px; cursor: pointer; font: inherit; font-size: 12.5px; font-weight: 500; white-space: nowrap;
+	transition: background-color .12s var(--ease), border-color .12s var(--ease);
+}
+.tt-btn-p { background: var(--primary); color: var(--primary-ink); border: 0; font-weight: 600; }
+.tt-btn-p:hover { background: color-mix(in srgb, var(--primary) 88%, #000); }
+.tt-btn-p[disabled] { opacity: .6; cursor: default; }
+.tt-btn-s { background: var(--panel); color: var(--fg); border: 1px solid var(--line2); }
+.tt-btn-s:hover { background: var(--hover); }
+.tt-card-head { display: flex; align-items: center; gap: 8px; }
+.tt-card-title { flex: 1; min-width: 0; font-size: 13px; font-weight: 600; color: var(--fg); }
+.tt-sv-editor {
+	margin: 6px 0 4px; padding: 12px; background: var(--panel); border: 1px solid var(--line2); border-radius: 10px;
+	box-shadow: var(--shadow); white-space: normal; animation: fadeup .14s var(--ease);
+}
+
+/* collapsible sidebar — Frappe-desk style icon rail */
+.tt-nav { transition: width .2s var(--ease); }
+.tt-nav[data-collapsed="1"] { padding-inline: 8px !important; scrollbar-width: none; }
+.tt-nav[data-collapsed="1"]::-webkit-scrollbar { display: none; }
+.tt-nav[data-collapsed="1"] .tt-nav-label,
+.tt-nav[data-collapsed="1"] .tt-nav-sec,
+.tt-nav[data-collapsed="1"] .tt-nav-sechead,
+.tt-nav[data-collapsed="1"] .tt-nav-del,
+.tt-nav[data-collapsed="1"] .tt-nav-svcount,
+.tt-nav[data-collapsed="1"] [data-keep-nav] { display: none !important; }
+.tt-nav[data-collapsed="1"] .tt-nav-item,
+.tt-nav[data-collapsed="1"] .tt-nav-sv > button { justify-content: center !important; gap: 0 !important; padding: 0 !important; }
+.tt-nav[data-collapsed="1"] .tt-nav-new { gap: 0 !important; padding: 0 !important; }
+.tt-nav[data-collapsed="1"] .tt-nav-count {
+	position: absolute; top: 4px; inset-inline-end: 6px;
+	width: 7px !important; min-width: 7px !important; height: 7px !important; padding: 0 !important;
+	border-radius: 50% !important; font-size: 0 !important; line-height: 0 !important; overflow: hidden !important;
+	background: var(--dot, var(--fg3)) !important; box-shadow: 0 0 0 2px var(--bg);
+}
+.tt-nav[data-collapsed="1"] .tt-nav-item[data-on="1"] .tt-nav-count { box-shadow: 0 0 0 2px var(--panel); }
+
+/* ---------------------------------------------------------------- task list -- */
+.tt-row { transition: transform .2s var(--ease); } /* selection/hover: instant (no background/box-shadow fade) */
+.tt-row:focus-visible { outline: none; box-shadow: var(--ring) !important; }
+
+/* skeletons that mirror the real rows */
+.tt-sk {
+	display: flex; align-items: center; gap: 10px; padding: calc(var(--row-py) + 2px) 10px calc(var(--row-py) + 2px) 14px;
+	border-radius: 8px;
+}
+.tt-sk i {
+	display: block; border-radius: 6px;
+	background: linear-gradient(90deg, var(--sunk) 0%, color-mix(in srgb, var(--sunk) 45%, var(--panel)) 40%, var(--sunk) 80%);
+	background-size: 300% 100%; animation: tt-sk 1.3s ease-in-out infinite;
+}
+[dir="rtl"] .tt-sk i { animation-direction: reverse; }
+.tt-sk .sk-box { width: 16px; height: 16px; border-radius: 5px; flex: 0 0 16px; }
+.tt-sk .sk-ava { width: 28px; height: 28px; border-radius: 50%; flex: 0 0 28px; }
+.tt-sk .sk-lines { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 7px; }
+.tt-sk .sk-l1 { height: 9px; width: 34%; }
+.tt-sk .sk-l2 { height: 11px; width: 82%; }
+.tt-sk .sk-chip { width: 44px; height: 16px; flex: 0 0 44px; border-radius: 5px; align-self: flex-end; }
+.tt-sk:nth-child(3n+2) .sk-l2 { width: 66%; }
+.tt-sk:nth-child(3n) .sk-l1 { width: 26%; }
+@keyframes tt-sk { 0% { background-position: 100% 0; } 100% { background-position: 0 0; } }
+
+/* ------------------------------------------------------------- empty states -- */
+.tt-empty { margin: auto; padding: 40px 24px; text-align: center; max-width: 300px; animation: fadeup .3s var(--ease) both; }
+.tt-empty-art { display: block; flex: 0 0 auto; width: 132px; height: auto; aspect-ratio: 132 / 104; max-width: none; margin: 0 auto 18px; overflow: visible; }
+.tt-empty-art .a-bg { fill: var(--sunk); }
+.tt-empty-art .a-okmark { stroke: var(--panel); }
+.tt-empty-art .a-card { fill: var(--panel); stroke: var(--line2); }
+.tt-empty-art .a-line { fill: var(--line2); }
+.tt-empty-art .a-accent { fill: var(--primary); }
+.tt-empty-art .a-ok { fill: var(--green); }
+.tt-empty-title { font-size: 15px; font-weight: 600; line-height: 1.4; margin-bottom: 6px; color: var(--fg); letter-spacing: -.01em; }
+.tt-empty-body { font-size: 13px; color: var(--fg2); line-height: 1.6; margin-bottom: 16px; }
+.tt-empty .tt-btn-primary, .tt-empty .tt-btn {
+	height: 32px; padding: 0 14px; display: inline-flex; align-items: center; gap: 6px; border-radius: 8px;
+	cursor: pointer; font-size: 12.5px; font-weight: 500; font-family: inherit;
+	transition: background-color .12s var(--ease), border-color .12s var(--ease), transform .12s var(--ease);
+}
+.tt-empty .tt-btn-primary { background: var(--primary); color: var(--primary-ink); border: 0; box-shadow: var(--shadow-sm); }
+.tt-empty .tt-btn-primary:hover { background: color-mix(in srgb, var(--primary) 88%, #000); }
+.tt-empty .tt-btn { background: var(--panel); color: var(--fg); border: 1px solid var(--line2); box-shadow: var(--shadow-sm); }
+.tt-empty .tt-btn:hover { background: var(--hover); }
+.tt-empty button:active { transform: translateY(1px); }
+
+.tt-nodetail { flex: 1; display: grid; place-items: center; padding: 24px; }
+.tt-nodetail > div { text-align: center; max-width: 280px; }
+.tt-nodetail .tt-empty-art { width: 116px; }
+
+.tt-nodetail-hint { margin-top: 10px; font-size: 12px; color: var(--fg3); display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap; }
+.tt-nodetail-hint kbd {
+	display: inline-grid; place-items: center; min-width: 20px; height: 20px; padding: 0 5px; border: 1px solid var(--line2);
+	border-bottom-width: 2px; border-radius: 5px; background: var(--panel); font: 500 10.5px/1 var(--font); color: var(--fg2);
+}
+
+/* ----------------------------------------------------------------- generic -- */
+.tt-app button { -webkit-tap-highlight-color: transparent; }
+.tt-app :focus-visible { outline: 2px solid color-mix(in srgb, var(--primary) 70%, transparent); outline-offset: 2px; }
+
+/* thin, quiet scrollbars */
+.tt-app * { scrollbar-width: thin; scrollbar-color: var(--line2) transparent; }
+.tt-app ::-webkit-scrollbar { width: 10px; height: 10px; }
+.tt-app ::-webkit-scrollbar-thumb { background: var(--line2); border-radius: 10px; border: 3px solid transparent; background-clip: padding-box; }
+.tt-app ::-webkit-scrollbar-thumb:hover { background-color: var(--fg3); }
+.tt-app ::-webkit-scrollbar-track { background: transparent; }
+
+/* phones: comfortable tap targets */
+@media (max-width: 759px) {
+	.tt-nav .tt-nav-item { height: 40px !important; flex-basis: 40px !important; font-size: 14px !important; }
+	.tt-nav .tt-nav-sec { height: 32px !important; flex-basis: 32px !important; }
+	.tt-bottom-nav button { min-height: 48px; }
+	.tt-app > header > button, .tt-app > header > div:not(.tt-search) > button { min-width: 40px; min-height: 40px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.tt-nav, .tt-nav-edge { transition: none !important; }
+	.tt-sk i { animation: none; }
+	.tt-empty { animation: none; }
+}
