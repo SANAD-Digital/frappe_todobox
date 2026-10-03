@@ -12,6 +12,8 @@ from frappe.translate import get_all_translations
 from frappe.utils import cint, get_system_timezone
 from frappe.utils.jinja_globals import is_rtl
 
+from todobox.services.desk_font import desk_font_css
+
 no_cache = 1
 
 # Front-end files whose modification times make up the cache-busting version
@@ -37,6 +39,7 @@ def get_context(context):
 	context.lang = lang
 	context.layout_direction = "rtl" if rtl else "ltr"
 	context.asset_version = get_asset_version()
+	context.desk_font_css = desk_font_css(rtl)
 	context.boot_json = to_script_json(get_boot(csrf_token, lang, rtl, context.asset_version))
 	return context
 

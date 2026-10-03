@@ -30,6 +30,9 @@ after_uninstall = "todobox.setup.install.after_uninstall"
 # runs for every app uninstall: re-claims the shared ToDo fields before a predecessor app deletes its module
 before_app_uninstall = "todobox.setup.install.before_app_uninstall"
 
+# Desk: remember the Desk's typeface (incl. a theme's) so /todobox renders with the same font
+app_include_js = ["/assets/todobox/js/desk_font.js"]
+
 # ToDo desk form: fill the checklist from a ToDoBox Task Template
 doctype_js = {"ToDo": "public/js/todo.js"}
 
