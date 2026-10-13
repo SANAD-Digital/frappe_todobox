@@ -33,7 +33,6 @@ class ToDoBoxRecurringTask(Document):
 	def set_schedule(self):
 		"""The period comes only from the frequency: the first run is today (or the next cycle if it
 		already ran today), then the scheduler moves it forward by the frequency."""
-		self.due_after_days = 0
 		if self.is_new() or not self.next_run or self.has_value_changed("frequency"):
 			from todobox.services.automation import next_date
 

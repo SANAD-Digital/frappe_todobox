@@ -18,10 +18,10 @@ SAVED_VIEW_DOCTYPE = "ToDoBox Saved View"
 CHECKLIST_FIELD = "checklist_items"
 
 # msgctxt used by the shipped translations (locale/*.po) for UI words that need a context
-TRANSLATION_CONTEXT = "ToDo Tool"
+TRANSLATION_CONTEXT = "ToDoBox"
 
 # Priority/date/subject/checklist structure: only the task creator may change these
-MANAGER_ONLY_FIELDS = ("priority", "date", "subject", "description", "task_content", "custom_checklist")
+MANAGER_ONLY_FIELDS = ("priority", "date", "subject", "description", "custom_checklist")
 
 AVATAR_COLORS = ("#3f4ea8", "#8a5a2b", "#2f6f5e", "#7a3b6b", "#4a5568", "#a14a4a", "#3b6ea1", "#976420", "#6a4fa6")
 
@@ -44,7 +44,7 @@ def is_system_manager(user=None):
 
 def generate_initials(name):
 	if not name:
-		return "؟"
+		return "?"
 	parts = name.strip().split()
 	if len(parts) >= 2:
 		return (parts[0][0] + parts[1][0]).upper()
@@ -86,7 +86,7 @@ def derive_subject(r, lines=None):
 	if lines is None:
 		clean_text = frappe.utils.strip_html(r.get("description") or "").strip()
 		lines = [line.strip() for line in clean_text.split("\n") if line.strip()]
-	subject = r.get("subject") or r.get("gcrm_subject")
+	subject = r.get("subject")
 	if subject and subject != "None":
 		return subject
 	if lines:
@@ -98,7 +98,7 @@ def derive_subject(r, lines=None):
 
 def short_subject(doc, length=60):
 	"""First line of the subject/description, as plain text, for notification titles."""
-	subj = doc.get("subject") or doc.get("gcrm_subject") or doc.get("description") or doc.get("name")
+	subj = doc.get("subject") or doc.get("description") or doc.get("name")
 	return frappe.utils.strip_html(str(subj)).strip().split("\n")[0][:length]
 
 

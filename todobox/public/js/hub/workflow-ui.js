@@ -4,7 +4,6 @@
   /* =========================================================================
      "Required actions" module: Frappe Workflow
      ========================================================================= */
-  actorLabel() { return this.W ? this.W.ACTORS[0] : ''; }
   meWf() { return this.W ? this.W.ME : ''; }
   wfReload = () => { if (this.W && this.W.refresh) this.W.refresh().then(() => { this.W.hydrateChecks(); this.forceUpdate(); }); };
 
@@ -154,7 +153,7 @@
     if (!W) return {
       wfTabs: [], wfGroups: [], wfTypeChips: [], wfStateChips: [], wfQuickChips: [], wfLogGroups: [], wfShowGroupSort: false, wfTabsDetail: [], wfMoreItems: [],
       showWfList: false, showWfPreview: false, hasWfDoc: false, noWfDoc: false, wfIsLog: false, wfEmpty: false,
-      wfTotal: ' ', wfHeadStyle: 'display:none;', wfHeadBadge: 'display:none;', wfActorLine: ' ', wfHasChecked: false, wfHasUndo: false,
+      wfHasChecked: false, wfHasUndo: false,
     };
     const me = this.meWf(), U = W.WF_USERS, meU = U[me] || {};
     const tone = (t) => 'var(--' + t + ')';
@@ -174,7 +173,6 @@
       tip: s.view === 'desktop' && this.navCollapsedPref() ? label + (count ? ' (' + count + ')' : '') : '',
       iconRef: id === 'pending' ? '#i-bolt' : id === 'sent' ? '#i-send' : '#i-list',
       style: navBtn(onWf && s.wfTab === id, false),
-      bulletStyle: 'width:5px;height:5px;border-radius:50%;flex:0 0 5px;background:' + (onWf && s.wfTab === id ? 'var(--primary)' : 'var(--line2)') + ';',
       countStyle: this.countPill(count, id === 'pending' && late ? 'red' : ''),
       onPick: () => this.wfGo(id),
     }));
@@ -184,14 +182,8 @@
       wfFiltersOpen: s.wfHeadOpen === true,
       wfToggleHead: this.wfToggleHead,
       wfHeadChevron: 'width:14px;height:14px;color:var(--fg3);transition:transform .18s var(--ease);transform:rotate(' + (s.wfHeadOpen === true ? '0deg' : '-90deg') + ');',
-      wfTabs, wfTotal: pending.length || '',
-      wfHeadStyle: 'display:flex;align-items:center;gap:9px;height:28px;flex:0 0 28px;padding:0 7px;white-space:nowrap;border:0;border-radius:8px;cursor:pointer;font-size:13px;text-align:start;background:' +
-        (onWf ? 'var(--sel)' : 'transparent') + ';color:' + (onWf ? 'var(--primary)' : 'var(--fg)') + ';',
-      wfHeadBadge: pending.length
-        ? 'min-width:18px;height:18px;padding:0 5px;display:grid;place-items:center;border-radius:99px;font-family:var(--font);font-variant-numeric:tabular-nums;font-size:11px;font-weight:600;color:var(--primary-ink);background:' + (late ? 'var(--red)' : 'var(--primary)') + ';'
-        : 'display:none;',
+      wfTabs,
       wfGo: this.wfGoPending,
-      wfActorLine: __('Acting as {0} — {1}', [meU.name || '', meU.role || '']),
     };
 
     /* performance: outside the actions screen, don't build cards or preview at all */
@@ -459,7 +451,6 @@
         : s.wfTab === 'sent' ? __('Documents you created that have not reached their final status — where they stopped and with whom')
           : __('Every approval or rejection you made, from the tool or from the document form — last 180 days'),
       wfIsLog: s.wfTab === 'log',
-      wfShowFilters: s.wfTab !== 'log',
       wfTypeChips: s.wfTab === 'log' ? logV.wfLogTypeChips : wfTypeChips,
       wfStateChips: s.wfTab === 'log' ? logV.wfLogKindChips : wfStateChips,
       wfQuickChips: s.wfTab === 'log' ? logV.wfLogPeriodChips : wfQuickChips,

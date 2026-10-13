@@ -82,7 +82,6 @@
 		toggleChecklistItem: function (name, itemId) { return this.callOrNull(API + "toggle_checklist_item", { name: name, item_id: itemId }); },
 		addChecklistItem: function (name, label) { return this.callOrNull(API + "add_checklist_item", { name: name, label: label }); },
 		removeChecklistItem: function (name, itemId) { return this.callOrNull(API + "remove_checklist_item", { name: name, item_id: itemId }); },
-		applyTaskTemplate: function (name, template) { return this.callOrNull(API + "apply_task_template", { name: name, template: template }); },
 		getTaskTemplates: function (includeDisabled) { return this.callOrNull(API + "get_task_templates", { include_disabled: includeDisabled ? 1 : 0 }); },
 		saveTaskTemplate: function (data) { return this.callOrNull(API + "save_task_template", { data: data }); },
 		deleteTaskTemplate: function (name) { return this.callOrNull(API + "delete_task_template", { name: name }); },

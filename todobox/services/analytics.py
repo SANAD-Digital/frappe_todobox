@@ -135,11 +135,11 @@ def _summary(closed, created, open_rows):
 
 
 def _weekend_days():
-	"""Weekly off days (0=Monday) from the default company holiday list; otherwise Friday and Saturday."""
+	"""Weekly off days (0=Monday) from the default company holiday list; otherwise Saturday and Sunday."""
 	# Company/Holiday List exist only with ERPNext; check first, because frappe.throw
 	# queues a message for the client even when the exception is caught
 	if not frappe.db.exists("DocType", "Company") or not frappe.db.exists("DocType", "Holiday List"):
-		return {4, 5}
+		return {5, 6}
 	company = frappe.defaults.get_user_default("Company") or frappe.db.get_default("company")
 	hl = company and frappe.db.get_value("Company", company, "default_holiday_list")
 	if hl:
@@ -147,7 +147,7 @@ def _weekend_days():
 		days = {getdate(d).weekday() for d in offs}
 		if days:
 			return days
-	return {4, 5}
+	return {5, 6}
 
 
 def _streak(user):

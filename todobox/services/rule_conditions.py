@@ -13,7 +13,7 @@ import json
 import frappe
 from frappe import _
 from frappe.model import no_value_fields, table_fields
-from frappe.utils import cstr, flt, getdate
+from frappe.utils import cstr, getdate
 from frappe.utils.data import cast, compare
 
 TODO = "ToDo"
@@ -129,18 +129,6 @@ def normalize(conditions, reference_doctype=None):
 		elif value is None:
 			value = ""
 		out.append([doctype, fieldname, operator, value])
-	return out
-
-
-def legacy_to_conditions(reference_doctype=None, min_amount=None, priority_is=None, label_contains=None):
-	"""The fixed conditions of v0.1 rules as dynamic conditions."""
-	out = []
-	if priority_is:
-		out.append([TODO, "priority", "=", priority_is])
-	if label_contains and frappe.get_meta(TODO).has_field("labels"):
-		out.append([TODO, "labels", "like", f"%{label_contains}%"])
-	if flt(min_amount) and reference_doctype and frappe.get_meta(reference_doctype).has_field("grand_total"):
-		out.append([reference_doctype, "grand_total", ">", flt(min_amount)])
 	return out
 
 

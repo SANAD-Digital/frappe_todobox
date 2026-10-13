@@ -16,7 +16,7 @@
        Bootstrap modals from website/desk CSS)
      · model.with_doctype / with_doc / get_meta returning the meta / doc
      · set_route → opens the Desk in a new tab; ui.FileUploader + upload_file
-     · session from the boot; translation contexts "ToDoBox" / "ToDo Tool";
+     · session from the boot; translation context "ToDoBox";
        realtime connected lazily and quietly; icons mapped to the app's sprite
    ============================================================================= */
 (function () {
@@ -33,8 +33,8 @@
 	var user = boot.user || {};
 
 	/* ------------------------------------------------------------ translation -- */
-	/* Frappe's __ plus the app's message contexts (msgctxt "ToDoBox" / "ToDo Tool") */
-	var CONTEXTS = ["ToDoBox", "ToDo Tool"];
+	/* Frappe's __ plus the app's message context (msgctxt "ToDoBox") */
+	var CONTEXTS = ["ToDoBox"];
 	var messages = frappe._messages || (frappe._messages = {});
 	var base_translate = frappe._;
 	function translate(txt, replace, context) {

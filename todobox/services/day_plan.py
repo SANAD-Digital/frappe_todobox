@@ -20,7 +20,7 @@ def _dropped():
 def _plan_rows():
 	meta = frappe.get_meta("ToDo")
 	fields = ["name", "description", "priority", "date", "assigned_by", "reference_type", "reference_name"]
-	fields += [f for f in ("day_order", "snooze_until", "subject", "gcrm_subject") if meta.has_field(f)]
+	fields += [f for f in ("day_order", "snooze_until", "subject") if meta.has_field(f)]
 	rows = frappe.get_all(
 		"ToDo",
 		filters={"allocated_to": frappe.session.user, "status": "Open", "date": ["<=", today()]},

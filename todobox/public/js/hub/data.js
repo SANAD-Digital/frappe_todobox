@@ -39,16 +39,7 @@ window.TodoboxColor = (() => {
       if (this.tmSchemeMq.addEventListener) this.tmSchemeMq.addEventListener('change', onScheme);
       else if (this.tmSchemeMq.addListener) this.tmSchemeMq.addListener(onScheme);
     }
-    const dark = s.dark ? '1' : '0';
-    /* legacy callers that flip state.dark directly: if the result disagrees with the
-       current mode, adopt it as an explicit light/dark choice and remember it */
-    const mode = s.themeMode || 'system';
-    const implied = mode === 'system' ? !!(this.tmSchemeMq && this.tmSchemeMq.matches) : mode === 'dark';
-    if (!!s.dark !== implied) {
-      try { localStorage.setItem('todobox_dark', dark); } catch (e) { }
-      this.setState({ themeMode: s.dark ? 'dark' : 'light' });
-    }
-    root.setAttribute('data-dark', dark);
+    root.setAttribute('data-dark', s.dark ? '1' : '0');
     const C = window.TodoboxColor, custom = s.accent === 'custom' && C.valid(s.accentCustom);
     const accent = custom ? 'custom' : (window.TodoboxAccents || []).some(a => a.id === s.accent) ? s.accent : 'todobox';
     if (custom) {

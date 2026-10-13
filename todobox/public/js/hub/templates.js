@@ -104,7 +104,7 @@
   };
   composeFromTemplate = (t) => this.setState({
     compose: { to: [], cc: [], subject: t.subject || t.label, body: t.body || '', priority: t.priority || 'Medium', date: this.api.TODAY, ref: null, labels: [], checklist: (t.checklist || []).slice(), template: t.id, files: [] },
-    composeChecklistOpen: true, composeCCOpen: false, notifsOpen: false,
+    composeCCOpen: false, notifsOpen: false,
   });
 
   /* task templates screen values */

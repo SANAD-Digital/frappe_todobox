@@ -301,9 +301,6 @@ msgstr ""
 msgid "Basis for cycle time and aging calculations"
 msgstr ""
 
-msgid "Be the first to comment on this document — your comment is saved on the document in ERPNext."
-msgstr ""
-
 msgid "Bold"
 msgstr ""
 
@@ -706,9 +703,6 @@ msgstr ""
 msgid "Due"
 msgstr ""
 
-msgid "Due After (Days)"
-msgstr ""
-
 msgid "Due after (days)"
 msgstr ""
 
@@ -801,9 +795,6 @@ msgid "Excellent responsiveness"
 msgstr ""
 
 msgid "File"
-msgstr ""
-
-msgid "Files attached to this document in ERPNext will appear here."
 msgstr ""
 
 msgid "Filter"
@@ -1347,9 +1338,6 @@ msgid "Opening the task…"
 msgstr ""
 
 msgid "Opening “Awaiting reply”…"
-msgstr ""
-
-msgid "Opens the document in ERPNext"
 msgstr ""
 
 msgid "Other"
@@ -2001,9 +1989,6 @@ msgid "ToDo Recurring Task"
 msgstr ""
 
 msgid "ToDo Rule"
-msgstr ""
-
-msgid "ToDo Tool"
 msgstr ""
 
 msgid "Today"
@@ -3162,4 +3147,110 @@ msgid "Mentioned {0}"
 msgstr ""
 
 msgid "{0} mentioned you in: {1}"
+msgstr ""
+
+
+msgid "Be the first to comment on this document — your comment is saved on the document."
+msgstr ""
+
+msgid "Files attached to this document will appear here."
+msgstr ""
+
+msgid "Client follow-up"
+msgstr ""
+
+msgid "Follow up with the client"
+msgstr ""
+
+msgid "Call the client, record their feedback and agree on the next step."
+msgstr ""
+
+msgid "Call the client"
+msgstr ""
+
+msgid "Record the feedback"
+msgstr ""
+
+msgid "Schedule the next follow-up"
+msgstr ""
+
+msgid "Document review"
+msgstr ""
+
+msgid "Review the document"
+msgstr ""
+
+msgid "Read the document, check it for accuracy and send back your comments."
+msgstr ""
+
+msgid "Read the document"
+msgstr ""
+
+msgid "Check facts and figures"
+msgstr ""
+
+msgid "Add comments"
+msgstr ""
+
+msgid "Send back for revision or approve"
+msgstr ""
+
+msgid "Team onboarding"
+msgstr ""
+
+msgid "Onboard a new team member"
+msgstr ""
+
+msgid "Prepare everything a new colleague needs for their first week."
+msgstr ""
+
+msgid "Create user accounts"
+msgstr ""
+
+msgid "Share key documents"
+msgstr ""
+
+msgid "Introduce the team"
+msgstr ""
+
+msgid "Plan the first week"
+msgstr ""
+
+msgid "Weekly report"
+msgstr ""
+
+msgid "Prepare the weekly report"
+msgstr ""
+
+msgid "Summarise the week's progress, open issues and next week's plan."
+msgstr ""
+
+msgid "Collect updates"
+msgstr ""
+
+msgid "Write the summary"
+msgstr ""
+
+msgid "Share the report"
+msgstr ""
+
+msgid "Event preparation"
+msgstr ""
+
+msgid "Prepare the event"
+msgstr ""
+
+msgid "Arrange the venue, invitations and agenda ahead of the event."
+msgstr ""
+
+msgid "Book the venue"
+msgstr ""
+
+msgid "Send the invitations"
+msgstr ""
+
+msgid "Prepare the agenda"
+msgstr ""
+
+msgid "Confirm attendance"
 msgstr ""

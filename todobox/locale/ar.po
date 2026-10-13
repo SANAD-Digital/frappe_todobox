@@ -27,11 +27,11 @@ msgstr "0–3 أيام"
 msgid "1 day ago"
 msgstr "منذ يوم"
 
-msgctxt "ToDo Tool"
+msgctxt "ToDoBox"
 msgid "1 hour ago"
 msgstr "منذ ساعة"
 
-msgctxt "ToDo Tool"
+msgctxt "ToDoBox"
 msgid "1 week ago"
 msgstr "قبل أسبوع"
 
@@ -92,7 +92,7 @@ msgstr "تعمل الآن كـ {0} — {1}"
 msgid "Action '{0}' executed on {1}"
 msgstr "تم تنفيذ الإجراء '{0}' على {1}"
 
-msgctxt "ToDo Tool"
+msgctxt "ToDoBox"
 msgid "Actions"
 msgstr "إجراءات"
 
@@ -132,7 +132,7 @@ msgstr "إضافة مستلمين"
 msgid "Add step"
 msgstr "إضافة خطوة"
 
-msgctxt "ToDo Tool"
+msgctxt "ToDoBox"
 msgid "Add tag"
 msgstr "إضافة وسم"
 
@@ -178,7 +178,7 @@ msgstr "الكل {0}"
 msgid "Amount above {0}"
 msgstr "المبلغ أكبر من {0}"
 
-msgctxt "ToDo Tool"
+msgctxt "ToDoBox"
 msgid "Analytics"
 msgstr "لوحة التحليل"
 
@@ -218,14 +218,14 @@ msgstr "اعتماد الطلب"
 msgid "Approved"
 msgstr "معتمد"
 
-msgctxt "ToDo Tool"
+msgctxt "ToDoBox"
 msgid "Assign To"
 msgstr "إسناد إلى"
 
 msgid "Assign to"
 msgstr "إسناد إلى"
 
-msgctxt "ToDo Tool"
+msgctxt "ToDoBox"
 msgid "Assigned By"
 msgstr "المُسنِد"
 
@@ -307,10 +307,7 @@ msgstr "مبنية على {0} مهمة منجزة خلال 6 أسابيع"
 msgid "Basis for cycle time and aging calculations"
 msgstr "أساس حساب زمن الدورة والتقادم"
 
-msgid "Be the first to comment on this document — your comment is saved on the document in ERPNext."
-msgstr "كن أول من يعلّق على هذا المستند — يُحفَظ تعليقك على المستند في ERPNext."
-
-msgctxt "ToDo Tool"
+msgctxt "ToDoBox"
 msgid "Bold"
 msgstr "عريض"
 
@@ -323,7 +320,7 @@ msgstr "الأزرار المتاحة لي الآن"
 msgid "By priority"
 msgstr "حسب الأولوية"
 
-msgctxt "ToDo Tool"
+msgctxt "ToDoBox"
 msgid "CC"
 msgstr "نسخة (CC)"
 
@@ -399,7 +396,7 @@ msgstr "إغلاق الطلب"
 msgid "Closes my task and opens a new task for the recipient in the same thread."
 msgstr "تُغلق مهمتي وتُفتح مهمة جديدة للمستلم بنفس الـ thread."
 
-msgctxt "ToDo Tool"
+msgctxt "ToDoBox"
 msgid "Code"
 msgstr "كود"
 
@@ -457,7 +454,7 @@ msgstr "إنجاز مع التعليق"
 msgid "Complete with comment (e)"
 msgstr "إنجاز مع التعليق (e)"
 
-msgctxt "ToDo Tool"
+msgctxt "ToDoBox"
 msgid "Completed"
 msgstr "منجزة"
 
@@ -467,7 +464,7 @@ msgstr "تم إنجاز «{0}…»"
 msgid "Completed \"{0}…\" — moved to Completed"
 msgstr "تم إنجاز «{0}…» — نُقلت إلى المنجزة"
 
-msgctxt "ToDo Tool"
+msgctxt "ToDoBox"
 msgid "Completed On"
 msgstr "تاريخ الإنجاز"
 
@@ -552,7 +549,7 @@ msgstr "إنشاء مع قاعدة أتمتة"
 msgid "Created \"{0}\" with a {1}-step checklist"
 msgstr "أُنشئت «{0}» بقائمة تحقق من {1} خطوات"
 
-msgctxt "ToDo Tool"
+msgctxt "ToDoBox"
 msgid "Created By"
 msgstr "أنشأه"
 
@@ -586,7 +583,7 @@ msgstr "زمن الدورة — الوسيط"
 msgid "Daily"
 msgstr "يوميًا"
 
-msgctxt "ToDo Tool"
+msgctxt "ToDoBox"
 msgid "Dark mode"
 msgstr "الوضع الليلي"
 
@@ -629,7 +626,7 @@ msgstr "الوصف"
 msgid "Detailed view"
 msgstr "العرض التفصيلي"
 
-msgctxt "ToDo Tool"
+msgctxt "ToDoBox"
 msgid "Details"
 msgstr "التفاصيل"
 
@@ -654,7 +651,7 @@ msgstr "معطّل — لا يظهر عند إنشاء مهمة"
 msgid "Do not change"
 msgstr "بدون تغيير"
 
-msgctxt "ToDo Tool"
+msgctxt "ToDoBox"
 msgid "Document"
 msgstr "مستند"
 
@@ -708,9 +705,6 @@ msgstr "اسحب لإعادة الترتيب"
 
 msgid "Due"
 msgstr "الاستحقاق"
-
-msgid "Due After (Days)"
-msgstr "الاستحقاق بعد (أيام)"
 
 msgid "Due after (days)"
 msgstr "الاستحقاق بعد (أيام)"
@@ -803,10 +797,7 @@ msgstr "التزام ممتاز: {0}% من مهامك أُنجزت في موعد
 msgid "Excellent responsiveness"
 msgstr "سرعة استجابة ممتازة"
 
-msgid "Files attached to this document in ERPNext will appear here."
-msgstr "ستظهر هنا الملفات المرفقة بهذا المستند في ERPNext."
-
-msgctxt "ToDo Tool"
+msgctxt "ToDoBox"
 msgid "Filter"
 msgstr "فلتر"
 
@@ -828,7 +819,7 @@ msgstr "المجلدات"
 msgid "Follow-up"
 msgstr "متابعة"
 
-msgctxt "ToDo Tool"
+msgctxt "ToDoBox"
 msgid "Forward"
 msgstr "إحالة"
 
@@ -859,7 +850,7 @@ msgstr "أحالت المهمة إلى {0} ({1})"
 msgid "Forwarding…"
 msgstr "إحالة…"
 
-msgctxt "ToDo Tool"
+msgctxt "ToDoBox"
 msgid "Frequency"
 msgstr "التكرار"
 
@@ -938,14 +929,14 @@ msgstr "عالية"
 msgid "History"
 msgstr "السجل"
 
-msgctxt "ToDo Tool"
+msgctxt "ToDoBox"
 msgid "Hold"
 msgstr "تعليق"
 
 msgid "If {0} is set, copy {1} from it; otherwise generate a new ID."
 msgstr "إن كان {0} موجودًا انسخ {1} منه، وإلا أنشئ معرّفًا جديدًا."
 
-msgctxt "ToDo Tool"
+msgctxt "ToDoBox"
 msgid "Inbox"
 msgstr "الواردة"
 
@@ -979,7 +970,7 @@ msgstr "الآن"
 msgid "Keyboard shortcuts"
 msgstr "اختصارات لوحة المفاتيح"
 
-msgctxt "ToDo Tool"
+msgctxt "ToDoBox"
 msgid "Label"
 msgstr "الوسم"
 
@@ -1028,14 +1019,14 @@ msgstr "إشارة لمستخدم (@)"
 msgid "Mentioning…"
 msgstr "إشارة…"
 
-msgctxt "ToDo Tool"
+msgctxt "ToDoBox"
 msgid "Menu"
 msgstr "القائمة"
 
 msgid "Monthly"
 msgstr "شهريًا"
 
-msgctxt "ToDo Tool"
+msgctxt "ToDoBox"
 msgid "More"
 msgstr "المزيد"
 
@@ -1234,7 +1225,7 @@ msgstr "لا يوجد مستخدم يطابق «{0}»"
 msgid "No users available"
 msgstr "لا يوجد مستخدمون متاحون"
 
-msgctxt "ToDo Tool"
+msgctxt "ToDoBox"
 msgid "None"
 msgstr "بدون"
 
@@ -1256,7 +1247,7 @@ msgstr "لا يوجد ما يطابق في «{0}»."
 msgid "Nothing overdue"
 msgstr "لا توجد مهام متأخرة"
 
-msgctxt "ToDo Tool"
+msgctxt "ToDoBox"
 msgid "Notifications"
 msgstr "الإشعارات"
 
@@ -1350,14 +1341,11 @@ msgstr "فتح المهمة…"
 msgid "Opening “Awaiting reply”…"
 msgstr "فتح «بانتطار رد»…"
 
-msgid "Opens the document in ERPNext"
-msgstr "يفتح المستند في ERPNext"
-
-msgctxt "ToDo Tool"
+msgctxt "ToDoBox"
 msgid "Other"
 msgstr "أخرى"
 
-msgctxt "ToDo Tool"
+msgctxt "ToDoBox"
 msgid "Overdue"
 msgstr "متأخرة"
 
@@ -1370,11 +1358,11 @@ msgstr "متأخر · {0}"
 msgid "Parallel task (delegation) created for {0}"
 msgstr "أُنشئت مهمة موازية (إشراك) إلى {0}"
 
-msgctxt "ToDo Tool"
+msgctxt "ToDoBox"
 msgid "Pause"
 msgstr "إيقاف مؤقت"
 
-msgctxt "ToDo Tool"
+msgctxt "ToDoBox"
 msgid "Pending Approval"
 msgstr "بانتظار الاعتماد"
 
@@ -1405,11 +1393,11 @@ msgstr "معاينة"
 msgid "Preview attachment"
 msgstr "معاينة المرفق"
 
-msgctxt "ToDo Tool"
+msgctxt "ToDoBox"
 msgid "Previous"
 msgstr "السابق"
 
-msgctxt "ToDo Tool"
+msgctxt "ToDoBox"
 msgid "Pricing"
 msgstr "تسعير"
 
@@ -1443,7 +1431,7 @@ msgstr "مدير المشتريات"
 msgid "Purchase User"
 msgstr "مستخدم المشتريات"
 
-msgctxt "ToDo Tool"
+msgctxt "ToDoBox"
 msgid "Purchasing"
 msgstr "مشتريات"
 
@@ -1707,7 +1695,7 @@ msgstr "إرسال تذكير…"
 msgid "Sends a Web Push to the recipient via Notification Settings."
 msgstr "يرسل Web Push للمستلم عبر Notification Settings."
 
-msgctxt "ToDo Tool"
+msgctxt "ToDoBox"
 msgid "Sent"
 msgstr "مرسلة"
 
@@ -1732,7 +1720,7 @@ msgstr "اضبط الأولوية"
 msgid "Set priority"
 msgstr "اضبط الأولوية"
 
-msgctxt "ToDo Tool"
+msgctxt "ToDoBox"
 msgid "Setup"
 msgstr "الإعداد"
 
@@ -1787,7 +1775,7 @@ msgstr "إحصائيات"
 msgid "Status"
 msgstr "الحالة"
 
-msgctxt "ToDo Tool"
+msgctxt "ToDoBox"
 msgid "Stock Manager"
 msgstr "مدير المخزون"
 
@@ -1800,7 +1788,7 @@ msgstr "الموضوع"
 msgid "Subject (optional — overrides the template)"
 msgstr "الموضوع (اختياري — يتجاوز موضوع القالب)"
 
-msgctxt "ToDo Tool"
+msgctxt "ToDoBox"
 msgid "Submit"
 msgstr "ترحيل"
 
@@ -1840,7 +1828,7 @@ msgstr "وسم «{0}»"
 msgid "Tag contains \"{0}\""
 msgstr "الوسم يحتوي «{0}»"
 
-msgctxt "ToDo Tool"
+msgctxt "ToDoBox"
 msgid "Tags"
 msgstr "الوسوم"
 
@@ -1974,7 +1962,7 @@ msgstr "هذا الأسبوع"
 msgid "This year"
 msgstr "هذه السنة"
 
-msgctxt "ToDo Tool"
+msgctxt "ToDoBox"
 msgid "Time"
 msgstr "الوقت"
 
@@ -2002,9 +1990,6 @@ msgstr "مهمة دورية"
 msgid "ToDo Rule"
 msgstr "قاعدة مهام"
 
-msgid "ToDo Tool"
-msgstr "أداة المهام"
-
 msgid "Today · {0}"
 msgstr "اليوم · {0}"
 
@@ -2014,7 +1999,7 @@ msgstr "خطة اليوم"
 msgid "Toggle dark mode"
 msgstr "تبديل الوضع الليلي"
 
-msgctxt "ToDo Tool"
+msgctxt "ToDoBox"
 msgid "Tomorrow"
 msgstr "الغد"
 
@@ -2042,7 +2027,7 @@ msgstr "جارٍ التراجع — انتقال معكوس إلى «{0}»"
 msgid "Undone"
 msgstr "تم التراجع"
 
-msgctxt "ToDo Tool"
+msgctxt "ToDoBox"
 msgid "Unread"
 msgstr "غير مقروءة"
 
@@ -2331,14 +2316,14 @@ msgstr "{0} منجزة · {1} جديدة"
 msgid "{0} completed · {1} open"
 msgstr "{0} منجزة · {1} مفتوحة"
 
-msgctxt "ToDo Tool"
+msgctxt "ToDoBox"
 msgid "{0} d"
 msgstr "{0} ي"
 
 msgid "{0} days"
 msgstr "{0} يوم"
 
-msgctxt "ToDo Tool"
+msgctxt "ToDoBox"
 msgid "{0} days ago"
 msgstr "منذ {0} أيام"
 
@@ -2348,7 +2333,7 @@ msgstr "مرّ {0} يومًا بلا رد من {1}"
 msgid "{0} for read status"
 msgstr "{0} لحالة المقروء"
 
-msgctxt "ToDo Tool"
+msgctxt "ToDoBox"
 msgid "{0} h"
 msgstr "{0} س"
 
@@ -2361,7 +2346,7 @@ msgstr "لدى {0} {1} مهام مفتوحة (وسيط الفريق {2}). فكّ
 msgid "{0} have had no activity for {1}+ days — a follow-up may help"
 msgstr "{0} بلا أي تحديث منذ {1} أيام أو أكثر — متابعة قد تساعد"
 
-msgctxt "ToDo Tool"
+msgctxt "ToDoBox"
 msgid "{0} hours ago"
 msgstr "منذ {0} ساعة"
 
@@ -2425,7 +2410,7 @@ msgstr "{0} قالب · {1} مفعّل — المفعّلة تظهر عند إن
 msgid "{0} times"
 msgstr "{0} مرة"
 
-msgctxt "ToDo Tool"
+msgctxt "ToDoBox"
 msgid "{0} weeks ago"
 msgstr "قبل {0} أسبوع"
 
@@ -2447,7 +2432,7 @@ msgstr "{0} · {1} · معاينة داخلية"
 msgid "{0} — {1} ({2} → {3})"
 msgstr "{0} — {1} ({2} ← {3})"
 
-msgctxt "ToDo Tool"
+msgctxt "ToDoBox"
 msgid "{0} — {1} is now {2}"
 msgstr "{0} — {1} الآن {2}"
 
@@ -3401,3 +3386,109 @@ msgstr "{0} · {1} (نُقل إلى سجلّ قراراتي)"
 
 msgid "More features coming soon"
 msgstr "ميزات جديدة قريباً"
+
+
+msgid "Be the first to comment on this document — your comment is saved on the document."
+msgstr "كن أول من يعلّق على هذا المستند — يُحفَظ تعليقك على المستند."
+
+msgid "Files attached to this document will appear here."
+msgstr "ستظهر هنا الملفات المرفقة بهذا المستند."
+
+msgid "Client follow-up"
+msgstr "متابعة عميل"
+
+msgid "Follow up with the client"
+msgstr "المتابعة مع العميل"
+
+msgid "Call the client, record their feedback and agree on the next step."
+msgstr "الاتصال بالعميل وتسجيل ملاحظاته والاتفاق على الخطوة التالية."
+
+msgid "Call the client"
+msgstr "الاتصال بالعميل"
+
+msgid "Record the feedback"
+msgstr "تسجيل الملاحظات"
+
+msgid "Schedule the next follow-up"
+msgstr "جدولة المتابعة التالية"
+
+msgid "Document review"
+msgstr "مراجعة مستند"
+
+msgid "Review the document"
+msgstr "مراجعة المستند"
+
+msgid "Read the document, check it for accuracy and send back your comments."
+msgstr "قراءة المستند والتحقق من دقته وإرسال ملاحظاتك."
+
+msgid "Read the document"
+msgstr "قراءة المستند"
+
+msgid "Check facts and figures"
+msgstr "التحقق من المعلومات والأرقام"
+
+msgid "Add comments"
+msgstr "إضافة الملاحظات"
+
+msgid "Send back for revision or approve"
+msgstr "إعادته للتعديل أو اعتماده"
+
+msgid "Team onboarding"
+msgstr "انضمام عضو جديد"
+
+msgid "Onboard a new team member"
+msgstr "تهيئة عضو الفريق الجديد"
+
+msgid "Prepare everything a new colleague needs for their first week."
+msgstr "تجهيز كل ما يحتاجه الزميل الجديد لأسبوعه الأول."
+
+msgid "Create user accounts"
+msgstr "إنشاء حسابات المستخدم"
+
+msgid "Share key documents"
+msgstr "مشاركة المستندات الأساسية"
+
+msgid "Introduce the team"
+msgstr "التعريف بالفريق"
+
+msgid "Plan the first week"
+msgstr "تخطيط الأسبوع الأول"
+
+msgid "Weekly report"
+msgstr "تقرير أسبوعي"
+
+msgid "Prepare the weekly report"
+msgstr "إعداد التقرير الأسبوعي"
+
+msgid "Summarise the week's progress, open issues and next week's plan."
+msgstr "تلخيص إنجازات الأسبوع والمسائل المفتوحة وخطة الأسبوع القادم."
+
+msgid "Collect updates"
+msgstr "جمع المستجدات"
+
+msgid "Write the summary"
+msgstr "كتابة الملخص"
+
+msgid "Share the report"
+msgstr "مشاركة التقرير"
+
+msgid "Event preparation"
+msgstr "التحضير لفعالية"
+
+msgid "Prepare the event"
+msgstr "التحضير للفعالية"
+
+msgid "Arrange the venue, invitations and agenda ahead of the event."
+msgstr "ترتيب المكان والدعوات وجدول الأعمال قبل الفعالية."
+
+msgid "Book the venue"
+msgstr "حجز المكان"
+
+msgid "Send the invitations"
+msgstr "إرسال الدعوات"
+
+msgid "Prepare the agenda"
+msgstr "إعداد جدول الأعمال"
+
+msgid "Confirm attendance"
+msgstr "تأكيد الحضور"

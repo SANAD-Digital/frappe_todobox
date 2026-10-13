@@ -1,34 +1,11 @@
 /* ToDoBox: create task / reassign + Frappe utilities (date, upload, rich text) */
 (window.TTParts = window.TTParts || []).push((Base, React) => class extends Base {
-  /* formatting tools in "New task": wrap the selected text in HTML tags */
-  composeBodyRef = (el) => { this.composeBodyEl = el; };
-  applyRich = (kind) => {
-    const el = this.composeBodyEl, c = this.state.compose;
-    if (!el || !c) return;
-    const v = c.body || '', a = el.selectionStart || 0, b = el.selectionEnd || 0;
-    const sel = v.slice(a, b) || (kind === 'list' ? '' : __('text'));
-    let ins;
-    if (kind === 'list') {
-      const lines = (sel || '').split('\n').filter((x) => x.trim());
-      ins = '<ul>' + (lines.length ? lines : ['']).map((x) => '<li>' + x.trim() + '</li>').join('') + '</ul>';
-    } else {
-      const tag = { bold: 'b', italic: 'i', code: 'code' }[kind];
-      ins = '<' + tag + '>' + sel + '</' + tag + '>';
-    }
-    const body = v.slice(0, a) + ins + v.slice(b);
-    this.setState({ compose: { ...c, body } }, () => {
-      try { el.focus(); const p = a + ins.length; el.setSelectionRange(p, p); } catch (e) { }
-    });
-  };
   /** Text with tags: newlines become <br> so they survive rendering */
   bodyToHtml(body) {
     const t = body || '';
     if (!/<(b|i|code|ul|li)>/.test(t)) return t;
     return t.replace(/\n(?!\s*<\/?(ul|li)>)/g, '<br>');
   }
-
-  /* ---------- compose / forward ---------- */
-  openCompose = () => this.setState({ compose: { to: [], cc: [], subject: '', body: '', priority: 'Medium', date: (this.api && this.api.TODAY) || new Date().toISOString().slice(0, 10), ref: null, labels: [], checklist: [], template: null, files: [] }, composeCCOpen: false, notifsOpen: false, composeTagPicker: false, composeNewTag: '', ppl: null }, this.loadComposeSuggest);
 
   /* =========================================================================
      Frappe utilities (frappe-web.bundle.js + frappe_shim.js): date formatting, upload, calls
@@ -114,57 +91,11 @@
     };
   }
 
-  /** Attach a file to a new task: Frappe's FileUploader (linked to the task after creation) */
-  attachToCompose = () => {
-    const P = this.pf();
-    if (!P || !P.ui) {
-      if (this.composeFileInput.current) this.composeFileInput.current.click();
-      return;
-    }
-    if (!P.ui.FileUploader) {
-      if (this.composeFileInput.current) this.composeFileInput.current.click();
-      return;
-    }
-    new P.ui.FileUploader({
-      folder: 'Home/Attachments',
-      allow_multiple: true,
-      on_success: (file) => {
-        if (!file || !this.state.compose) return;
-        this.setState((st) => (st.compose ? {
-          compose: { ...st.compose, files: [...(st.compose.files || []), { name: file.name, label: file.file_name || file.file_url, url: file.file_url }] },
-        } : {}));
-      },
-    });
-  };
-  composeFileInput = React.createRef();
-  onComposeLocalFiles = (e) => {
-    const picked = Array.from(e.target.files || []).map((f) => ({ name: null, label: f.name, url: '' }));
-    e.target.value = '';
-    if (!picked.length) return;
-    this.setState((st) => (st.compose ? { compose: { ...st.compose, files: [...(st.compose.files || []), ...picked] } } : {}));
-  };
-  removeComposeFile = (i) => {
-    const f = ((this.state.compose && this.state.compose.files) || [])[i];
-    this.setState((st) => ({ compose: { ...st.compose, files: (st.compose.files || []).filter((_, n) => n !== i) } }));
-    if (f && f.name) this.discardUploads([f.name]);
-  };
   discardUploads(names) {
     const P = this.pf();
     if (!P || !names.length) return;
     names.forEach((name) => P.call({ method: 'todobox.api.discard_upload', args: { name }, error: () => { } }));
   }
-
-  /* ---------- tags in the compose drawer ---------- */
-  addComposeTag = (label) => {
-    const lb = String(label || '').trim();
-    if (!lb) return;
-    this.setState((st) => {
-      if (!st.compose) return {};
-      const labels = st.compose.labels || [];
-      return { compose: { ...st.compose, labels: labels.includes(lb) ? labels : [...labels, lb] }, composeNewTag: '' };
-    });
-  };
-  removeComposeTag = (lb) => this.setState((st) => ({ compose: { ...st.compose, labels: (st.compose.labels || []).filter((x) => x !== lb) } }));
 
   /** Safe HTML for display in the thread (allowlist); returns a stable ref that puts the content in the element.
       (the inline template is read from the DOM, so attribute names like dangerouslySetInnerHTML get lowercased) */
@@ -208,53 +139,12 @@
   }
   plainText(raw) { return String(raw == null ? '' : raw).replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim(); }
 
-  closeCompose = () => {
-    const c = this.state.compose;
-    if (c && c.files) this.discardUploads(c.files.map((f) => f.name).filter(Boolean));
-    this.closeDateOverlay();
-    this.setState({ compose: null, composeNewCheck: '', composeChecklistOpen: false, ppl: null, composeTagPicker: false, composeNewTag: '' });
-  };
-  personChip = (k, U, s) => {
-    const w = (s.workload || {})[k] || { open: 0, overdue: 0, mins: 0 };
-    const inTo = s.compose ? s.compose.to.includes(k) : false;
-    const base = 'display:flex;align-items:center;gap:7px;height:32px;padding:0 11px;border-radius:99px;cursor:pointer;font-size:12px;border:1px solid ';
-    return {
-      name: U[k].name, initials: U[k].initials, avatar: this.ava(k, 20),
-      loadText: w.open,
-      loadTitle: __('{0} — {1} open tasks, {2} overdue', [U[k].name, w.open, w.overdue]),
-      loadStyle: 'min-width:19px;height:19px;padding:0 5px;display:grid;place-items:center;border-radius:99px;font-family:var(--font);font-variant-numeric:tabular-nums;font-size:10px;font-weight:600;color:' +
-        (w.overdue ? '#fff' : 'var(--fg2)') + ';background:' + (w.overdue ? 'var(--red)' : 'var(--sunk)') + ';',
-      toStyle: base + (inTo ? 'var(--primary);background:var(--primary-soft);color:var(--primary);font-weight:600;' : 'var(--line2);background:transparent;'),
-      onTo: () => this.setState((st) => ({ compose: { ...st.compose, to: st.compose.to.includes(k) ? st.compose.to.filter((x) => x !== k) : [...st.compose.to, k] } })),
-    };
-  };
-  patchChecklist = (fn) => this.setState((st) => ({ compose: { ...st.compose, checklist: fn(st.compose.checklist || []) } }));
-  addComposeCheck = () => {
-    const txt = (this.state.composeNewCheck || '').trim();
-    if (!txt || !this.state.compose) return;
-    this.patchChecklist((l) => [...l, txt]);
-    this.setState({ composeNewCheck: '' });
-  };
-  editComposeCheck = (i, val) => this.patchChecklist((l) => l.map((c, n) => (n === i ? val : c)));
-  delComposeCheck = (i) => this.patchChecklist((l) => l.filter((_, n) => n !== i));
-  submitCompose = async () => {
-    const c = this.state.compose;
-    if (!c || !c.to.length || !c.subject.trim()) { this.toast(__('Add a recipient and a subject')); return; }
-    const attachments = (c.files || []).map((f) => f.name).filter(Boolean);
-    this.closeDateOverlay();
-    const created = await this.api.createTodos({ to: c.to, cc: c.cc, subject: c.subject, body: this.bodyToHtml(c.body), attachments, priority: c.priority, date: c.date, reference_type: c.ref ? c.ref.type : null, reference_name: c.ref ? c.ref.name : null, ref_amount: c.ref ? c.ref.amount : null, labels: c.labels, checklist: c.checklist || [] });
-    if (!created.length) { this.toast(__('Could not create the task')); return; }
-    this.setState({ compose: null, folder: 'sent', activeView: null, search: '', searchInput: '', composeTagPicker: false, composeNewTag: '' });
-    const ruleNote = created[0].rule_applied ? ' · ' + __('Rule: {0}', [created[0].rule_applied]) : '';
-    this.toast(__('Created {0} task(s)', [created.length]) + ruleNote);
-    this.load(created[0].name);
-    this.refreshAfterChange();
-  };
+  /* ---------- forward ---------- */
   openForward = () => {
     if (!this.state.sel || !this.guardLocked(this.taskByName(this.state.sel))) return;
-    this.setState({ forward: { to: null, mode: 'full', reason: '', busy: false }, ppl: null });
+    this.setState({ forward: { to: null, mode: 'full', reason: '', busy: false } });
   };
-  closeForward = () => { this.pplClose(); this.setState({ forward: null }); };
+  closeForward = () => this.setState({ forward: null });
   submitForward = async () => {
     const f = this.state.forward;
     if (!f || f.busy) return;
@@ -269,7 +159,7 @@
     if (!res || !res.new_name) { this.setState((st) => (st.forward ? { forward: { ...st.forward, busy: false } } : null)); return; }
     const toName = res.to_name || (this.api.USERS[f.to] || {}).name || f.to;
     const label = f.mode === 'full' ? __('Task forwarded in full to {0}', [toName]) : __('Parallel task (delegation) created for {0}', [toName]);
-    this.setState({ forward: null, ppl: null });
+    this.setState({ forward: null });
     this.toast(label);
     this.load();
     this.refreshAfterChange && this.refreshAfterChange();
@@ -339,10 +229,10 @@
 
   openCompose = () => {
     if (this.state.compose) { this.tmcFocus('subject'); return; }
-    this.setState({ compose: this.tmcBlank(), composeCCOpen: false, notifsOpen: false, composeTagPicker: false, composeNewTag: '', ppl: null }, this.loadComposeSuggest);
+    this.setState({ compose: this.tmcBlank(), composeCCOpen: false, notifsOpen: false }, this.loadComposeSuggest);
   };
-  /* direct close (for legacy callers); draft and uploads are handled in tmcOnClose */
-  closeCompose = () => this.setState({ compose: null, composeNewCheck: '', composeChecklistOpen: false, ppl: null, composeTagPicker: false, composeNewTag: '' });
+  /* direct close (no confirmation); draft and uploads are handled in tmcOnClose */
+  closeCompose = () => this.setState({ compose: null });
   tmcRequestClose = () => {
     const s = this.state;
     if (!s.compose || s.tmcBusy) return;
@@ -632,7 +522,7 @@
     this._tmcSent = true;
     this.tmcClearDraft();
     const first = created[0].name;
-    this.setState({ compose: null, tmcBusy: false, folder: 'sent', activeView: null, label: null, search: '', searchInput: '', composeTagPicker: false, composeNewTag: '' }, async () => {
+    this.setState({ compose: null, tmcBusy: false, folder: 'sent', activeView: null, label: null, search: '', searchInput: '' }, async () => {
       try { await this.load(first); } catch (e) { /* the list shows its own error */ }
       if ((this.state.tasks || []).some((t) => t.name === first) && this.state.view === 'desktop') this.open(first);
     });

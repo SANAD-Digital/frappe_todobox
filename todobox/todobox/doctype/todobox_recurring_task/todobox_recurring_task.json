@@ -14,7 +14,6 @@
   "column_break_main",
   "frequency",
   "next_run",
-  "due_after_days",
   "section_task",
   "task_template",
   "priority",
@@ -89,15 +88,6 @@
    "description": "Set automatically from the frequency: the first run is today, then it moves forward by the frequency."
   },
   {
-   "fieldname": "due_after_days",
-   "fieldtype": "Int",
-   "label": "Due After (Days)",
-   "default": "0",
-   "hidden": 1,
-   "read_only": 1,
-   "description": "Unused: generated tasks are due on the run date."
-  },
-  {
    "fieldname": "section_task",
    "fieldtype": "Section Break",
    "label": "Task"
@@ -160,7 +150,7 @@
  ],
  "index_web_pages_for_search": 0,
  "links": [],
- "modified": "2026-09-22 16:00:00.000000",
+ "modified": "2026-10-13 12:00:00.000000",
  "modified_by": "Administrator",
  "module": "ToDoBox",
  "name": "ToDoBox Recurring Task",

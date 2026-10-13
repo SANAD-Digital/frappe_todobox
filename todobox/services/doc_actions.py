@@ -11,7 +11,6 @@ from todobox.services.workflow import (
 	_initials,
 	_state_styles,
 	action_allowed,
-	apply_action,
 	doc_detail,
 	workflow_payload,
 )
@@ -119,24 +118,3 @@ def add_reference_comment(name, text):
 	ref.add_comment("Comment", text)
 	frappe.db.commit()
 	return {"ok": 1}
-
-
-@frappe.whitelist()
-def run_doc_action(name, action_id):
-	"""Runs an action the user can really take on the linked document (Workflow transition or Submit)."""
-	todo, ref = _reference(name)
-	if not ref:
-		frappe.throw(_("This task is not linked to a document you can access"))
-	action = next((a for a in _available(ref) if a["id"] == action_id), None)
-	if not action:
-		frappe.throw(_("This action is not available for you at this stage"), frappe.PermissionError)
-
-	if action_id == SUBMIT_ID:
-		ref.submit()
-	else:
-		apply_action(ref.doctype, ref.name, action_id)
-	ref.reload()
-	status = _(_status_of(ref))
-	todo.add_comment("Info", _("{0} — {1} is now {2}").format(action["label"], ref.name, status))
-	frappe.db.commit()
-	return {"status": "success", "actionLabel": action["label"], "reference_name": ref.name, "ref_status": status}

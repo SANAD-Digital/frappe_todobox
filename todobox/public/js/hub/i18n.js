@@ -11,10 +11,6 @@
     };
   }
   window.TT_LANG = lang;
-  /* After boot the engine refetches the page and replaces the template with its original English copy
-     (reverting translated text to English). Defining __resources stops that fetch;
-     all its other uses are key lookups that fall back to the default when missing. */
-  window.__resources = window.__resources || {};
   window.TT_DIR = rtl ? 'rtl' : 'ltr';
   document.documentElement.setAttribute('lang', lang);
   document.documentElement.setAttribute('dir', window.TT_DIR);

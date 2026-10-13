@@ -8,7 +8,6 @@ from todobox.services.common import (
 	CHECKLIST_FIELD,
 	CHECKLIST_ITEM_DOCTYPE,
 	CHECKLIST_STEP_DOCTYPE,
-	TEMPLATE_DOCTYPE,
 	ensure_can_add_checklist_item,
 	ensure_can_manage,
 	get_task,
@@ -128,19 +127,4 @@ def remove_checklist_item(name, item_id):
 	todo = get_task(name)
 	ensure_can_manage(todo)
 	todo.remove(_find_checklist_row(todo, item_id))
-	return _save(todo)
-
-
-@frappe.whitelist()
-def apply_task_template(name, template):
-	"""Adds the steps of a ToDoBox Task Template that are missing from a ToDo's checklist."""
-	todo = get_task(name)
-	ensure_can_manage(todo)
-	tpl = frappe.get_doc(TEMPLATE_DOCTYPE, template)
-	existing = {row.step.lower() for row in todo.get(CHECKLIST_FIELD) or []}
-	for row in tpl.checklist:
-		if row.step.lower() not in existing:
-			todo.append(CHECKLIST_FIELD, {"step": row.step, "done": 0})
-	if frappe.get_meta("ToDo").has_field("task_template") and not todo.get("task_template"):
-		todo.task_template = tpl.name
 	return _save(todo)

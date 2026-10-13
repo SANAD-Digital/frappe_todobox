@@ -47,10 +47,6 @@ bench --site <site-name> migrate
 
 Open `https://<site-name>/todobox`, or use the ToDoBox icon on the Desk home screen.
 
-Coming from `frappe_taskmail`, `todo_tool` or `todo_management`? Install ToDoBox first: it imports
-their templates, rules, recurring tasks, checklists and saved views, and takes ownership of the custom
-fields on `ToDo`. Check the data, then uninstall the old app.
-
 ## Development
 
 The front end is plain JavaScript and CSS under `todobox/public` — no build step, just reload.

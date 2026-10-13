@@ -1,7 +1,6 @@
 """«Required actions» over Frappe Workflow.
 
-Same matching as the Workflow Action Report of snd_workflow: open Workflow Actions matched by user
-(Workflow Action Permitted User, when that app is installed) and then by role (Permitted Role).
+Open Workflow Actions matched by user (Workflow Action.user) and then by role (Permitted Role).
 Returns workflow definitions, documents, trail and the user's decision log to the UI.
 """
 
@@ -57,7 +56,7 @@ def _hours_since(dt):
 def _initials(name):
 	parts = [p for p in (name or "").split(" ") if p]
 	if not parts:
-		return "؟"
+		return "?"
 	if len(parts) == 1:
 		return parts[0][:2]
 	return parts[0][:1] + parts[1][:1]
@@ -74,19 +73,6 @@ def _req_cache(key):
 	if store is None:
 		store = frappe.local.todobox_cache = {}
 	return store.setdefault(key, {})
-
-
-def _has_permitted_users_table():
-	c = _req_cache("perm_users_table")
-	if "v" not in c:
-		c["v"] = _has_permitted_users_table_uncached()
-	return c["v"]
-
-
-def _has_permitted_users_table_uncached():
-	return frappe.db.exists("DocType", "Workflow Action Permitted User") and frappe.db.has_column(
-		"Workflow Action", "snd_wf_permitted_users_count"
-	)
 
 
 def _active_workflows():
@@ -177,7 +163,7 @@ def _state_tones(wf_payload):
 
 # ------------------------------------------------------- open actions
 def _open_actions_for_me(me, roles):
-	"""Same logic as the Workflow Action report: match by user first, then by role."""
+	"""Open Workflow Actions for me: matched by user first, then by role."""
 	if not frappe.db.exists("DocType", "Workflow Action"):
 		return []
 
@@ -191,29 +177,14 @@ def _open_actions_for_me(me, roles):
 		as_dict=True,
 	)
 
-	if _has_permitted_users_table():
-		by_user += frappe.db.sql(
-			"""
-			SELECT ac.name, ac.reference_doctype, ac.reference_name, ac.workflow_state, ac.creation
-			FROM `tabWorkflow Action Permitted User` pu
-			INNER JOIN `tabWorkflow Action` ac ON pu.parent = ac.name
-			WHERE ac.status = 'Open' AND pu.user = %(me)s
-			""",
-			{"me": me},
-			as_dict=True,
-		)
-		role_cond = "AND ac.snd_wf_permitted_users_count = 0"
-	else:
-		role_cond = ""
-
 	by_role = []
 	if roles:
 		by_role = frappe.db.sql(
-			f"""
+			"""
 			SELECT ac.name, ac.reference_doctype, ac.reference_name, ac.workflow_state, ac.creation
 			FROM `tabWorkflow Action Permitted Role` pr
 			INNER JOIN `tabWorkflow Action` ac ON pr.parent = ac.name
-			WHERE ac.status = 'Open' AND pr.role IN %(roles)s {role_cond}
+			WHERE ac.status = 'Open' AND pr.role IN %(roles)s
 			""",
 			{"roles": tuple(roles)},
 			as_dict=True,
@@ -230,7 +201,7 @@ def _open_actions_for_me(me, roles):
 
 
 def _holders(action_names):
-	"""Current decision holders (roles or users) for each Workflow Action."""
+	"""Current decision holders (roles) for each Workflow Action."""
 	out = {}
 	if not action_names:
 		return out
@@ -241,20 +212,6 @@ def _holders(action_names):
 	)
 	for r in rows:
 		out.setdefault(r.parent, []).append(_(r.role, context=TRANSLATION_CONTEXT))
-	if _has_permitted_users_table():
-		urows = frappe.get_all(
-			"Workflow Action Permitted User",
-			filters={"parent": ("in", action_names)},
-			fields=["parent", "user"],
-		)
-		full_names = dict(
-			frappe.get_all(
-				"User", filters={"name": ("in", list({u.user for u in urows}) or [""])}, fields=["name", "full_name"], as_list=True
-			)
-		)
-		names = {u.user: full_names.get(u.user) or u.user for u in urows}
-		for u in urows:
-			out[u.parent] = [names[u.user]] + [x for x in out.get(u.parent, []) if x != names[u.user]]
 	return out
 
 
@@ -340,20 +297,11 @@ def _items(doc, meta):
 	return rows
 
 
-def _trail_sources(doctype, names, meta):
-	"""Fetch trail sources for all documents in just two queries."""
-	trace, done = {}, {}
+def _trail_sources(doctype, names):
+	"""Completed Workflow Actions of all documents, in one query."""
+	done = {}
 	if not names:
-		return trace, done
-	if meta.has_field("snd_wf_trace"):
-		child = meta.get_field("snd_wf_trace").options
-		for t in frappe.get_all(
-			child,
-			filters={"parent": ("in", names), "parenttype": doctype, "parentfield": "snd_wf_trace"},
-			fields=["parent", "workflow_state", "user", "date"],
-			order_by="idx asc",
-		):
-			trace.setdefault(t.parent, []).append(t)
+		return done
 	for d in frappe.get_all(
 		"Workflow Action",
 		filters={"reference_doctype": doctype, "reference_name": ("in", names), "status": "Completed"},
@@ -361,15 +309,13 @@ def _trail_sources(doctype, names, meta):
 		order_by="modified asc",
 	):
 		done.setdefault(d.reference_name, []).append(d)
-	return trace, done
+	return done
 
 
-def _trail(doc, meta, sources=None):
-	"""Document trail: Workflow Trace if present, else completed Workflow Actions."""
-	trace, done = sources or _trail_sources(doc.doctype, [doc.name], meta)
-	rows = [[t.workflow_state, t.user, _hours_since(t.date), ""] for t in trace.get(doc.name, [])]
-	if not rows:
-		rows = [[d.workflow_state, d.completed_by or doc.owner, _hours_since(d.modified), ""] for d in done.get(doc.name, [])]
+def _trail(doc, sources=None):
+	"""Document trail: the completed Workflow Actions, then the current state."""
+	done = sources if sources is not None else _trail_sources(doc.doctype, [doc.name])
+	rows = [[d.workflow_state, d.completed_by or doc.owner, _hours_since(d.modified), ""] for d in done.get(doc.name, [])]
 	state = doc.get("workflow_state")
 	if not rows or rows[-1][0] != state:
 		rows.append([state, doc.modified_by or doc.owner, _hours_since(doc.modified), ""])
@@ -456,7 +402,7 @@ def _build_docs(doctype, names, workflows, pending_map, holders):
 	comments = _comments(doctype, names)
 	files = _files(doctype, names)
 	todos = _linked_todo(doctype, names)
-	sources = _trail_sources(doctype, names, meta)
+	sources = _trail_sources(doctype, names)
 	# document rows in one query, without child tables (items are loaded when a document is opened)
 	rows = {r.name: r for r in frappe.get_all(doctype, filters={"name": ("in", names)}, fields=["*"])}
 	has_conditions = any(t.get("conditionText") for t in workflows[doctype]["transitions"])
@@ -509,7 +455,7 @@ def _build_docs(doctype, names, workflows, pending_map, holders):
 			"since": _hours_since(pending_map.get(name + "__creation") or doc.modified),
 			"fields": _gov_fields(doc, meta),
 			"items": [],
-			"trail": _trail(doc, meta, sources),
+			"trail": _trail(doc, sources),
 			"comments": comments.get(name, []),
 			"files": files.get(name, []),
 			"checks": [],
@@ -532,7 +478,7 @@ def get_workflow_inbox(limit=120):
 
 	wf_payload = {dt: workflow_payload(wf) for dt, wf in workflows.items()}
 	doctypes = {
-		dt: {"ar": _(dt), "icon": DOCTYPE_ICONS.get(dt, "i-copy"), "short": _(dt)}
+		dt: {"ar": _(dt), "icon": DOCTYPE_ICONS.get(dt, "i-copy")}
 		for dt in workflows
 	}
 
@@ -793,9 +739,6 @@ def nudge(doctype, docname):
 		return {"ok": 0, "sent": 0, "holder": ""}
 
 	targets, labels = set(), []
-	if _has_permitted_users_table():
-		for u in frappe.get_all("Workflow Action Permitted User", filters={"parent": action}, pluck="user"):
-			targets.add(u)
 	single = frappe.db.get_value("Workflow Action", action, "user")
 	if single:
 		targets.add(single)
@@ -839,7 +782,7 @@ def doc_detail(doc, with_trail=True):
 		"items": _items(doc, meta),
 		"comments": _comments(doc.doctype, [doc.name]).get(doc.name, []),
 		"files": _files(doc.doctype, [doc.name]).get(doc.name, []),
-		"trail": _trail(doc, meta) if with_trail else [],
+		"trail": _trail(doc) if with_trail else [],
 		"fields": _gov_fields(doc, meta),
 		"state": doc.get("workflow_state"),
 	}

@@ -5,6 +5,4 @@
 tags
 __pycache__
 node_modules
-todobox/public/dist
-todobox/docs/current
 *.mo

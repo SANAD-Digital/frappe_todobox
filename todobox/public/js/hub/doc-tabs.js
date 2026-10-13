@@ -170,7 +170,6 @@
         ...panel,
         noFields: loaded && !(rd.fields || []).length,
         itemsOpen: !!s.refItemsOpen,
-        noHistory: loaded && !(rd.trail || []).length,
       },
       refToggleItems: () => this.setState((st) => ({ refItemsOpen: !st.refItemsOpen })),
       refAllFields: () => this.qlOpen(sel.reference_type, sel.reference_name),

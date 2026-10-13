@@ -6,27 +6,25 @@
     if (!A) return {
       loading: true, skeletons: [1, 2, 3, 4, 5, 6], uiDir: window.TT_DIR || 'ltr', isDesktop: true, isMobile: false, cards: [], folders: [], labels: [], quickFilters: [],
       screens: [], savedViews: [], notifs: [], dayRows: [], ...this.statsVals(),
-      rules: [], recurring: [], autoFx: {}, tplFx: {}, svFx: {}, rcf: {}, queryHints: [], templates: [],
+      rules: [], recurring: [], autoFx: {}, tplFx: {}, svFx: {}, rcf: {},
       filterChips: [], hasFilterChips: false, qbCats: [], qbValues: [], qbTip: ' ', hintsBtnStyle: 'display:none;',
       qbSearchable: false, qbNoResults: false, qbMore: '', qbq: '', qbSearchPlaceholder: __('Search…'), qbValuesStyle: 'display:flex;flex-wrap:wrap;gap:6px;padding:10px 12px;',
       qbShowDate: false, qbDateVal: '', qbDateLabel: ' ', qbDateStyle: 'display:none;', savingViewStrip: false, canSaveView: false,
-      screenDay: false, screenStats: false, mailMobile: false, notifsOpen: false, snoozeOpen: false, automationOpen: false,
-      filtersChevron: 'width:13px;height:13px;', wfHeadChevron: 'width:14px;height:14px;', wfTotal: ' ', wfActorLine: ' ',
-      hasDetail: false, noDetail: false, detailHeadStyle: '', wfHeadBarStyle: '', titleSize: '16px', headActionsInline: false, headActionsRow: false, showList: true, showDetail: true, narrow: s.narrow, listCount: '', notifUnread: 0, darkIconRef: '#i-moon', sortLabel: '',
+      screenDay: false, screenStats: false, notifsOpen: false, snoozeOpen: false, automationOpen: false,
+      filtersChevron: 'width:13px;height:13px;', wfHeadChevron: 'width:14px;height:14px;',
+      hasDetail: false, noDetail: false, detailHeadStyle: '', wfHeadBarStyle: '', titleSize: '16px', headActionsInline: false, headActionsRow: false, showList: true, showDetail: true, narrow: s.narrow, listCount: '', notifUnread: 0, sortLabel: '',
       listPaneStyle: 'flex:0 0 410px;min-width:0;display:flex;flex-direction:column;min-height:0;background:var(--panel2);border-inline-start:1px solid var(--line);border-inline-end:1px solid var(--line2);',
       detailPaneStyle: 'flex:1;min-width:0;display:flex;flex-direction:column;background:var(--panel);',
-      toggleHints: () => {}, people: [], mobileNav: [], composerTabs: [], peopleOptions: [],
-      sidebarToggle: () => {}, sidebarToggleLabel: __('Collapse sidebar'), sidebarExpanded: 'true', sidebarToggleIcon: '#i-sidebar', sidebarResizeLabel: __('Resize sidebar (double-click to reset)'),
+      toggleHints: () => {}, mobileNav: [], composerTabs: [],
+      sidebarToggle: () => {}, sidebarToggleLabel: __('Collapse sidebar'), sidebarExpanded: 'true', sidebarResizeLabel: __('Resize sidebar (double-click to reset)'),
       emptyZero: '0',
-      screenDay: false, screenStats: false, mailMobile: false, notifsOpen: false, snoozeOpen: false, automationOpen: false,
-      filtersChevron: 'width:13px;height:13px;', wfHeadChevron: 'width:14px;height:14px;', wfTotal: ' ', wfActorLine: ' ',
-      hasDetail: false, noDetail: false, detailHeadStyle: '', wfHeadBarStyle: '', titleSize: '16px', headActionsInline: false, headActionsRow: false, showList: true, showDetail: true, narrow: s.narrow, listCount: '', notifUnread: 0, darkIconRef: '#i-moon', sortLabel: '',
-      listPaneStyle: 'flex:0 0 410px;min-width:0;display:flex;flex-direction:column;min-height:0;background:var(--panel2);border-inline-start:1px solid var(--line);border-inline-end:1px solid var(--line2);',
-      detailPaneStyle: 'flex:1;min-width:0;display:flex;flex-direction:column;background:var(--panel);',
       openCompose: this.openCompose, composeOpen: !!s.compose,
       toggleNotifs: () => this.setState({ notifsOpen: !s.notifsOpen }),
       closeNotifs: () => this.setState({ notifsOpen: false }), notifsEmpty: true,
       ...this.themeVals(true),
+      /* the header (wordmark, user menu, ⌘K hint) is visible while loading too */
+      ...this.accountVals(),
+      cmdkHint: /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent || '') ? '⌘K' : 'Ctrl K',
     };
 
     const U = A.USERS, ME = A.ME;
@@ -129,7 +127,6 @@
           (active ? '' : hov ? ';background:var(--hover)' : '') +
           ';touch-action:pan-y;transform:translateX(' + sw + 'px);transition:' + (sw ? 'none' : 'transform .2s var(--ease)') + ';',
         wrapStyle: 'position:relative;flex:0 0 auto;border-radius:8px;overflow:hidden;',
-        mobileStyle: 'transform:translateX(' + sw + 'px);transition:' + (sw ? 'none' : 'transform .2s var(--ease)') + ';',
         swipeBg: (sw ? 'display:flex;' : 'display:none;') + 'position:absolute;inset:0;align-items:center;justify-content:' + (sw > 0 ? 'flex-start' : 'flex-end') +
           ';padding:0 18px;border-radius:12px;font-size:13px;font-weight:600;color:var(--on-accent);background:' + (sw > 0 ? 'var(--green)' : 'var(--primary)') + ';',
         swipeLabel: sw > 0 ? '✓ ' + __('Complete') : sw < 0 ? '😴 ' + __('Snooze') : '',
@@ -149,7 +146,7 @@
         actionsStyle: 'display:' + (isDesktop && hov && !this.isLocked(t) ? 'flex' : 'none') + ';position:absolute;top:calc(var(--row-py) - 3px);inset-inline-end:8px;gap:4px;padding:2px;border-radius:9px;background:var(--panel);box-shadow:0 1px 3px rgba(0,0,0,.12);',
         actions: this.isLocked(t) ? [] : [
           { act: 'complete', iconRef: '#i-check', title: __('Complete (e)'), onDo: (ev) => { ev.stopPropagation(); this.complete(t.name); } },
-          { act: 'forward', iconRef: '#i-forward', title: __('Forward (f)'), onDo: (ev) => { ev.stopPropagation(); this.open(t.name); this.setState({ forward: { to: null, mode: 'full', reason: '', busy: false } }, () => this.pplOpen('fwd')); } },
+          { act: 'forward', iconRef: '#i-forward', title: __('Forward (f)'), onDo: (ev) => { ev.stopPropagation(); this.open(t.name); this.setState({ forward: { to: null, mode: 'full', reason: '', busy: false } }); } },
           { act: 'snooze', iconRef: '#i-moon', title: __('Snooze (s)'), onDo: (ev) => { ev.stopPropagation(); this.open(t.name); this.openSnooze(t.name); } },
         ],
         onOpen: () => { if (this.justSwiped) { this.justSwiped = false; return; } this.open(t.name); },
@@ -218,7 +215,6 @@
       const stale = wdSel !== null && wdSel >= A.STALE_DAYS;
       const ck = sel.custom_checklist || [];
       const ckDone = ck.filter((x) => x.done).length;
-      const acts = ((s.docActs || {})[sel.name] || {}).actions || [];
       const canManage = this.canManage(sel);
       const locked = this.isLocked(sel);
       const canAddCheck = this.canAddCheck(sel);
@@ -233,19 +229,17 @@
         statusStyle: '',
         statusTone: sel.status === 'Open' ? (sel.date < A.TODAY ? 'red' : 'blue') : sel.status === 'Closed' ? 'green' : 'gray',
         prioTone: sel.priority === 'High' ? 'red' : sel.priority === 'Medium' ? 'orange' : 'gray',
-        fromName: from.name || sel.assigned_by, fromTitle: from.title || '', fromInitials: from.initials || '?', fromAvatar: this.ava(sel.assigned_by, 30),
-        toName: to.name || sel.allocated_to, toTitle: to.title || '', toInitials: to.initials || '?', toAvatar: this.ava(sel.allocated_to, 30),
+        fromInitials: from.initials || '?',
+        toName: to.name || sel.allocated_to, toInitials: to.initials || '?',
         cc: (sel.cc_users || []).map((c) => ({ name: (U[c] || {}).name || c, initials: (U[c] || {}).initials || '?', avatar: this.ava(c, 18) })),
         ccToggleLabel: (sel.cc_users || []).length ? (s.ccOpen ? __('Hide CC') : __('CC ({0})', [sel.cc_users.length])) : __('No CC'),
         props, thread, hasHidden: hidden > 0, hiddenLabel: __('Show {0} earlier events', [hidden]),
-        segStyle: 'display:flex;align-items:center;gap:6px;height:30px;padding:0 11px;background:transparent;border:0;cursor:pointer;font-size:12px;font-weight:600;color:var(--fg);',
         prioLabel: sel.priority === 'High' ? __('High') : sel.priority === 'Medium' ? __('Medium') : __('Low'),
         prioSegStyle: 'display:flex;align-items:center;gap:6px;height:30px;padding:0 11px;background:transparent;border:0;cursor:' + (canManage ? 'pointer' : 'default') + ';font-size:12px;font-weight:600;color:' + this.prioColor(sel.priority) + ';',
         onCyclePriority: () => this.cyclePriority(sel),
         prioTitle: locked ? __('This task is completed — you can only add comments and attachments') : canManage ? __('Priority — click to change') : __('Only the task creator can edit priority, date, subject and checklist'),
         dateTitle: locked ? __('This task is completed — you can only add comments and attachments') : canManage ? __('Edit due date') : __('Only the task creator can edit priority, date, subject and checklist'),
-        locked, active: !locked, canManage, lockTitle: canManage ? '' : __('Only the task creator can edit priority, date, subject and checklist'),
-        dateISO: sel.date,
+        locked, active: !locked, canManage,
         dateLabel: sel.date.slice(8, 10) + '/' + sel.date.slice(5, 7),
         dateSegStyle: 'display:flex;align-items:center;gap:6px;height:30px;padding:0 11px;background:transparent;border:0;border-inline:1px solid var(--line);cursor:' + (canManage ? 'pointer' : 'default') + ';font-size:12px;font-weight:600;color:' + (sel.date < A.TODAY ? 'var(--red)' : 'var(--fg)') + ';',
         dateIdle: true,
@@ -270,7 +264,6 @@
         }),
         hasRef: !!sel.reference_name, refName: sel.reference_name,
         refMeta: (sel.reference_type || '') + (sel.ref_status ? ' · ' + sel.ref_status : ''),
-        refAmount: sel.ref_amount || '',
         hasAttachments: !!(sel.attachments && sel.attachments.length),
         attachments: (sel.attachments || []).map((a, i, all) => ({
           label: typeof a === 'string' ? a : a.name,
@@ -293,20 +286,8 @@
         partiesLabel: ((U[sel.assigned_by] || {}).name || sel.assigned_by) + ((window.TT_DIR || 'ltr') === 'rtl' ? ' ← ' : ' → ') + ((U[sel.allocated_to] || {}).name || sel.allocated_to),
         fromAvatarSm: this.ava(sel.assigned_by, 21),
         toAvatarSm: this.ava(sel.allocated_to, 21),
-        hasDocActions: !locked && acts.length > 0, docBusy: s.docBusy,
-        docActions: acts.map((a) => ({
-          label: a.label, iconRef: a.tone === 'red' ? '#i-x' : a.tone === 'amber' ? '#i-moon' : '#i-check',
-          style: 'height:30px;padding:0 13px;display:flex;align-items:center;gap:7px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;border:1px solid ' +
-            (a.tone === 'green' ? 'var(--green)' : a.tone === 'red' ? 'var(--red)' : 'var(--amber)') +
-            ';background:' + (a.tone === 'green' ? 'var(--green-soft)' : a.tone === 'red' ? 'var(--red-soft)' : 'var(--amber-soft)') +
-            ';color:' + (a.tone === 'green' ? 'var(--green)' : a.tone === 'red' ? 'var(--red)' : 'var(--amber)') + ';',
-          onDo: () => this.runDoc(a.id),
-        })),
 
         hasChecklist: showCk, noChecklist: !showCk && canAddCheck, canAddCheck,
-        hasTemplateOptions: (s.templates || []).some((t) => t.enabled !== false),
-        templateOptions: (s.templates || []).filter((t) => t.enabled !== false).map((t) => ({ id: t.id, label: t.label })),
-        onApplyTemplate: (e) => { const v = e.target.value; if (v) { this.applyTemplateToSel(v); e.target.value = ''; } },
         checkCount: ckDone + '/' + ck.length,
         checkBar: 'height:100%;width:' + (ck.length ? Math.round((ckDone / ck.length) * 100) : 0) + '%;background:var(--green);transition:width .25s var(--ease);',
         checklist: ck.map((c) => ({
@@ -353,14 +334,12 @@
     return {
       ...this.wfVals(),
       ...this.filePvVals(),
-      ...this.pplVals(),
       loading: s.loading, skeletons: [1, 2, 3, 4, 5, 6],
-      uiDir: window.TT_DIR || 'ltr', isDesktop, isMobile: !isDesktop, mList: !isDesktop && s.mobileScreen === 'list', mDetail: !isDesktop && s.mobileScreen === 'detail',
+      uiDir: window.TT_DIR || 'ltr', isDesktop, isMobile: !isDesktop,
       folders, labels, quickFilters, cards, d, hasDetail: !!d, noDetail: !d && !s.loading,
       narrow: s.narrow,
       screenDay: s.screen === 'day', screenStats: s.screen === 'stats',
       ...this.templateVals(s, isDesktop),
-      mailMobile: false,
       showList: s.screen === 'mail' && (!(s.narrow || !isDesktop) || s.pane === 'list'),
       showDetail: s.screen === 'mail' && (!(s.narrow || !isDesktop) || s.pane === 'detail'),
       /* unified details header (tasks and required actions) */
@@ -371,7 +350,6 @@
       headerStyle: 'flex:0 0 auto;height:' + (isDesktop ? '54px' : '52px') + ';display:flex;align-items:center;gap:' + (isDesktop ? '14px' : '6px') +
         ';padding:0 ' + (isDesktop ? '16px' : '8px') + ';background:var(--panel);border-bottom:1px solid var(--line);min-width:0;',
       brandStyle: isDesktop ? 'display:flex;align-items:center;gap:8px;flex:0 0 auto;' : 'display:none;',
-      darkBtnDisplay: isDesktop ? 'display:grid;' : 'display:none;',
       /* sidebar: fixed on desktop, sliding drawer on mobile */
       showNav: isDesktop || !!s.navOpen,
       navDrawer: !isDesktop && !!s.navOpen,
@@ -388,12 +366,10 @@
       navStyle: isDesktop
         ? 'flex:0 0 auto;width:' + (navCol ? 'var(--nav-w-collapsed)' : 'var(--nav-w)') + ';overflow-x:hidden;'
         : 'position:fixed;top:0;bottom:0;inset-inline-start:0;z-index:45;width:min(280px,86vw);box-shadow:0 0 40px rgba(0,0,0,.22);animation:slidein .2s var(--ease);',
-      openNav: () => this.setState({ navOpen: true }),
       closeNav: () => this.setState({ navOpen: false }),
       sidebarToggle: () => (isDesktop ? this.setNavCollapsed(!navCol) : this.setState({ navOpen: !s.navOpen })),
       sidebarToggleLabel: isDesktop ? (navCol ? __('Expand sidebar') : __('Collapse sidebar')) : (s.navOpen ? __('Close menu') : __('Open menu')),
       sidebarExpanded: (isDesktop ? !navCol : !!s.navOpen) ? 'true' : 'false',
-      sidebarToggleIcon: isDesktop ? '#i-sidebar' : '#i-menu',
       sidebarResizeLabel: __('Resize sidebar (double-click to reset)'),
       onNavClick: (e) => {
         if (isDesktop) return;
@@ -460,7 +436,6 @@
         if (s.screen === 'wf') { this.setState({ wfSearch: '' }); return; }
         this.setState({ searchInput: '', search: '', activeView: null, folder: (s.folder === '__query' || s.folder === 'all') ? 'inbox' : s.folder, hintsOpen: false, loading: true }, () => this.load());
       },
-      hasQuery: !!s.searchInput,
       clearSearch: () => this.setState({ searchInput: '', search: '', activeView: null, folder: (s.folder === '__query' || s.folder === 'all') ? 'inbox' : s.folder, hintsOpen: false, loading: true }, () => this.load()),
       onSearchFocus: () => { if (s.screen === 'mail') this.setState({ hintsOpen: true }); },
       toggleHints: () => this.setState({ hintsOpen: !s.hintsOpen }),
@@ -594,7 +569,7 @@
       emptyNoSearchAll: !(s.search && s.folder !== 'all'),
       searchAllTasks: () => this.setState({ folder: 'all', activeView: null, label: null, loading: true }, () => this.load()),
       searchInput: s.searchInput,
-      unreadCount: s.counts.inboxUnread || 0, meTitle: (U[ME] || {}).name + ' — ' + (U[ME] || {}).title,
+      meTitle: (U[ME] || {}).name + ' — ' + (U[ME] || {}).title,
       ...this.meAvatarVals(U[ME] || {}),
       ...this.accountVals(),
       onSearch: (e) => {
@@ -612,8 +587,6 @@
         style: 'width:28px;height:28px;display:grid;place-items:center;border:0;border-radius:6px;cursor:pointer;background:' + (s.density === id ? 'var(--panel)' : 'transparent') + ';color:' + (s.density === id ? 'var(--fg)' : 'var(--fg3)') + ';',
         onPick: () => { try { localStorage.setItem('todobox_density', id); } catch (e) { } this.setState({ density: id }, () => this.applyChrome()); },
       })),
-      darkIconRef: s.dark ? '#i-sun' : '#i-moon',
-      toggleDark: this.flipDark,
       ...this.themeVals(isDesktop),
       mobileNav: [['mail', 'inbox', __('Inbox')], ['wf', 'bolt', __('Actions')], ['__new', 'plus', ''], ['day', 'sunrise', __('My day')], ['stats', 'chart', __('Analytics')]].map(([id, icon, label]) => {
         const active = id === 'mail' ? s.screen === 'mail' && s.folder !== 'waiting' : id === 'waiting' ? s.screen === 'mail' && s.folder === 'waiting' : s.screen === id;
@@ -631,9 +604,6 @@
           },
         };
       }),
-      mobileBack: () => this.setState({ mobileScreen: 'list' }),
-      mTitle: s.folder === 'all' ? __('All my tasks') : (A.FOLDERS.find((f) => f.id === s.folder) || {}).label || '',
-      mSub: __('{0} tasks · swipe right to complete, left to snooze', [s.tasks.length]),
       /* detail interactions */
       ccOpen: s.ccOpen, toggleCC: () => this.setState({ ccOpen: !s.ccOpen }),
       moreMenuOpen: !!s.moreMenu,
@@ -652,7 +622,6 @@
       ],
       expandEvents: () => this.setState({ showEvents: true }),
       completeSelected: () => s.sel && this.complete(s.sel),
-      snoozeSelected: () => s.sel && this.snooze(s.sel),
       openForward: this.openForward, openCompose: this.openCompose,
       onRenameTitle: (e) => {
         const t = this.selTask();
@@ -663,7 +632,6 @@
         this.api.updateTodo(t.name, { subject: v });
         this.toast(__('Title updated'));
       },
-      notImpl: (e) => { if (e && e.preventDefault) e.preventDefault(); this.toast(__('Opens the document in ERPNext')); },
 
       /* composer */
       composerWrap: 'flex:0 0 auto;padding:12px 20px 14px;border-top:1px solid var(--line);background:var(--panel);',
@@ -671,7 +639,6 @@
         (cTab === 'comment' ? 'var(--amber)' : 'var(--line2)') +
         ';border-radius:10px;outline:none;font-size:13px;line-height:1.9;resize:none;transition:height .18s var(--ease);',
       composerPlaceholder: cTab === 'reply' ? __('Write a reply… type @ to mention a colleague') : __('Internal comment — not visible to external recipients'),
-      composerHint: selLocked ? __('This task is completed — you can only add comments and attachments') : cTab === 'reply' ? __('r to reply · k to comment') : __('Visible to the internal team only'),
       composerTabs: [
         ['reply', __('Reply'), '#i-reply', selLocked ? __('This task is completed — you can only add comments and attachments') : __('Reply visible to everyone (r)')],
         ['comment', __('Comment'), '#i-chat', __('Comment for the internal team only (k)')],
@@ -706,94 +673,12 @@
       bulkDone: () => { s.checked.forEach((n) => this.complete(n)); this.setState({ checked: [] }); },
       bulkSnooze: () => { this.openSnooze(s.checked.slice()); this.setState({ checked: [] }); },
 
-      /* compose panel */
+      /* "New task" drawer (compose.js tmcVals) */
       composeOpen: !!s.compose,
-      composeSubject: s.compose ? s.compose.subject : '', composeBody: s.compose ? s.compose.body : '',
-      onComposeSubject: (e) => this.setState({ compose: { ...s.compose, subject: e.target.value } }),
-      onComposeBody: (e) => this.setState({ compose: { ...s.compose, body: e.target.value } }),
-      composeCCOpen: s.composeCCOpen, toggleComposeCC: () => this.setState({ composeCCOpen: !s.composeCCOpen }),
-      ccButtonLabel: s.composeCCOpen ? '− ' + __('Hide CC') : '+ ' + __('CC'),
-      closeCompose: this.closeCompose, submitCompose: this.submitCompose,
-      composeNotice: s.compose && s.compose.to.length > 1 ? __('{0} tasks will be created — one per recipient', [s.compose.to.length]) : '',
-      /* "To": selected users + a few server suggestions; full search via the picker */
-      peopleShown: !s.compose ? [] : [...new Set([...s.compose.to, ...(s.composeSuggest || []).map((u) => u.id)])]
-        .filter((k) => U[k]).slice(0, Math.max(5, s.compose.to.length)).map((k) => this.personChip(k, U, s)),
-      hasMorePeople: !!s.compose,
-      morePeopleLabel: __('Search people'),
-      morePeopleTitle: __('Search all users'),
-      peoplePickerOpen: !!(s.ppl && s.ppl.target !== 'fwd'),
-      templates: A.TASK_TEMPLATES.map((t) => {
-        const on = s.compose && s.compose.template === t.id;
-        return {
-          label: t.label, title: __('{0} — {1} steps', [t.subject, (t.checklist || []).length]),
-          style: 'height:26px;padding:0 10px;border-radius:99px;cursor:pointer;font-size:11px;border:1px solid ' +
-            (on ? 'var(--primary)' : 'var(--line)') + ';background:' + (on ? 'var(--primary-soft)' : 'var(--panel2)') + ';color:' + (on ? 'var(--primary)' : 'var(--fg2)') + ';',
-          onPick: () => this.setState({ compose: { ...(s.compose || { to: [], cc: [], date: A.TODAY, ref: null, labels: [], files: [] }), template: t.id, subject: t.subject, body: t.body, priority: t.priority, checklist: t.checklist || [] } }),
-        };
-      }),
-      composeHasChecklist: !!(s.compose && s.compose.checklist && s.compose.checklist.length),
-      composeNoChecklist: !(s.compose && s.compose.checklist && s.compose.checklist.length),
-      composeChecklistTitle: s.compose && s.compose.template ? __('Checklist — from template') : __('Checklist'),
-      composeChecklist: (s.compose && s.compose.checklist ? s.compose.checklist : []).map((c, i) => ({
-        label: c,
-        onEdit: (e) => this.editComposeCheck(i, e.target.value),
-        onDel: () => this.delComposeCheck(i),
-      })),
-      composeChecklistCount: __('{0} steps', [(s.compose && s.compose.checklist ? s.compose.checklist.length : 0)]),
-      composeChecklistOpen: !!s.composeChecklistOpen,
-      toggleComposeChecklist: () => this.setState((st) => ({ composeChecklistOpen: !st.composeChecklistOpen })),
-      checklistButtonLabel: s.composeChecklistOpen ? '− ' + __('Hide checklist') : '+ ' + __('Checklist'),
-      composeTemplateId: (s.compose && s.compose.template) || '',
-      composeTemplateRef: this.selectRef([{ id: '', label: __('— None —') }].concat(A.TASK_TEMPLATES.filter((t) => t.enabled !== false || (s.compose && s.compose.template === t.id)).map((t) => ({ id: t.id, label: t.label }))), (s.compose && s.compose.template) || ''),
-      templateOptions: A.TASK_TEMPLATES.map((t) => ({ id: t.id, label: t.label })),
-      onComposeTemplate: (e) => {
-        const t = A.TASK_TEMPLATES.find((x) => x.id === e.target.value);
-        this.setState((st) => ({
-          compose: t
-            ? { ...st.compose, template: t.id, subject: st.compose.subject || t.subject, body: st.compose.body || t.body, checklist: (t.checklist || []).slice() }
-            : { ...st.compose, template: null, checklist: [] },
-        }));
-      },
-      composeNewCheck: s.composeNewCheck || '',
-      onComposeNewCheck: (e) => this.setState({ composeNewCheck: e.target.value }),
-      onComposeCheckKey: (e) => { if (e.key === 'Enter') { e.preventDefault(); this.addComposeCheck(); } },
-      composeAddCheck: this.addComposeCheck,
-      composeDate: s.compose ? s.compose.date : '',
-      onComposeDate: (e) => { const v = e.target.value; if (v) this.setState({ compose: { ...s.compose, date: v } }); },
-      composeDateLabel: s.compose && s.compose.date ? s.compose.date.slice(8, 10) + '/' + s.compose.date.slice(5, 7) + '/' + s.compose.date.slice(0, 4) : __('No date'),
-      composePickDate: (e) => this.openFrappeDate(e, s.compose && s.compose.date, (v) => this.setState((st) => (st.compose ? { compose: { ...st.compose, date: v } } : {}))),
-      richTools: [['bold', 'B', __('Bold'), 'font-weight:700;'], ['italic', 'I', __('Italic'), 'font-style:italic;font-family:serif;'], ['list', '•≡', __('List'), ''], ['code', '</>', __('Code'), 'font-family:var(--font);font-variant-numeric:tabular-nums;font-size:10px;']]
-        .map(([k, icon, title, extra]) => ({ icon, title, style: 'min-width:28px;height:28px;padding:0 6px;background:var(--panel2);border:1px solid var(--line);border-radius:6px;cursor:pointer;font-size:12px;color:var(--fg2);' + extra, keep: (e) => { if (e && e.preventDefault) e.preventDefault(); }, onDo: (e) => { if (e && e.preventDefault) e.preventDefault(); this.applyRich(k); } })),
-      composeBodyRef: this.composeBodyRef,
-      composeFileInputRef: this.composeFileInput,
-      onComposeLocalFiles: this.onComposeLocalFiles,
-      composeHasFiles: !!(s.compose && s.compose.files && s.compose.files.length),
-      composeFiles: ((s.compose && s.compose.files) || []).map((f, i) => ({ label: f.label, title: f.url || f.label, onRemove: () => this.removeComposeFile(i) })),
-      composeTags: ((s.compose && s.compose.labels) || []).map((lb) => ({ label: lb, onRemove: () => this.removeComposeTag(lb) })),
-      composeTagPickerOpen: !!(s.compose && s.composeTagPicker),
-      toggleComposeTagPicker: () => this.setState((st) => ({ composeTagPicker: !st.composeTagPicker })),
-      composeTagOptions: !(s.compose && s.composeTagPicker) ? [] : [...new Set([
-        ...s.tasks.flatMap((t) => t.labels || []),
-        __('Strategic client'), __('Finance'), __('Warehouse'), __('HR'), __('Follow-up'), __('Pricing'), __('Purchasing'), __('Reports'), __('Urgent'), __('Recurring'),
-      ])].filter((lb) => !((s.compose && s.compose.labels) || []).includes(lb)).slice(0, 10).map((lb) => ({
-        label: lb, onPick: () => this.addComposeTag(lb),
-      })),
-      composeNewTag: s.composeNewTag || '',
-      onComposeNewTag: (e) => this.setState({ composeNewTag: e.target.value }),
-      onComposeTagKey: (e) => { if (e.key === 'Enter') { e.preventDefault(); this.addComposeTag(s.composeNewTag); } },
-      addComposeTagTyped: () => this.addComposeTag(s.composeNewTag),
-      composeMeta: [
-        { label: __('Priority: {0}', [(s.compose ? (s.compose.priority === 'High' ? __('High') : s.compose.priority === 'Medium' ? __('Medium') : __('Low')) : '')]), onDo: () => { const o = ['High', 'Medium', 'Low']; const i = o.indexOf(s.compose.priority); this.setState({ compose: { ...s.compose, priority: o[(i + 1) % 3] } }); } },
-        { label: s.compose && s.compose.ref ? s.compose.ref.name : __('Link a document'), onDo: () => this.setState({ compose: { ...s.compose, ref: { type: 'Purchase Invoice', name: 'PINV-2026-00404', amount: __('{0} SAR', ['78,900']) } } }) },
-        { label: s.compose && s.compose.files && s.compose.files.length ? __('Attachment ({0})', [s.compose.files.length]) : __('Attachment'), onDo: this.attachToCompose },
-        { label: __('Recurring task?'), onDo: this.openRecurringFromCompose },
-      ].map((m) => ({ ...m, style: 'height:30px;padding:0 12px;background:var(--panel2);border:1px solid var(--line);border-radius:8px;cursor:pointer;font-size:12px;' })),
 
       /* forward */
       forwardOpen: !!s.forward, closeForward: this.closeForward, submitForward: this.submitForward,
-      forwardReason: s.forward ? s.forward.reason : '',
       forwardBusy: !!(s.forward && s.forward.busy), forwardBtnOpacity: s.forward && s.forward.busy ? 'opacity:.6;pointer-events:none;' : '',
-      onForwardReason: (e) => this.setState({ forward: { ...s.forward, reason: e.target.value } }),
       forwardModes: [
         { id: 'full', label: __('Full forward'), note: __('My task is cancelled (not counted as completed) and a new task opens for the recipient in the same thread.') },
         { id: 'delegate', label: __('Delegate'), note: __('The task stays assigned to me and a parallel task is created — it appears under “Forwarded” and I track its progress.') },
@@ -838,7 +723,7 @@
       { icon: '#i-hourglass', label: __('Go to: Waiting for reply'), key: 'g w', onDo: () => this.setState({ cmdk: false, screen: 'mail', folder: 'waiting', activeView: null, loading: true }, () => this.load()) },
       { icon: '#i-inbox', label: __('Go to: Inbox'), key: 'g i', onDo: () => this.setState({ cmdk: false, screen: 'mail', folder: 'inbox', activeView: null, loading: true }, () => this.load()) },
       { icon: '#i-bolt', label: __('Rules and recurring tasks'), key: '', onDo: () => { this.setState({ cmdk: false, automation: 'rules' }); this.loadAutomation(); } },
-      { icon: '#i-moon', label: __('Toggle dark mode'), key: '', onDo: () => { this.setState({ cmdk: false }); this.flipDark(); } },
+      { icon: '#i-moon', label: __('Toggle dark mode'), key: '', onDo: () => { this.setState({ cmdk: false }); this.toggleDark(); } },
       ...this.themeCommands(),
     ];
   }
@@ -859,20 +744,7 @@
     const m = this.state.themeMode;
     return m === 'light' || m === 'dark' || m === 'system' ? m : (this.state.dark ? 'dark' : 'light');
   }
-  pickTheme = (patch) => {
-    if (typeof this.setTheme === 'function') { this.setTheme(patch); return; }
-    /* engine not loaded: keep the old dark/light behaviour */
-    if (patch.mode) {
-      const sysDark = !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
-      const dark = patch.mode === 'dark' || (patch.mode === 'system' && sysDark);
-      this.setState({ themeMode: patch.mode, dark }, () => this.applyChrome());
-    }
-    if (patch.accent) this.setState({ accent: patch.accent, accentCustom: patch.custom || this.state.accentCustom });
-  };
-  flipDark = () => {
-    if (typeof this.toggleDark === 'function') { this.toggleDark(); return; }
-    this.setState((st) => ({ dark: !st.dark }), () => this.applyChrome());
-  };
+  pickTheme = (patch) => this.setTheme(patch);
   toggleThemeMenu = () => {
     const opening = !this.state.themeMenu;
     this.setState({ themeMenu: opening, notifsOpen: false, userMenu: false }, () => {
@@ -915,12 +787,9 @@
       themeWrapStyle: isDesktop ? 'position:relative;flex:0 0 auto;' : 'display:none;',
       themeBtnLabel: __('Theme') + ' — ' + modeNames[mode] + ' · ' + acc.label,
       themeDialogLabel: __('Theme'),
-      themeModeGroupLabel: __('Appearance'),
-      themeAccentGroupLabel: __('Accent colour'),
       themeBtnStyle: 'position:relative;width:32px;height:32px;display:grid;place-items:center;background:' + (open ? 'var(--sunk)' : 'transparent') +
         ';border:1px solid var(--line2);border-radius:8px;cursor:pointer;color:' + (open ? 'var(--fg)' : 'var(--fg2)') + ';flex:0 0 auto;',
       themeSummary: (mode === 'system' ? modeNames.system + ' (' + (s.dark ? modeNames.dark : modeNames.light) + ')' : modeNames[mode]) + ' · ' + acc.label,
-      themeAccentLabel: acc.label,
       themeModes: [['light', 'sun'], ['dark', 'moon'], ['system', 'monitor']].map(([id, icon]) => {
         const on = mode === id;
         return {

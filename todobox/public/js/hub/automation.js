@@ -194,32 +194,6 @@ return class extends Base {
     this.loadAutomation();
     this.load();
   };
-  /** <select> options filled via ref: the template engine doesn't support sc-for inside <select> */
-  selectRef(options, value) {
-    const key = JSON.stringify([options, value == null ? '' : value]);
-    if (!this._selRefs) this._selRefs = new Map();
-    let fn = this._selRefs.get(key);
-    if (!fn) {
-      fn = (el) => {
-        if (!el) return;
-        const want = options.map((o) => o.id + '\u0001' + o.label).join('\u0002');
-        if (el.__ttOpts !== want) {
-          el.textContent = '';
-          options.forEach((o) => {
-            const op = el.ownerDocument.createElement('option');
-            op.value = o.id;
-            op.textContent = o.label;
-            el.appendChild(op);
-          });
-          el.__ttOpts = want;
-        }
-        el.value = value == null ? '' : value;
-      };
-      if (this._selRefs.size > 300) this._selRefs.clear();
-      this._selRefs.set(key, fn);
-    }
-    return fn;
-  }
   prioName(p) { return p === 'High' ? __('High') : p === 'Low' ? __('Low') : __('Medium'); }
   freqName(f) { return { Daily: __('Daily'), Weekly: __('Weekly'), Monthly: __('Monthly'), Quarterly: __('Quarterly'), Yearly: __('Yearly') }[f] || f; }
   /** "Document type is Sales Invoice · Priority Equals High and Description Like %invoice%" */

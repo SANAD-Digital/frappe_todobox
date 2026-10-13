@@ -2,18 +2,12 @@
 desk artifacts.
 
 Everything here is idempotent and safe to re-run.
-
-Custom field ownership: the ToDo/Comment fields below were first added by predecessor apps (frappe_taskmail,
-todo_tool) under the same fieldnames. Frappe's uninstall deletes every Custom Field / Property Setter whose
-`module` belongs to the removed app, so ToDoBox claims the rows (module = "ToDoBox", Link options repointed
-to ToDoBox DocTypes) on install and on every migrate, and again right before a predecessor is uninstalled
-(before_app_uninstall). When ToDoBox itself is uninstalled, fields a still-installed predecessor also defines
-are handed back to it instead of being deleted.
 """
 
 import json
 
 import frappe
+from frappe import _, _lt
 from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
 
 from todobox.services.common import CHECKLIST_ITEM_DOCTYPE, TEMPLATE_DOCTYPE
@@ -22,7 +16,7 @@ MODULE = "ToDoBox"
 
 CUSTOM_FIELDS = {
 	"ToDo": [
-		# own subject field: the title must not depend on another app (e.g. gcrm_subject)
+		# own subject field: the title must not depend on another app
 		{"fieldname": "subject", "label": "Subject", "fieldtype": "Data", "insert_after": "description_section", "in_list_view": 1},
 		{"fieldname": "thread_id", "label": "Thread ID", "fieldtype": "Data", "insert_after": "status"},
 		{
@@ -93,84 +87,64 @@ CUSTOM_FIELDS = {
 	],
 }
 
+# Default task templates, seeded once in the site's default language (see seed_task_templates)
 DEFAULT_TASK_TEMPLATES = [
 	{
-		"template_name": "متابعة عميل",
-		"subject": "متابعة عميل بعد إرسال العرض",
-		"description": "مكالمة متابعة، تحديث حالة الفرصة، وتسجيل ملاحظات العميل.",
+		"template_name": _lt("Client follow-up"),
+		"subject": _lt("Follow up with the client"),
+		"description": _lt("Call the client, record their feedback and agree on the next step."),
 		"priority": "Medium",
-		"checklist": ["مكالمة أولى وتسجيل الملاحظات", "تحديث حالة الفرصة في CRM", "جدولة المتابعة التالية"],
+		"checklist": [_lt("Call the client"), _lt("Record the feedback"), _lt("Schedule the next follow-up")],
 	},
 	{
-		"template_name": "مراجعة فاتورة",
-		"subject": "مراجعة فاتورة قبل الترحيل",
-		"description": "تحقّق من الكميات، الأسعار، ضريبة القيمة المضافة، وأمر الشراء المرتبط.",
+		"template_name": _lt("Document review"),
+		"subject": _lt("Review the document"),
+		"description": _lt("Read the document, check it for accuracy and send back your comments."),
 		"priority": "High",
 		"checklist": [
-			"مطابقة الكميات مع إشعار الاستلام",
-			"التحقق من الأسعار وأمر الشراء",
-			"مراجعة ضريبة القيمة المضافة",
-			"الترحيل والأرشفة",
+			_lt("Read the document"),
+			_lt("Check facts and figures"),
+			_lt("Add comments"),
+			_lt("Send back for revision or approve"),
 		],
 	},
 	{
-		"template_name": "جرد مستودع",
-		"subject": "جرد بنود المستودع",
-		"description": "جرد فعلي للبنود المحددة ومقارنته بأرصدة النظام.",
+		"template_name": _lt("Team onboarding"),
+		"subject": _lt("Onboard a new team member"),
+		"description": _lt("Prepare everything a new colleague needs for their first week."),
 		"priority": "Medium",
-		"checklist": ["طباعة كشف الأرصدة", "الجرد الفعلي بالرفوف", "حصر الفروقات", "إعداد قيد التسوية"],
-	},
-	{
-		"template_name": "إغلاق شهري",
-		"subject": "إجراءات الإغلاق المحاسبي الشهري",
-		"description": "قائمة الإغلاق المعتمدة — تُنفّذ في أول ثلاثة أيام عمل من الشهر.",
-		"priority": "High",
 		"checklist": [
-			"مطابقة الحسابات البنكية",
-			"مطابقة كشوف الموردين",
-			"قيود الاستحقاق والإهلاك",
-			"مراجعة المخزون والتكلفة",
-			"إقرار ضريبة القيمة المضافة",
-			"إصدار القوائم الأولية",
+			_lt("Create user accounts"),
+			_lt("Share key documents"),
+			_lt("Introduce the team"),
+			_lt("Plan the first week"),
 		],
 	},
 	{
-		"template_name": "إقرار ضريبي",
-		"subject": "إعداد إقرار ضريبة القيمة المضافة",
-		"description": "الإقرار الربعي — يُرفع قبل اليوم 28 من الشهر التالي للربع.",
-		"priority": "High",
+		"template_name": _lt("Weekly report"),
+		"subject": _lt("Prepare the weekly report"),
+		"description": _lt("Summarise the week's progress, open issues and next week's plan."),
+		"priority": "Low",
+		"checklist": [_lt("Collect updates"), _lt("Write the summary"), _lt("Share the report")],
+	},
+	{
+		"template_name": _lt("Event preparation"),
+		"subject": _lt("Prepare the event"),
+		"description": _lt("Arrange the venue, invitations and agenda ahead of the event."),
+		"priority": "Medium",
 		"checklist": [
-			"استخراج تقرير المخرجات",
-			"استخراج تقرير المدخلات",
-			"تسوية الفروقات",
-			"الرفع على منصة هيئة الزكاة والضريبة",
+			_lt("Book the venue"),
+			_lt("Send the invitations"),
+			_lt("Prepare the agenda"),
+			_lt("Confirm attendance"),
 		],
 	},
 ]
-
 
 # Composite indexes on core ToDo columns used by every folder query (allocated_to/assigned_by + status)
 TODO_INDEXES = {
 	"todobox_allocated_status": ("allocated_to", "status"),
 	"todobox_assigned_status": ("assigned_by", "status"),
-}
-
-# Predecessor apps that define the same ToDo/Comment fieldnames. On ToDoBox uninstall, shared fields are
-# handed back to the first one still installed (module + Link options as that app defines them).
-PREDECESSORS = {
-	"frappe_taskmail": {
-		"module": "TaskMail",
-		"fields": None,  # all of ToDoBox's fields
-		"options": {"task_template": "TaskMail Task Template", "checklist_items": "TaskMail Checklist Item"},
-	},
-	"todo_tool": {
-		"module": None,  # todo_tool creates its fields without a module
-		"fields": {
-			"thread_id", "parent_todo", "completed_on", "cc_users", "read_by", "snooze_until", "snooze_rule",
-			"labels", "forwarded_from", "task_template", "checklist_items", "day_order", "rule_applied", "is_reply",
-		},
-		"options": {"task_template": "ToDo Task Template", "checklist_items": "ToDo Checklist Item"},
-	},
 }
 
 APP_NAME = "todobox"
@@ -192,16 +166,10 @@ def _safe(step, fn, *args):
 
 
 # ------------------------------------------------------------------ hooks
-def before_install():
-	if not frappe.db.exists("DocType", "ToDo"):
-		frappe.throw("ToDoBox needs Frappe's ToDo DocType")
-
-
 def after_install():
 	setup_custom_fields()
 	frappe.db.commit()
 	_safe("indexes", setup_indexes)
-	_safe("import legacy data", import_legacy_data)
 	_safe("seed task templates", seed_task_templates)
 	_safe("backfill completed_on", backfill_completed_on)
 
@@ -211,14 +179,6 @@ def after_migrate():
 	frappe.db.commit()
 	_safe("indexes", setup_indexes)
 	_safe("backfill completed_on", backfill_completed_on)
-
-
-def before_app_uninstall(app_name):
-	"""Any app is being uninstalled: when it is a predecessor, re-claim the shared fields first so its
-	module deletion leaves them (and their data) alone."""
-	if app_name in PREDECESSORS and APP_NAME in frappe.get_installed_apps():
-		setup_custom_fields()
-		frappe.db.commit()
 
 
 def before_uninstall():
@@ -231,45 +191,20 @@ def after_uninstall():
 	frappe.clear_cache()
 
 
-def import_legacy_data():
-	"""Data of the predecessor apps (install marks all patches as done, so the patch is run here too)."""
-	from todobox.patches.v0_2.import_legacy_data import execute
-
-	execute()
-
-
 # ------------------------------------------------------------------ custom fields
 def setup_custom_fields():
-	"""Creates the fields, or takes over existing ones (same fieldname from a predecessor app)."""
+	"""Creates the fields (or updates them to the definitions above)."""
 	fields = {dt: [{**df, "module": MODULE} for df in dfs] for dt, dfs in CUSTOM_FIELDS.items()}
 	create_custom_fields(fields, ignore_validate=True)
 
 
-def _custom_field_owner(fieldname):
-	"""The first installed predecessor app that also defines this fieldname, else None."""
-	installed = set(frappe.get_installed_apps())
-	for app, spec in PREDECESSORS.items():
-		if app in installed and (spec["fields"] is None or fieldname in spec["fields"]):
-			return app, spec
-	return None, None
-
-
 def release_custom_fields():
-	"""ToDoBox is being uninstalled: hand shared fields back to a still-installed predecessor, delete the
-	rest (only the field definitions; Frappe keeps the table columns, so a reinstall gets the data back)."""
+	"""ToDoBox is being uninstalled: delete its field definitions (Frappe keeps the table columns, so a
+	reinstall gets the data back)."""
 	for dt, dfs in CUSTOM_FIELDS.items():
 		for df in dfs:
 			name = frappe.db.get_value("Custom Field", {"dt": dt, "fieldname": df["fieldname"], "module": MODULE})
-			if not name:
-				continue
-			app, spec = _custom_field_owner(df["fieldname"])
-			if app:
-				values = {"module": spec["module"]}
-				option = spec["options"].get(df["fieldname"])
-				if option and frappe.db.exists("DocType", option):
-					values["options"] = option
-				frappe.db.set_value("Custom Field", name, values, update_modified=False)
-			else:
+			if name:
 				frappe.delete_doc("Custom Field", name, ignore_permissions=True, force=True)
 		frappe.clear_cache(doctype=dt)
 
@@ -315,16 +250,22 @@ def remove_desk_artifacts():
 
 
 def seed_task_templates():
-	"""Creates the default task templates once, when the site has none."""
+	"""Creates the default task templates once, when the site has none, translated to the site's
+	default language."""
 	if frappe.db.count(TEMPLATE_DOCTYPE):
 		return
 
 	from todobox.services.checklist import normalize_checklist, set_checklist
 
+	lang = frappe.db.get_default("lang") or frappe.local.lang
+
+	def tr(value):
+		return _(value.msg, lang=lang) if hasattr(value, "msg") else value
+
 	for tpl in DEFAULT_TASK_TEMPLATES:
 		doc = frappe.new_doc(TEMPLATE_DOCTYPE)
-		doc.update({k: v for k, v in tpl.items() if k != "checklist"})
-		set_checklist(doc, normalize_checklist(tpl["checklist"]), fieldname="checklist")
+		doc.update({k: tr(v) for k, v in tpl.items() if k != "checklist"})
+		set_checklist(doc, normalize_checklist([tr(step) for step in tpl["checklist"]]), fieldname="checklist")
 		doc.insert(ignore_permissions=True)
 
 

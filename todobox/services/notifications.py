@@ -4,7 +4,7 @@ import frappe
 from frappe import _
 from frappe.query_builder import DocType
 
-from todobox.services.common import get_task, short_subject
+from todobox.services.common import short_subject
 
 
 def create_notification_log(
@@ -54,23 +54,6 @@ def create_notification_log(
 		return None
 	finally:
 		frappe.flags.mute_emails = prev_mute
-
-
-@frappe.whitelist()
-def create_notification(for_user, subject, content=None, todo_name=None, notif_type="Assignment"):
-	"""Creates a ToDo notification for another user (about a task the caller takes part in)."""
-	if todo_name:
-		get_task(todo_name)
-	name = create_notification_log(
-		for_user=for_user,
-		subject=subject,
-		content=content,
-		document_type="ToDo",
-		document_name=todo_name,
-		notif_type=notif_type,
-	)
-	frappe.db.commit()
-	return {"status": "success", "notification_name": name}
 
 
 def on_todo_after_insert(doc, method=None):

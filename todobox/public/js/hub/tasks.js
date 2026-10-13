@@ -44,20 +44,6 @@
     this.loadTemplates();
   };
 
-  /* ---------- act on the linked document ---------- */
-  runDoc = async (actionId) => {
-    const name = this.state.sel;
-    if (!this.guardLocked(this.taskByName(name))) return;
-    this.setState({ docBusy: true });
-    const res = await this.api.runDocAction(name, actionId);
-    this.setState({ docBusy: false });
-    if (res) this.toast(__('{0} — {1} is now {2}', [res.actionLabel, res.reference_name, res.ref_status]));
-    this.load(name);
-    this.loadDocActions(name);
-    if ((this.state.refDocs || {})[name]) this.loadRefDetail(name, true);
-    this.refreshAfterChange();
-  };
-
   /* ---------- checklist ---------- */
   toggleCheck = async (id) => {
     const name = this.state.sel;
@@ -79,15 +65,6 @@
     if (!this.guardManage(this.selTask())) return;
     const name = this.state.sel;
     await this.api.removeChecklistItem(name, id);
-    this.load(name);
-  };
-  applyTemplateToSel = async (templateId) => {
-    if (!this.guardManage(this.selTask())) return;
-    const name = this.state.sel;
-    const t = this.state.templates.find((x) => x.id === templateId);
-    if (!name || !t) return;
-    const res = await this.api.applyTemplate(name, templateId);
-    if (res) this.toast(__('Added steps from template "{0}"', [t.label]));
     this.load(name);
   };
 
@@ -200,7 +177,7 @@
       if (st.automation && (st.ruleForm || st.recForm)) { this.setState({ ruleForm: null, recForm: null }); return; }
       if (!typing && st.screen === 'templates' && (st.tplSel || st.tplDraft) && !st.compose && !st.forward && !st.cmdk && !st.shortcuts) { this.setState({ tplSel: null, tplDraft: null, tplConfirmDel: false }); return; }
     }
-    if (e.key === 'Escape') { this.setState({ dateEdit: null, cmdk: false, shortcuts: false, compose: null, forward: null, ppl: null, checked: [], notifsOpen: false, snoozeFor: null, automation: null, wfConfirm: null, userMenu: false, themeMenu: false }); return; }
+    if (e.key === 'Escape') { this.setState({ dateEdit: null, cmdk: false, shortcuts: false, compose: null, forward: null, checked: [], notifsOpen: false, snoozeFor: null, automation: null, wfConfirm: null, userMenu: false, themeMenu: false }); return; }
     if (typing) return;
     /* two-key "g then x" sequences: resolved against the palette command list (single source of truth) */
     if (!e.metaKey && !e.ctrlKey && !e.altKey) {

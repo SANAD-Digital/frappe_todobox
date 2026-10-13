@@ -70,7 +70,6 @@
         actionStyle: 'flex:0 0 auto;height:20px;padding:0 7px;display:inline-flex;align-items:center;border-radius:5px;font-size:11px;font-weight:700;color:' + c +
           ';background:color-mix(in oklab, ' + c + ' 13%, transparent);',
         title: l.title || l.doc,
-        docId: l.title ? l.doc : '',
         meta: ((W.DOCTYPES[l.doctype] || {}).ar || l.doctype) + (l.title ? ' · ' + l.doc : ''),
         move: tr(l.from) + (rtl ? ' ← ' : ' → ') + tr(l.to),
         time: (l.ts || '').slice(11, 16),

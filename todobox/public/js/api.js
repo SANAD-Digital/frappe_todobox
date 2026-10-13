@@ -42,7 +42,7 @@ export const FOLDERS = [
 ];
 
 /* last message (not event) in the thread */
-export function lastMessage(t) {
+function lastMessage(t) {
   const msgs = (t.thread || []).filter((x) => x.kind !== 'event');
   return msgs[msgs.length - 1] || null;
 }
@@ -155,7 +155,6 @@ export const TASK_TEMPLATES = [];
 /* ---------- 1. Act on the linked document from within the task ---------- */
 /** Linked document actions from the server (real workflow transitions, with user permissions) */
 export async function getDocActions(name) { return (await srv('get_doc_actions', { name })) || { actions: [], ref_status: '' }; }
-export async function runDocAction(name, actionId) { return srv('run_doc_action', { name, action_id: actionId }); }
 /** Linked-document tabs of a task: { readable, fields, items, comments, files, trail, has_workflow, users, ... } */
 export async function getReferenceDetail(name) { return srv('get_reference_detail', { name }); }
 export async function addReferenceComment(name, text) { return srv('add_reference_comment', { name, text }); }
@@ -176,7 +175,6 @@ export async function toggleChecklist(name, itemId) { return safe(() => bridge()
 export async function addChecklistItem(name, label) { return safe(() => bridge().addChecklistItem(name, label)); }
 export async function removeChecklistItem(name, itemId) { return safe(() => bridge().removeChecklistItem(name, itemId)); }
 /* add the template's missing steps to an existing task's checklist */
-export async function applyTemplate(name, templateId) { return safe(() => bridge().applyTaskTemplate(name, templateId)); }
 
 /* task templates: load all (including disabled) into TASK_TEMPLATES */
 export async function loadTemplates() {

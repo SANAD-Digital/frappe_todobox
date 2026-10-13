@@ -24,7 +24,7 @@ RULE_FIELDS = [
 	"set_priority", "add_label", "hits", "last_applied",
 ]
 RECURRING_FIELDS = [
-	"name", "title", "enabled", "assign_by", "allocated_to", "role", "frequency", "next_run", "due_after_days",
+	"name", "title", "enabled", "assign_by", "allocated_to", "role", "frequency", "next_run",
 	"task_template", "priority", "labels", "subject", "description", "runs", "last_run", "last_todo", "owner",
 ]
 FREQUENCIES = ("Daily", "Weekly", "Monthly", "Quarterly", "Yearly")
@@ -272,11 +272,6 @@ def save_rule(data):
 	doc = frappe.get_doc(RULE_DOCTYPE, data["id"]) if data.get("id") else frappe.new_doc(RULE_DOCTYPE)
 	reference_doctype = data.get("reference_doctype") or None
 	conditions = rule_conditions.parse(data.get("conditions"))
-	if not conditions and any(data.get(k) for k in ("min_amount", "priority_is", "label_contains")):
-		# v0.1 API payload (fixed conditions)
-		conditions = rule_conditions.legacy_to_conditions(
-			reference_doctype, data.get("min_amount"), data.get("priority_is"), data.get("label_contains")
-		)
 	doc.update({
 		"rule_name": (data.get("label") or "").strip(),
 		"enabled": 1 if data.get("active", True) else 0,

@@ -4,12 +4,12 @@ import frappe
 from frappe import _
 from frappe.utils import today
 
-from todobox.services.common import generate_color, generate_initials, get_direct_reports
+from todobox.services.common import generate_color, generate_initials
 
 
 @frappe.whitelist()
 def get_active_users():
-	"""System/website users with initials and avatar colors, plus the current user and their direct reports."""
+	"""System/website users with initials and avatar colors, plus the current user."""
 	me = frappe.session.user
 	users = frappe.get_all(
 		"User",
@@ -38,4 +38,4 @@ def get_active_users():
 			"user_image": None,
 		}
 
-	return {"me": me, "users": out, "today": today(), "my_reports": get_direct_reports(me)}
+	return {"me": me, "users": out, "today": today()}

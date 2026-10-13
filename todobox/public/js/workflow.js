@@ -1,7 +1,7 @@
 /* =============================================================================
    workflow.js: the "Required actions" layer, wired to real Frappe Workflow
    Source: todobox.workflow_api (same logic as the Workflow Action report)
-     · Workflow Action (Open) + Permitted User / Permitted Role
+     · Workflow Action (Open): its user, else the transition's allowed role
      · frappe.model.workflow.get_transitions / apply_workflow
    The UI calls synchronous functions reading from memory; refresh() updates them from the server.
    ============================================================================= */
@@ -35,19 +35,14 @@ const _tones = {};
 export let ME = 'Administrator';
 export let DOCS = [];
 export let ACTION_LOG = [];
-export let WF_NOTIFS = [];
 export let LOADED = false;
 
 export const WF_USERS = withDefault(_users, (k) => ({
   name: k, role: '', initials: (k || '?').slice(0, 2), color: '',
 }));
-export const DOCTYPES = withDefault(_doctypes, (k) => ({ ar: k, icon: 'i-copy', short: k }));
+export const DOCTYPES = withDefault(_doctypes, (k) => ({ ar: k, icon: 'i-copy' }));
 export const WORKFLOWS = withDefault(_workflows, () => ({ states: [], transitions: [], final: [] }));
 export const STATE_TONE = withDefault(_tones, () => 'fg2');
-
-/* "logged in as": the real user only (no impersonation) */
-export let ACTORS = ['—'];
-export const actorToUser = () => ME;
 
 let repaint = () => { };
 export function setRepaint(fn) { repaint = typeof fn === 'function' ? fn : () => { }; }
@@ -79,8 +74,6 @@ async function _refresh() {
   replaceMap(_tones, d.stateTones);
   DOCS = (d.docs || []).map((x) => ({ comments: [], files: [], items: [], checks: [], trail: [], actions: [], ...x }));
   ACTION_LOG = d.log || [];
-  const meU = _users[ME] || {};
-  ACTORS = [(meU.name || ME) + (meU.role ? ' — ' + meU.role : '')];
   LOADED = true;
   return true;
 }
@@ -102,8 +95,6 @@ export async function loadDoc(name) {
 
 /* ------------------------------------------------------------------ engine */
 export const wf = (dt) => WORKFLOWS[dt];
-export const roleOf = (u) => (WF_USERS[u] || {}).role;
-export const isFinal = (d) => (wf(d.doctype).final || []).includes(d.state);
 
 /** Buttons available to me now, computed on the server via get_transitions */
 export function getTransitions(d) {
@@ -138,14 +129,9 @@ export function derailed(d) {
   return !!(st && st.is_optional_state);
 }
 
-export function history(d) {
-  return (d.trail || []).slice().reverse().map((tr) => ({ state: tr[0], by: tr[1], hours: tr[2], note: tr[3] }));
-}
-
 /** Key fields, provided by the server from each doctype's Meta */
 export function govFields(d) { return (d && d.fields) || []; }
 
-export const headlineAmount = (d) => (d && d.amountText) || '';
 export const headlineParty = (d) => (d && d.party) || '';
 
 export function pendingHours(d) { return (d && d.since) || 0; }

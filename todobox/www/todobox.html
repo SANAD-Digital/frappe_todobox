@@ -1665,7 +1665,7 @@ html[data-dark="1"] .tms-err button{background:#ededed;color:#171717}
                     <svg data-ic="" style="width:19px;height:19px;"><use href="#i-chat"></use></svg>
                   </span>
                   <span style="font-size:13px;font-weight:600;">No comments yet</span>
-                  <span style="font-size:12px;color:var(--fg3);line-height:1.7;">Be the first to comment on this document — your comment is saved on the document in ERPNext.</span>
+                  <span style="font-size:12px;color:var(--fg3);line-height:1.7;">Be the first to comment on this document — your comment is saved on the document.</span>
                 </div>
               </sc-if>
               <sc-for list="{{ wd.comments }}" as="cm" hint-placeholder-count="2">
@@ -1704,7 +1704,7 @@ html[data-dark="1"] .tms-err button{background:#ededed;color:#171717}
                     <svg data-ic="" style="width:19px;height:19px;"><use href="#i-paperclip"></use></svg>
                   </span>
                   <span style="font-size:13px;font-weight:600;">No attachments</span>
-                  <span style="font-size:12px;color:var(--fg3);line-height:1.7;">Files attached to this document in ERPNext will appear here.</span>
+                  <span style="font-size:12px;color:var(--fg3);line-height:1.7;">Files attached to this document will appear here.</span>
                 </div>
               </sc-if>
               <sc-for list="{{ wd.files }}" as="fl" hint-placeholder-count="2">
@@ -2444,9 +2444,9 @@ html[data-dark="1"] .tms-err button{background:#ededed;color:#171717}
 <script src="/assets/todobox/js/todobox/quicklook.js?v={{ asset_version }}"></script>
 <script src="/assets/todobox/js/hub/i18n-pass.js?v={{ asset_version }}"></script>
 {% raw %}<script type="text/x-dc" data-dc-script data-props="{
-  &quot;density&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;comfortable&quot;, &quot;normal&quot;, &quot;compact&quot;], &quot;default&quot;: &quot;normal&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;العرض&quot; },
-  &quot;darkMode&quot;: { &quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;العرض&quot; },
-  &quot;defaultFolder&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;inbox&quot;, &quot;overdue&quot;, &quot;today&quot;, &quot;sent&quot;, &quot;fwd&quot;, &quot;cc&quot;, &quot;snoozed&quot;, &quot;done&quot;, &quot;team&quot;], &quot;default&quot;: &quot;inbox&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;السلوك&quot; }
+  &quot;density&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;comfortable&quot;, &quot;normal&quot;, &quot;compact&quot;], &quot;default&quot;: &quot;normal&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Display&quot; },
+  &quot;darkMode&quot;: { &quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Display&quot; },
+  &quot;defaultFolder&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;inbox&quot;, &quot;overdue&quot;, &quot;today&quot;, &quot;sent&quot;, &quot;fwd&quot;, &quot;cc&quot;, &quot;snoozed&quot;, &quot;done&quot;, &quot;team&quot;], &quot;default&quot;: &quot;inbox&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Behaviour&quot; }
 }">
 /* ES modules (api.js, workflow.js); ?v= is the asset version from www/todobox.py to bust the browser cache */
 const TM_JS = '/assets/todobox/js/';
@@ -2471,7 +2471,7 @@ class Component extends window.TTCompose(DCLogic, React) {
     snoozeFor: null, automation: null, rules: [], recurring: [], canManageRules: false, ruleForm: null, recForm: null, autoBusy: null, autoConfirmDel: null,
     savedViews: [], viewCounts: {}, savingView: false, saveViewName: '', activeView: null,
     day: [], stats: null,
-    docBusy: false, newCheck: '', forceChecklist: null,
+    newCheck: '', forceChecklist: null,
     /* task templates */
     templates: [], tplSel: null, tplDraft: null, tplNewStep: '', tplQuery: '', tplBusy: false, tplConfirmDel: false,
     /* required-actions module */

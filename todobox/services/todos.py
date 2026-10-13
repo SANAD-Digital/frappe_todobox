@@ -23,7 +23,7 @@ from todobox.services.common import (
 from todobox.services.notifications import create_notification_log
 from todobox.services.query import my_scope, query_conditions, query_values
 
-# Optional ToDo columns (ToDoBox custom fields, or fields added by other apps) returned when present
+# Optional ToDo columns (ToDoBox custom fields) returned when present
 OPTIONAL_COLUMNS = (
 	"thread_id",
 	"cc_users",
@@ -36,8 +36,6 @@ OPTIONAL_COLUMNS = (
 	"day_order",
 	"rule_applied",
 	"subject",
-	"gcrm_subject",
-	"task_content",
 )
 
 # Fields update_todo may write (besides the virtual "read" and "custom_checklist" keys)
@@ -46,9 +44,7 @@ UPDATABLE_FIELDS = (
 	"priority",
 	"date",
 	"subject",
-	"gcrm_subject",
 	"description",
-	"task_content",
 	"labels",
 	"cc_users",
 	"snooze_until",
@@ -262,7 +258,7 @@ def _fetch_todos(conditions, values, order_by="modified DESC", limit=100):
 				"id": "desc-1",
 				"kind": "desc",
 				"user": r.get("assigned_by") or me,
-				"html": thread_desc_html(subject, r.get("task_content"), raw_desc),
+				"html": raw_desc or subject,
 				"ts": str(r.get("creation") or r.get("modified")),
 			}
 		] + threads.get(r.name, [])
@@ -328,12 +324,6 @@ def get_todo(name):
 	my_scope(conditions)
 	rows = _fetch_todos(conditions, values, limit=1)
 	return rows[0] if rows else None
-
-
-@frappe.whitelist()
-def get_todo_folder(name):
-	"""The folder a ToDo belongs to for the current user."""
-	return get_todo_folders([name]).get(name, "inbox")
 
 
 def get_todo_folders(names):
@@ -517,14 +507,6 @@ def add_comment(name, kind="reply", html="", mentions=None):
 	return {"status": "success", "comment_name": comment.name, "mentioned": list(mentioned)}
 
 
-def thread_desc_html(subject, task_content, raw_desc):
-	"""Description bubble: subject + formatted details when present, else the raw description."""
-	content = (task_content or "").strip()
-	if content and frappe.utils.strip_html(content).strip():
-		return f"<p><strong>{frappe.utils.escape_html(subject or '')}</strong></p>{content}"
-	return raw_desc or subject
-
-
 def compose_description(subject, body):
 	"""Subject as first line, then the details (the details may be HTML from the text editor)."""
 	subject = (subject or "").strip()
@@ -600,16 +582,13 @@ def create_todos(
 	meta = frappe.get_meta("ToDo")
 	thread_id = f"THR-{frappe.generate_hash(length=6).upper()}"
 	description = compose_description(subject, body)
-	task_content = (frappe.utils.sanitize_html(body) if "<" in body else body) if body else None
 
 	optional = {
 		"thread_id": thread_id,
 		"cc_users": ",".join(cc) if cc else None,
 		"labels": ",".join(labels) if labels else None,
 		"task_template": template,
-		"gcrm_subject": subject,
 		"subject": subject,
-		"task_content": task_content,
 	}
 	optional = {k: v for k, v in optional.items() if v is not None and meta.has_field(k)}
 
@@ -739,9 +718,8 @@ def forward_todo(name, to, mode="full", reason=""):
 		if meta.has_field(field):
 			fwd_doc.set(field, original.get(field))
 	fallback_subject = derive_subject(original) or _("Forwarded Task")
-	for field in ("subject", "gcrm_subject"):
-		if meta.has_field(field):
-			fwd_doc.set(field, original.get(field) or fallback_subject)
+	if meta.has_field("subject"):
+		fwd_doc.set("subject", original.get("subject") or fallback_subject)
 	for field, value in (("thread_id", thread_id), ("parent_todo", original.name), ("forwarded_from", me)):
 		if meta.has_field(field):
 			fwd_doc.set(field, value)
@@ -829,48 +807,3 @@ def remind_todo(name, text=None):
 	frappe.db.commit()
 	return get_todo(name)
 
-
-# ------------------------------------------------------------------ workflow (legacy endpoints)
-@frappe.whitelist()
-def get_workflow_items():
-	"""Open Workflow Actions assigned directly to the current user."""
-	if not frappe.db.exists("DocType", "Workflow Action"):
-		return {"pending": [], "sent": [], "decisions": []}
-
-	actions = frappe.get_all(
-		"Workflow Action",
-		filters={"user": frappe.session.user, "status": "Open"},
-		fields=["name", "reference_doctype", "reference_name", "workflow_state", "creation"],
-		order_by="creation desc",
-	)
-	by_type = {}
-	for a in actions:
-		by_type.setdefault(a.reference_doctype, set()).add(a.reference_name)
-	owners = {}
-	for doctype, names in by_type.items():
-		for d in frappe.get_all(doctype, filters={"name": ["in", list(names)]}, fields=["name", "owner"]):
-			owners[(doctype, d.name)] = d.owner
-
-	return {
-		"pending": [
-			{
-				"name": a.name,
-				"doctype": a.reference_doctype,
-				"docname": a.reference_name,
-				"state": a.workflow_state,
-				"owner": owners.get((a.reference_doctype, a.reference_name)),
-				"creation": str(a.creation),
-			}
-			for a in actions
-			if (a.reference_doctype, a.reference_name) in owners
-		]
-	}
-
-
-@frappe.whitelist()
-def apply_workflow_action(doctype, docname, action):
-	"""Applies a workflow action (same permission checks as "Required actions")."""
-	from todobox.services.workflow import apply_action
-
-	apply_action(doctype, docname, action)
-	return {"status": "success"}

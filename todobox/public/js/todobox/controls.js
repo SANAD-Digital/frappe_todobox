@@ -78,13 +78,6 @@
 	/* ------------------------------------------------------------ dates -- */
 	function pad(n) { return String(n).padStart(2, "0"); }
 	function iso(d) { return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); }
-	function parseISO(v) {
-		var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(v || "");
-		return m ? new Date(+m[1], +m[2] - 1, +m[3]) : null;
-	}
-	function addDays(d, n) { var x = new Date(d.getFullYear(), d.getMonth(), d.getDate()); x.setDate(x.getDate() + n); return x; }
-	function todayISO() { return frappe.datetime.get_today(); }
-	function dateFormat() { return String((frappe.boot.sysdefaults || {}).date_format || "dd-mm-yyyy"); }
 
 	/* --------------------------------------------------------------- loading -- */
 	/* controls.bundle.js is fetched once, the first time a control is needed (and
@@ -812,7 +805,5 @@
 		TextEditor: TextEditor, TagsInput: TagsInput, Checklist: Checklist, Attach: Attach,
 		pickDate: pickDate, closeDatePop: closeDatePop,
 		anyPopoverOpen: anyPopoverOpen, closeTopPopover: closeTopPopover,
-		date: { iso: iso, parseISO: parseISO, addDays: addDays, today: todayISO, format: dateFormat },
-		esc: esc,
 	};
 })();
