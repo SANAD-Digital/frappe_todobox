@@ -57,15 +57,19 @@ def generate_color(text):
 
 
 def get_direct_reports(user):
-	"""user_ids of employees who report to the given user via Employee.reports_to."""
+	"""user_ids of employees who report to the given user via Employee.reports_to, in the same company."""
 	if not frappe.db.exists("DocType", "Employee"):
 		return []
-	emp_names = frappe.get_all("Employee", filters={"user_id": user}, pluck="name")
-	if not emp_names:
+	emps = frappe.get_all("Employee", filters={"user_id": user}, fields=["name", "company"])
+	if not emps:
 		return []
 	report_users = frappe.get_all(
 		"Employee",
-		filters={"reports_to": ["in", emp_names], "user_id": ["is", "set"]},
+		filters={
+			"reports_to": ["in", [e.name for e in emps]],
+			"company": ["in", [e.company for e in emps]],
+			"user_id": ["is", "set"],
+		},
 		pluck="user_id",
 	)
 	return [u for u in report_users if u and u != user]

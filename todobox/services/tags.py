@@ -1,13 +1,15 @@
 """Tags: ToDoBox tags are Frappe "Tag" records (Desk's Tag list).
 
 Every tag field in the app suggests from that list, and any new tag saved on a task, a rule or a
-recurring task is added to it.
+recurring task is added to it. On a multi-company site (see org.py) a user restricted to their company
+is only offered the tags used on that company's tasks.
 """
 
 import frappe
 from frappe.utils import cint
 
 from todobox.services.common import split_csv
+from todobox.services.org import visible_users
 
 TAG_DOCTYPE = "Tag"
 
@@ -15,10 +17,29 @@ TAG_DOCTYPE = "Tag"
 @frappe.whitelist()
 def search_tags(txt="", limit=20):
 	"""Tag names matching ``txt`` (all tags when empty), alphabetical."""
-	filters = {"name": ["like", f"%{(txt or '').strip()}%"]} if (txt or "").strip() else None
+	txt = (txt or "").strip()
+	limit = min(cint(limit) or 20, 100)
+	visible = visible_users()
+	if visible is not None:
+		return _company_tags(visible, txt)[:limit]
+	filters = {"name": ["like", f"%{txt}%"]} if txt else None
 	return frappe.get_all(
-		TAG_DOCTYPE, filters=filters, pluck="name", order_by="name asc", limit_page_length=min(cint(limit) or 20, 100)
+		TAG_DOCTYPE, filters=filters, pluck="name", order_by="name asc", limit_page_length=limit
 	)
+
+
+def _company_tags(users, txt=""):
+	"""Tags on the tasks assigned to or by these users, alphabetical."""
+	rows = frappe.get_all(
+		"ToDo",
+		filters={"labels": ["like", f"%{txt}%"] if txt else ["is", "set"]},
+		or_filters={"allocated_to": ["in", list(users)], "assigned_by": ["in", list(users)]},
+		pluck="labels",
+		distinct=True,
+		limit=0,
+	)
+	tags = {t for labels in rows for t in split_csv(labels) if txt.lower() in t.lower()}
+	return sorted(tags, key=str.lower)
 
 
 def ensure_tags(tags):

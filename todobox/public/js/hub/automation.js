@@ -259,7 +259,7 @@ return class extends Base {
         onChange: (id) => this.recPickTemplate(id) })),
       recTo: S('recTo', (el) => new (X().Link)(el, { value: rec().to || null, inputId: 'tm-rec-to', label: __('Assign to'),
         description: __('The task is assigned to this person. Leave empty to create it for every user with the role below.'),
-        doctype: 'User', filters: { enabled: 1, user_type: 'System User' },
+        doctype: 'User', query: 'todobox.api.user_link_query',
         display: (id) => ((A().USERS || {})[id] || {}).name || (this._recNames || {})[id] || id,
         remember: (row) => { if (row.description) (this._recNames = this._recNames || {})[row.value] = row.description; },
         onChange: put('recForm', 'to') })),

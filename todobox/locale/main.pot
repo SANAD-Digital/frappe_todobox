@@ -1904,6 +1904,12 @@ msgstr ""
 msgid "The day plan gathers overdue tasks and those due today, in the order you set."
 msgstr ""
 
+msgid "You need an active employee record to create templates"
+msgstr ""
+
+msgid "You can only assign tasks to people in your company"
+msgstr ""
+
 msgid "The recipient must be an active system user"
 msgstr ""
 

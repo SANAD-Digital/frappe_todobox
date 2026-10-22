@@ -75,7 +75,7 @@
       }),
       fwdTo: this.fxSlot('fwdTo', (el) => new (X().Link)(el, {
         value: (this.state.forward && this.state.forward.to) || null, inputId: 'tm-fwd-to', label: __('To'), reqd: 1,
-        doctype: 'User', filters: { enabled: 1, user_type: 'System User', name: ['!=', A().ME || ''] },
+        doctype: 'User', query: 'todobox.api.user_link_query', filters: { name: ['!=', A().ME || ''] },
         display: (id) => ((A().USERS || {})[id] || {}).name || this._fwdNames[id] || id,
         remember: (row) => { if (row.description) this._fwdNames[row.value] = row.description; },
         onChange: (v) => {

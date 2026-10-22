@@ -30,6 +30,9 @@ the app adds the screen, not another silo.
 - **Reference preview** — the linked document opens beside the task, without leaving the page.
 - **Automation rules** — match a document type on any of its fields, then set a priority or add tags.
 - **Day plan and analytics** — order today's work; track completion and on-time rates for you or the team.
+- **Multi-company privacy** — with ERPNext/HRMS, people see and assign only colleagues in their own
+  company (Employee), along with their company's task templates and tags; managers see their reports'
+  analytics, a *ToDoBox Company Manager* the whole company, and System Manager works across companies.
 - **Arabic and RTL** — fully translated and mirrored.
 
 ![Automation](.github/tb-automation.png)

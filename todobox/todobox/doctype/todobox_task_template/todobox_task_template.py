@@ -4,8 +4,13 @@
 import frappe
 from frappe.model.document import Document
 
+from todobox.services.org import set_template_company
+
 
 class ToDoBoxTaskTemplate(Document):
+	def before_insert(self):
+		set_template_company(self)
+
 	def validate(self):
 		# Template steps are never "done"; drop duplicates while keeping order
 		seen, rows = set(), []

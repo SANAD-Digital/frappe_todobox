@@ -407,7 +407,7 @@
 	};
 
 	/* ----------------------------------------------------------------- Link -- */
-	/* opts: value, doctype | dynamic (() → doctype), filters (get_query filters, or () → filters),
+	/* opts: value, doctype | dynamic (() → doctype), filters (get_query filters, or () → filters), query (server search method),
 	   display(value) → text shown in the input, label, placeholder, inputId, ariaLabel, disabled, onOpen(value) */
 	var Link = inherit(function Link(parent, opts) {
 		var self = this;
@@ -417,7 +417,11 @@
 		};
 		if (opts.dynamic) df.get_options = function () { return opts.dynamic() || ""; };
 		/* filters: an object, or a function returning one (read on every search / validation) */
-		if (opts.filters) df.get_query = function () { return { filters: typeof opts.filters === "function" ? opts.filters() : opts.filters }; };
+		if (opts.filters || opts.query) df.get_query = function () {
+			var q = opts.query ? { query: opts.query } : {};
+			if (opts.filters) q.filters = typeof opts.filters === "function" ? opts.filters() : opts.filters;
+			return q;
+		};
 		Field.call(this, parent, opts, df, "tmc-link");
 		var c = this.control;
 		c.get_filter_description = function () { return Promise.resolve(null); };

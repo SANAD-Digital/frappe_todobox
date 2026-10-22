@@ -1,14 +1,17 @@
-"""Workload per user and recipient search for the "new task" composer."""
+"""Workload per user, recipient search for the "new task" composer and the user Link query (forward,
+recurring tasks) — all limited to the people I can see (see org.py)."""
 
 import frappe
 from frappe.utils import cint, today
 
 from todobox.services.common import generate_color, generate_initials, get_direct_reports
+from todobox.services.org import visible_users
 
 
 @frappe.whitelist()
 def get_workload():
-	"""{user: {open, overdue}} over all open ToDos."""
+	"""{user: {open, overdue}} over all open ToDos of the users I can see."""
+	visible = visible_users()
 	rows = frappe.db.sql(
 		"""
 		SELECT allocated_to AS user,
@@ -21,11 +24,35 @@ def get_workload():
 		{"today": today()},
 		as_dict=True,
 	)
-	return {r.user: {"open": int(r.open or 0), "overdue": int(r.overdue or 0)} for r in rows}
+	return {
+		r.user: {"open": int(r.open or 0), "overdue": int(r.overdue or 0)}
+		for r in rows
+		if visible is None or r.user in visible
+	}
 
 
 def _assignable_filters():
-	return {"enabled": 1, "user_type": "System User", "name": ["not in", ["Guest", frappe.session.user]]}
+	filters = {"enabled": 1, "user_type": "System User", "name": ["not in", ["Guest", frappe.session.user]]}
+	visible = visible_users()
+	if visible is not None:
+		# other companies stay out of the picker
+		filters["name"] = ["in", list(visible - {"Guest", frappe.session.user}) or [""]]
+	return filters
+
+
+def _only(base, names):
+	"""base filters narrowed to the given users."""
+	op, listed = base["name"]
+	keep = [u for u in names if (u in listed) == (op == "in")]
+	return {**base, "name": ["in", keep or [""]]}
+
+
+def _without(base, names):
+	"""base filters minus the given users."""
+	op, listed = base["name"]
+	if op == "in":
+		return {**base, "name": ["in", [u for u in listed if u not in names] or [""]]}
+	return {**base, "name": ["not in", list(listed) + list(names)]}
 
 
 def _recent_recipients(limit=8):
@@ -66,7 +93,7 @@ def search_users(txt="", limit=20, exclude=None):
 		picks = [u for u in recent + get_direct_reports(frappe.session.user) if u not in exclude]
 		picks = list(dict.fromkeys(picks))
 		by_name = {
-			r.name: r for r in frappe.get_all("User", filters={**base, "name": ["in", picks or [""]]}, fields=fields)
+			r.name: r for r in frappe.get_all("User", filters=_only(base, picks), fields=fields)
 		}
 		rows = [by_name[u] for u in picks if u in by_name]
 		# only people I actually assign to count as "suggested" (direct reports just pad the list)
@@ -75,7 +102,7 @@ def search_users(txt="", limit=20, exclude=None):
 			rows += frappe.get_all(
 				"User",
 				# pad with everyone not listed yet (direct reports are in rows but not in `suggested`)
-				filters={**base, "name": ["not in", list(base["name"][1]) + [r.name for r in rows] + list(exclude)]},
+				filters=_without(base, [r.name for r in rows] + list(exclude)),
 				fields=fields,
 				order_by="full_name asc",
 				limit=limit - len(rows),
@@ -96,3 +123,26 @@ def search_users(txt="", limit=20, exclude=None):
 		}
 		for r in rows
 	]
+
+
+@frappe.whitelist()
+@frappe.validate_and_sanitize_search_inputs
+def user_link_query(doctype, txt, searchfield, start, page_len, filters):
+	"""Link-field query for User pickers: active system users I can see, matched on email or name."""
+	conditions = [["enabled", "=", 1], ["user_type", "=", "System User"], ["name", "!=", "Guest"]]
+	visible = visible_users()
+	if visible is not None:
+		conditions.append(["name", "in", list(visible)])
+	for key, value in (filters or {}).items():
+		conditions.append([key, *value] if isinstance(value, (list, tuple)) else [key, "=", value])
+	like = f"%{txt or ''}%"
+	return frappe.get_all(
+		"User",
+		filters=conditions,
+		or_filters=[["name", "like", like], ["full_name", "like", like]],
+		fields=["name", "full_name"],
+		order_by="full_name asc",
+		limit_start=cint(start),
+		limit_page_length=cint(page_len) or 20,
+		as_list=True,
+	)

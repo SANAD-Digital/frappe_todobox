@@ -21,6 +21,7 @@ from todobox.services.common import (
 	todo_has,
 )
 from todobox.services.notifications import create_notification_log
+from todobox.services.org import can_see, ensure_assignable
 from todobox.services.query import my_scope, query_conditions, query_values
 
 # Optional ToDo columns (ToDoBox custom fields) returned when present
@@ -404,6 +405,8 @@ def update_todo(name, patch):
 	for key in ("labels", "cc_users"):
 		if isinstance(patch.get(key), list):
 			patch[key] = ",".join(patch[key])
+	if "cc_users" in patch:
+		ensure_assignable(set(split_csv(patch["cc_users"])) - set(split_csv(todo.get("cc_users"))))
 
 	if "custom_checklist" in patch:
 		steps = patch.pop("custom_checklist")
@@ -438,8 +441,9 @@ def _participants(doc):
 	return {u for u in (doc.allocated_to, doc.assigned_by, *split_csv(doc.get("cc_users"))) if u}
 
 
-def _mention_targets(mentions, me):
-	"""Enabled, existing users from a JSON list/str of emails (me, Guest and duplicates removed)."""
+def _mention_targets(mentions, me, participants=()):
+	"""Enabled, existing users from a JSON list/str of emails (me, Guest and duplicates removed), limited
+	to the task's participants and the people I can see."""
 	try:
 		emails = loads(mentions, []) or []
 	except ValueError:
@@ -447,7 +451,7 @@ def _mention_targets(mentions, me):
 	if isinstance(emails, str):
 		emails = [emails]
 	emails = list(dict.fromkeys(e.strip() for e in emails if isinstance(e, str) and e.strip()))
-	emails = [e for e in emails if e not in (me, "Guest")][:20]
+	emails = [e for e in emails if e not in (me, "Guest") and (e in participants or can_see(e))][:20]
 	if not emails:
 		return {}
 	rows = frappe.get_all("User", filters={"name": ["in", emails], "enabled": 1}, fields=["name", "full_name"])
@@ -467,7 +471,7 @@ def add_comment(name, kind="reply", html="", mentions=None):
 		comment.db_set("is_reply", 1, update_modified=False)
 
 	clean_html = frappe.utils.strip_html(html or "").strip()
-	mentioned = _mention_targets(mentions, me) if kind in ("reply", "comment") else {}
+	mentioned = _mention_targets(mentions, me, _participants(doc)) if kind in ("reply", "comment") else {}
 
 	if mentioned:
 		participants = _participants(doc)
@@ -575,8 +579,9 @@ def create_todos(
 	labels = loads(labels, []) or []
 	attachments = [a for a in (loads(attachments, []) or []) if a]
 	checklist = normalize_checklist(checklist) if has_checklist_table() else []
-	if template and not frappe.db.exists(TEMPLATE_DOCTYPE, template):
+	if template and not (frappe.db.exists(TEMPLATE_DOCTYPE, template) and can(TEMPLATE_DOCTYPE, doc=template)):
 		template = None
+	ensure_assignable(to + cc)
 
 	me = frappe.session.user
 	meta = frappe.get_meta("ToDo")
@@ -667,6 +672,7 @@ def _validate_forward(original, to, mode, me):
 	user = frappe.db.get_value("User", to, ["enabled", "user_type"], as_dict=True)
 	if not user or not user.enabled or user.user_type != "System User":
 		frappe.throw(_("The recipient must be an active system user"))
+	ensure_assignable([to])
 	if to == original.allocated_to:
 		frappe.throw(_("The task is already assigned to this user"))
 	if todo_has("parent_todo") and frappe.db.exists(

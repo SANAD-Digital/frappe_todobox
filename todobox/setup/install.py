@@ -1,4 +1,4 @@
-"""Install / migrate / uninstall hooks: custom fields on ToDo and Comment, indexes, default templates,
+"""Install / migrate / uninstall hooks: custom fields on ToDo and Comment, indexes, roles, default templates,
 desk artifacts.
 
 Everything here is idempotent and safe to re-run.
@@ -11,6 +11,7 @@ from frappe import _, _lt
 from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
 
 from todobox.services.common import CHECKLIST_ITEM_DOCTYPE, TEMPLATE_DOCTYPE
+from todobox.services.org import remove_roles, setup_roles
 
 MODULE = "ToDoBox"
 
@@ -170,6 +171,7 @@ def after_install():
 	setup_custom_fields()
 	frappe.db.commit()
 	_safe("indexes", setup_indexes)
+	_safe("roles", setup_roles)
 	_safe("seed task templates", seed_task_templates)
 	_safe("backfill completed_on", backfill_completed_on)
 
@@ -178,6 +180,7 @@ def after_migrate():
 	setup_custom_fields()
 	frappe.db.commit()
 	_safe("indexes", setup_indexes)
+	_safe("roles", setup_roles)
 	_safe("backfill completed_on", backfill_completed_on)
 
 
@@ -188,6 +191,7 @@ def before_uninstall():
 def after_uninstall():
 	_safe("drop indexes", drop_indexes)
 	_safe("remove desk artifacts", remove_desk_artifacts)
+	_safe("remove roles", remove_roles)
 	frappe.clear_cache()
 
 

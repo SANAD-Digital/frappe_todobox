@@ -11,6 +11,7 @@
   "enabled",
   "column_break_main",
   "priority",
+  "company",
   "section_task",
   "subject",
   "description",
@@ -47,6 +48,13 @@
    "options": "Low\nMedium\nHigh"
   },
   {
+   "description": "Set from the creator's company; empty for a template shared by every company.",
+   "fieldname": "company",
+   "fieldtype": "Data",
+   "label": "Company",
+   "read_only": 1
+  },
+  {
    "fieldname": "section_task",
    "fieldtype": "Section Break",
    "label": "Task"
@@ -74,7 +82,7 @@
   }
  ],
  "links": [],
- "modified": "2026-09-21 18:00:00.000000",
+ "modified": "2026-10-20 16:38:33.705309",
  "modified_by": "Administrator",
  "module": "ToDoBox",
  "name": "ToDoBox Task Template",

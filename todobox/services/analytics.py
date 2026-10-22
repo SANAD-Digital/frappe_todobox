@@ -2,7 +2,8 @@
 
 Principles:
 - Individuals are compared with themselves (previous period of equal length), not with colleagues.
-- Team ranking and member comparison are shown only to team leads (users with direct reports, or System Manager).
+- Team ranking and member comparison are shown only to team leads (users with direct reports, a ToDoBox Company
+  Manager for their company, or System Manager).
 - Every number is explainable: completed = closed within the period (completed_on); on-time = completed on or before the due date.
 """
 
@@ -13,6 +14,7 @@ from frappe import _
 from frappe.utils import add_days, date_diff, get_datetime, getdate, now_datetime, today
 
 from todobox.services.common import derive_subject, get_direct_reports, is_system_manager
+from todobox.services.org import company_members
 
 STALE_DAYS = 3
 PRIORITIES = ("High", "Medium", "Low")
@@ -32,11 +34,15 @@ def stamp_completed_on(doc, method=None):
 
 # ------------------------------------------------------------------ scope
 def _team_of(user):
-	"""My team: users reporting to me directly or indirectly (Employee.reports_to); all users for System Manager."""
+	"""My team: users reporting to me directly or indirectly (Employee.reports_to, same company); my whole
+	company for a ToDoBox Company Manager; all users for System Manager."""
 	if is_system_manager(user):
 		return frappe.get_all(
 			"User", filters={"enabled": 1, "user_type": "System User", "name": ["not in", ["Guest"]]}, pluck="name"
 		)
+	members = company_members(user)
+	if members:
+		return members
 	seen, queue = set(), [user]
 	while queue and len(seen) < 500:
 		for u in get_direct_reports(queue.pop()):

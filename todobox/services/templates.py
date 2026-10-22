@@ -9,7 +9,8 @@ from todobox.services.common import CHECKLIST_ITEM_DOCTYPE, TEMPLATE_DOCTYPE, lo
 
 
 def template_dicts(filters=None):
-	templates = frappe.get_all(
+	# get_list: only the templates I may read (my companies' and shared ones, see org.py)
+	templates = frappe.get_list(
 		TEMPLATE_DOCTYPE,
 		filters=filters or {},
 		fields=["name", "template_name", "subject", "description", "priority", "enabled", "modified"],

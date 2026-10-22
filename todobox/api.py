@@ -24,7 +24,7 @@ from todobox.services.notifications import (
 )
 from todobox.services.query import count_queries, delete_view, get_saved_views, save_view
 from todobox.services.tags import search_tags
-from todobox.services.team import get_workload, search_users
+from todobox.services.team import get_workload, search_users, user_link_query
 from todobox.services.templates import delete_task_template, get_task_templates, save_task_template
 from todobox.services.todos import (
 	add_comment,
@@ -78,4 +78,5 @@ __all__ = [
 	"toggle_checklist_item",
 	"unsnooze_todo",
 	"update_todo",
+	"user_link_query",
 ]

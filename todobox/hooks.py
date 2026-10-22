@@ -33,6 +33,14 @@ app_include_js = ["/assets/todobox/js/desk_font.js"]
 # ToDo desk form: fill the checklist from a ToDoBox Task Template
 doctype_js = {"ToDo": "public/js/todo.js"}
 
+# Multi-company privacy (ERPNext): task templates belong to their creator's company (services/org.py)
+permission_query_conditions = {
+	"ToDoBox Task Template": "todobox.services.org.template_query_conditions",
+}
+has_permission = {
+	"ToDoBox Task Template": "todobox.services.org.template_has_permission",
+}
+
 doc_events = {
 	"ToDo": {
 		"before_insert": "todobox.services.automation.apply_rules",

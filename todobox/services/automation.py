@@ -15,6 +15,7 @@ from todobox.services.common import (
 	loads,
 	split_csv,
 )
+from todobox.services.org import ensure_assignable, restrict, visible_users
 from todobox.services.todos import create_todos, get_todo
 
 RULES_CACHE_KEY = "todobox_rules_v2"
@@ -109,9 +110,11 @@ def next_date(current, frequency):
 
 
 def _recurring_recipients(rec):
-	"""The users a run assigns to: the chosen user, or (no user set) every enabled System User with the role."""
+	"""The users a run assigns to: the chosen user, or (no user set) every enabled System User with the role
+	— only those the task's owner may assign to (their companies, see org.py)."""
+	owner = rec.owner if rec.owner and frappe.db.exists("User", rec.owner) else None
 	if rec.allocated_to:
-		return [rec.allocated_to]
+		return restrict([rec.allocated_to], owner)
 	if not rec.role:
 		return []
 	holders = frappe.get_all(
@@ -119,7 +122,7 @@ def _recurring_recipients(rec):
 	)
 	if not holders:
 		return []
-	return frappe.get_all(
+	users = frappe.get_all(
 		"User",
 		filters={
 			"name": ["in", list(set(holders) - {"Guest", "Administrator"}) or [""]],
@@ -129,6 +132,7 @@ def _recurring_recipients(rec):
 		pluck="name",
 		order_by="full_name asc, name asc",
 	)
+	return restrict(users, owner)
 
 
 def _create_from_recurring(rec):
@@ -228,12 +232,12 @@ AUTOMATIC_ROLES = ("Guest", "All", "Administrator", "Desk User")
 
 
 def _role_options():
-	"""Roles a recurring task can target: enabled roles held by at least one enabled System User."""
+	"""Roles a recurring task can target: enabled roles held by at least one enabled System User I can see."""
 	has_role = frappe.qb.DocType("Has Role")
 	user = frappe.qb.DocType("User")
 	role = frappe.qb.DocType("Role")
 	count = Count(has_role.parent).distinct()
-	rows = (
+	query = (
 		frappe.qb.from_(has_role)
 		.join(user).on(user.name == has_role.parent)
 		.join(role).on(role.name == has_role.role)
@@ -248,7 +252,11 @@ def _role_options():
 		)
 		.groupby(has_role.role)
 		.orderby(has_role.role)
-	).run(as_dict=True)
+	)
+	visible = visible_users()
+	if visible is not None:
+		query = query.where(user.name.isin(list(visible)))
+	rows = query.run(as_dict=True)
 	return [{"name": r.role, "users": cint(r.users)} for r in rows]
 
 
@@ -318,6 +326,7 @@ def save_recurring(data):
 	data = loads(data, {}) or {}
 	doc = _get_recurring(data["id"]) if data.get("id") else frappe.new_doc(RECURRING_DOCTYPE)
 	frequency = data.get("frequency") if data.get("frequency") in FREQUENCIES else "Monthly"
+	ensure_assignable([data.get("to")])
 	# next_run is not taken from the client: the controller derives it from the frequency
 	doc.update({
 		"title": (data.get("label") or "").strip(),
