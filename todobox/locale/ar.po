@@ -3498,3 +3498,51 @@ msgstr "إعداد جدول الأعمال"
 
 msgid "Confirm attendance"
 msgstr "تأكيد الحضور"
+
+#: todobox/services/notifications.py
+msgid "{0} sent the first reply to your task: {1}"
+msgstr "أول رد من {0} على مهمتك: {1}"
+
+#: todobox/services/notifications.py
+msgid "{0} sent the first reply to a task you are CC'd on: {1}"
+msgstr "أول رد من {0} على مهمة أنت نسخة فيها: {1}"
+
+#: todobox/services/notifications.py
+msgid "{0} sent the first reply to a task assigned to you: {1}"
+msgstr "أول رد من {0} على مهمة لك: {1}"
+
+#: todobox/services/notifications.py
+msgid "{0} replied to your message on: {1}"
+msgstr "رد من {0} على رسالتك في: {1}"
+
+#: todobox/services/notifications.py
+msgid "{0} replied to a task assigned to you: {1}"
+msgstr "رد من {0} على مهمة لك: {1}"
+
+#: todobox/services/notifications.py
+msgid "{0} replied to a task you sent: {1}"
+msgstr "رد من {0} على مهمة أرسلتها: {1}"
+
+#: todobox/services/notifications.py
+msgid "{0} replied to a task you are CC'd on: {1}"
+msgstr "رد من {0} على مهمة أنت نسخة فيها: {1}"
+
+#: todobox/services/notifications.py
+msgid "{0} replied to a task: {1}"
+msgstr "رد من {0} على مهمة: {1}"
+
+#: todobox/public/js/api.js
+msgid "Reply"
+msgstr "رد"
+
+#: todobox/public/js/api.js
+msgid "First reply"
+msgstr "أول رد"
+
+#: todobox/public/js/api.js
+msgid "Replied to you"
+msgstr "ردّ عليك"
+
+#: todobox/public/js/api.js
+msgid "Mention"
+msgstr "إشارة"

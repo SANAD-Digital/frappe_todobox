@@ -193,6 +193,7 @@ html[data-dark="1"] .tms-err button{background:#ededed;color:#171717}
   [dir="ltr"] .tt-aside-start{box-shadow:14px 0 32px rgba(0,0,0,.10)!important;animation-name:slidein-l!important}
   [dir="rtl"] .tt-aside-end{animation-name:slidein-l!important}
   [dir="ltr"] .tt-aside-end{box-shadow:-14px 0 32px rgba(0,0,0,.10)!important}
+  @keyframes tt-pop-down{from{transform:translateY(-10px);opacity:0}to{transform:none;opacity:1}}
   @keyframes fadeup{from{transform:translateY(6px);opacity:0}to{transform:translateY(0);opacity:1}}
   @keyframes pop{from{transform:scale(.97);opacity:0}to{transform:scale(1);opacity:1}}
   @keyframes tt-fadein{from{opacity:0}to{opacity:1}}
@@ -411,6 +412,7 @@ html[data-dark="1"] .tms-err button{background:#ededed;color:#171717}
                 <span style="flex:1;min-width:0;text-align:start;">
                   <span style="display:flex;align-items:baseline;gap:7px;">
                     <span style="font-size:12px;font-weight:600;">{{ n.who }}</span>
+                    <span style="{{ n.chipStyle }}">{{ n.chip }}</span>
                     <span style="font-size:10px;color:var(--fg3);font-family:var(--font);font-variant-numeric:tabular-nums;">{{ n.time }}</span>
                   </span>
                   <span style="display:block;font-size:12px;color:var(--fg2);line-height:1.7;margin-top:2px;">{{ n.text }}</span>
@@ -2399,6 +2401,25 @@ html[data-dark="1"] .tms-err button{background:#ededed;color:#171717}
     </div>
   </sc-if>
 
+  <sc-if value="{{ hasPopups }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;top:56px;left:50%;transform:translateX(-50%);z-index:60;width:min(420px,calc(100vw - 32px));display:flex;flex-direction:column;gap:8px;pointer-events:none;">
+      <sc-for list="{{ popups }}" as="p" hint-placeholder-count="1">
+        <div role="alert" onClick="{{ p.onOpen }}" style="{{ p.style }}">
+          <span style="{{ p.iconWrap }}"><svg data-ic="" style="width:15px;height:15px;"><use href="{{ p.iconRef }}"></use></svg></span>
+          <span style="flex:1;min-width:0;text-align:start;">
+            <span style="display:flex;align-items:center;gap:7px;">
+              <span style="font-size:13px;font-weight:700;">{{ p.who }}</span>
+              <span style="{{ p.chipStyle }}">{{ p.chip }}</span>
+            </span>
+            <span style="display:block;font-size:12px;color:var(--fg2);line-height:1.6;margin-top:3px;">{{ p.subject }}</span>
+            <span style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:12px;color:var(--fg3);line-height:1.6;margin-top:2px;">{{ p.text }}</span>
+          </span>
+          <button type="button" class="tt-x" onClick="{{ p.onClose }}" aria-label="Close" title="Close"><svg data-ic=""><use href="#i-x"></use></svg></button>
+        </div>
+      </sc-for>
+    </div>
+  </sc-if>
+
   <sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
     <div role="status" aria-live="polite" style="position:fixed;bottom:22px;inset-inline-start:22px;z-index:51;padding:11px 15px;background:var(--panel);border:1px solid var(--line2);border-radius:11px;box-shadow:var(--shadow-lg);font-size:13px;animation:fadeup .18s var(--ease);">{{ toastText }}</div>
   </sc-if>
@@ -2467,7 +2488,7 @@ class Component extends window.TTCompose(DCLogic, React) {
     toast: null, undo: null, showEvents: false, swipe: null, scenarioStatus: '',
     narrow: typeof window !== 'undefined' && window.innerWidth < 1150, pane: 'list',
     screen: 'mail', sort: 'modified', hintsOpen: false,
-    notifsOpen: false, notifs: [], workload: {}, userMenu: false,
+    notifsOpen: false, notifs: [], popups: [], workload: {}, userMenu: false,
     snoozeFor: null, automation: null, rules: [], recurring: [], canManageRules: false, ruleForm: null, recForm: null, autoBusy: null, autoConfirmDel: null,
     savedViews: [], viewCounts: {}, savingView: false, saveViewName: '', activeView: null,
     day: [], stats: null,

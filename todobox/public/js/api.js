@@ -294,6 +294,9 @@ export async function countViews(views) {
 export const NOTIF_KINDS = {
   assign: { icon: 'user-plus', tone: 'primary', label: __('Assignment') },
   reply: { icon: 'reply', tone: 'green', label: __('Reply') },
+  first: { icon: 'star', tone: 'primary', label: __('First reply') },
+  answer: { icon: 'reply', tone: 'amber', label: __('Replied to you') },
+  mention: { icon: 'at', tone: 'primary', label: __('Mention') },
   overdue: { icon: 'clock', tone: 'red', label: __('Overdue') },
   cc: { icon: 'copy', tone: 'fg2', label: __('CC') },
   rule: { icon: 'bolt', tone: 'fg2', label: __('Rule') },

@@ -3260,3 +3260,47 @@ msgstr ""
 
 msgid "Confirm attendance"
 msgstr ""
+
+#: todobox/services/notifications.py
+msgid "{0} sent the first reply to your task: {1}"
+msgstr ""
+
+#: todobox/services/notifications.py
+msgid "{0} sent the first reply to a task you are CC'd on: {1}"
+msgstr ""
+
+#: todobox/services/notifications.py
+msgid "{0} sent the first reply to a task assigned to you: {1}"
+msgstr ""
+
+#: todobox/services/notifications.py
+msgid "{0} replied to your message on: {1}"
+msgstr ""
+
+#: todobox/services/notifications.py
+msgid "{0} replied to a task assigned to you: {1}"
+msgstr ""
+
+#: todobox/services/notifications.py
+msgid "{0} replied to a task you sent: {1}"
+msgstr ""
+
+#: todobox/services/notifications.py
+msgid "{0} replied to a task you are CC'd on: {1}"
+msgstr ""
+
+#: todobox/services/notifications.py
+msgid "{0} replied to a task: {1}"
+msgstr ""
+
+#: todobox/public/js/api.js
+msgid "First reply"
+msgstr ""
+
+#: todobox/public/js/api.js
+msgid "Replied to you"
+msgstr ""
+
+#: todobox/public/js/api.js
+msgid "Mention"
+msgstr ""

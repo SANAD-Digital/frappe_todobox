@@ -20,7 +20,7 @@ from todobox.services.common import (
 	split_csv,
 	todo_has,
 )
-from todobox.services.notifications import create_notification_log
+from todobox.services.notifications import create_notification_log, reply_kind
 from todobox.services.org import can_see, ensure_assignable
 from todobox.services.query import my_scope, query_conditions, query_values
 
@@ -466,6 +466,16 @@ def add_comment(name, kind="reply", html="", mentions=None):
 	participant yet, is added to the task's CC so they can open it."""
 	doc = get_task(name)
 	me = frappe.session.user
+	# before adding it: is this the first message from someone other than the creator, and who sent the last one?
+	last = frappe.get_all(
+		"Comment",
+		filters={"reference_doctype": "ToDo", "reference_name": doc.name, "comment_type": "Comment"},
+		fields=["comment_email", "owner"],
+		order_by="creation desc",
+		limit=1,
+	)
+	last_sender = (last[0].comment_email or last[0].owner) if last else (doc.assigned_by or doc.owner)
+	first = not last and me != (doc.assigned_by or doc.owner)
 	comment = doc.add_comment("Comment" if kind in ("reply", "comment") else "Info", html)
 	if kind == "reply" and frappe.db.has_column("Comment", "is_reply"):
 		comment.db_set("is_reply", 1, update_modified=False)
@@ -494,17 +504,22 @@ def add_comment(name, kind="reply", html="", mentions=None):
 				from_user=me,
 				notif_type="Mention",
 				dedupe=False,
+				kind="mention",
 			)
 
+	sender = frappe.utils.get_fullname(me)
 	for user in _participants(doc) - {me} - set(mentioned):
+		note_kind, template = reply_kind(doc, user, first, last_sender)
 		create_notification_log(
 			for_user=user,
-			subject=_("New reply on task: {0}").format(short_subject(doc, 40)),
+			subject=template.format(sender, short_subject(doc, 40)),
 			content=clean_html or _("New comment"),
 			document_type="ToDo",
 			document_name=doc.name,
 			from_user=me,
 			notif_type="Mention",
+			dedupe=False,  # every reply notifies, not only the first one on the task
+			kind=note_kind,
 		)
 
 	frappe.db.commit()

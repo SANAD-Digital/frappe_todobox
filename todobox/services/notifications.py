@@ -4,7 +4,7 @@ import frappe
 from frappe import _
 from frappe.query_builder import DocType
 
-from todobox.services.common import short_subject
+from todobox.services.common import short_subject, split_csv
 
 
 def create_notification_log(
@@ -16,9 +16,10 @@ def create_notification_log(
 	from_user=None,
 	notif_type="Assignment",
 	dedupe=True,
+	kind=None,
 ):
 	"""Creates a Notification Log for a target user (skips self-notifications and, unless dedupe=False,
-	exact duplicates)."""
+	exact duplicates). kind: what the bell shows it as (see _kind)."""
 	if not for_user:
 		return None
 
@@ -46,6 +47,7 @@ def create_notification_log(
 				"subject": subject,
 				"email_content": content or subject,
 				"read": 0,
+				**({"todobox_kind": kind} if kind and _has_kind_field() else {}),
 			}
 		).insert(ignore_permissions=True)
 		return doc.name
@@ -54,6 +56,39 @@ def create_notification_log(
 		return None
 	finally:
 		frappe.flags.mute_emails = prev_mute
+
+
+def _has_kind_field():
+	return frappe.db.has_column("Notification Log", "todobox_kind")
+
+
+def user_lang(user):
+	"""The language a user reads notifications in."""
+	return frappe.db.get_value("User", user, "language") or frappe.db.get_default("lang") or "en"
+
+
+def reply_kind(todo, recipient, first, last_sender):
+	"""(kind, subject template) for a reply notification, by what the recipient is to the task:
+	the first reply from someone other than the creator, an answer to the recipient's own last
+	message, or a reply on a task assigned to / sent by / copied to them. The template takes
+	{0} the sender and {1} the task, in the recipient's language."""
+	lang = user_lang(recipient)
+	cc = recipient in split_csv(todo.get("cc_users"))
+	if first:
+		if recipient == todo.assigned_by:
+			return "first", _("{0} sent the first reply to your task: {1}", lang=lang)
+		if cc:
+			return "first", _("{0} sent the first reply to a task you are CC'd on: {1}", lang=lang)
+		return "first", _("{0} sent the first reply to a task assigned to you: {1}", lang=lang)
+	if recipient == last_sender:
+		return "answer", _("{0} replied to your message on: {1}", lang=lang)
+	if recipient == todo.allocated_to:
+		return "reply", _("{0} replied to a task assigned to you: {1}", lang=lang)
+	if recipient == todo.assigned_by:
+		return "reply", _("{0} replied to a task you sent: {1}", lang=lang)
+	if cc:
+		return "reply", _("{0} replied to a task you are CC'd on: {1}", lang=lang)
+	return "reply", _("{0} replied to a task: {1}", lang=lang)
 
 
 def on_todo_after_insert(doc, method=None):
@@ -71,6 +106,8 @@ def on_todo_after_insert(doc, method=None):
 
 
 def _kind(log):
+	if log.get("todobox_kind"):
+		return log.todobox_kind
 	subject = log.subject or ""
 	if log.type == "Assignment":
 		return "assign"
@@ -94,7 +131,10 @@ def get_notifications():
 	logs = frappe.get_all(
 		"Notification Log",
 		filters={"for_user": frappe.session.user, "document_type": ["in", ["ToDo", *wf_doctypes]]},
-		fields=["name", "subject", "email_content", "document_type", "document_name", "from_user", "read", "type", "creation"],
+		fields=[
+			"name", "subject", "email_content", "document_type", "document_name", "from_user", "read", "type", "creation",
+			*(["todobox_kind"] if _has_kind_field() else []),
+		],
 		order_by="creation desc",
 		limit=50,
 	)

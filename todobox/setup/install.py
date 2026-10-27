@@ -86,6 +86,17 @@ CUSTOM_FIELDS = {
 			"insert_after": "comment_type",
 		}
 	],
+	"Notification Log": [
+		# what the notification is about (reply, first, answer, mention, ...), for the ToDoBox bell
+		{
+			"fieldname": "todobox_kind",
+			"label": "ToDoBox Kind",
+			"fieldtype": "Data",
+			"insert_after": "type",
+			"read_only": 1,
+			"hidden": 1,
+		}
+	],
 }
 
 # Default task templates, seeded once in the site's default language (see seed_task_templates)

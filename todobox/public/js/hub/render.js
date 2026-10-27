@@ -326,6 +326,15 @@
     });
 
     const notifList = Array.isArray(s.notifs) ? s.notifs : [];
+    /* "first reply" / "replied to you" stand out with a label in the bell list and the popup */
+    const notifChip = (n) => {
+      const k = A.NOTIF_KINDS[n.kind];
+      const show = k && (n.kind === 'first' || n.kind === 'answer');
+      return {
+        chip: show ? k.label : '',
+        chipStyle: show ? 'flex:0 0 auto;padding:1px 7px;border-radius:99px;font-size:10px;font-weight:700;color:var(--' + k.tone + ');background:color-mix(in oklab, var(--' + k.tone + ') 14%, transparent);' : 'display:none;',
+      };
+    };
     const notifUnread = notifList.filter((n) => !n.read).length;
 
     const now = new Date();
@@ -457,6 +466,7 @@
         const k = A.NOTIF_KINDS[n.kind] || { icon: 'bell', tone: 'fg2' };
         const c = 'var(--' + k.tone + ')';
         return {
+          ...notifChip(n),
           who: n.user ? (U[n.user] || {}).name || n.user : k.label,
           text: n.text, subject: n.subject || '', time: this.fmtTime(n.ts), iconRef: iref(k.icon),
           style: 'width:100%;display:flex;align-items:flex-start;gap:11px;padding:11px 14px;background:' + (n.read ? 'transparent' : 'var(--panel2)') + ';border:0;border-bottom:1px solid var(--line);cursor:pointer;',
@@ -468,6 +478,26 @@
             Promise.resolve(this.api.markNotifRead(n.id)).catch(() => {}).then(() => this.loadAux());
             this.openNotifTarget(n);
           },
+        };
+      }),
+
+      hasPopups: !!(s.popups || []).length,
+      popups: (s.popups || []).map((n) => {
+        const k = A.NOTIF_KINDS[n.kind] || { icon: 'bell', tone: 'fg2' };
+        const c = 'var(--' + k.tone + ')';
+        return {
+          ...notifChip(n),
+          who: n.user ? (U[n.user] || {}).name || n.user : k.label,
+          subject: n.subject || '', text: n.text === n.subject ? '' : n.text, iconRef: iref(k.icon),
+          style: 'pointer-events:auto;display:flex;align-items:flex-start;gap:11px;padding:12px 12px 12px 14px;background:var(--panel);border:1px solid var(--line2);border-inline-start:3px solid ' + c + ';border-radius:12px;box-shadow:var(--shadow-lg);cursor:pointer;animation:tt-pop-down .22s var(--ease);',
+          iconWrap: 'width:30px;height:30px;flex:0 0 30px;display:grid;place-items:center;border-radius:9px;color:' + c + ';background:color-mix(in oklab, ' + c + ' 14%, transparent);',
+          onOpen: () => {
+            this.dismissPopup(n.id);
+            this.setState((st) => ({ notifs: (st.notifs || []).map((x) => (x.id === n.id ? { ...x, read: true } : x)) }));
+            Promise.resolve(this.api.markNotifRead(n.id)).catch(() => {}).then(() => this.loadAux());
+            this.openNotifTarget(n);
+          },
+          onClose: (e) => { if (e && e.stopPropagation) e.stopPropagation(); this.dismissPopup(n.id); },
         };
       }),
 

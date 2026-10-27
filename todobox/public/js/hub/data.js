@@ -104,7 +104,17 @@ window.TodoboxColor = (() => {
     if (!seen) return;
     const fresh = list.filter((n) => n && !n.read && !seen.has(n.id) && n.user !== me);
     if (fresh.length && window.TodoboxSound) window.TodoboxSound.play(fresh.some((n) => n.kind !== 'reply') ? 'chime' : 'mention');
+    this.pushPopups(fresh);
   }
+  /* a new notification also pops up at the top of the screen (newest first, at most 3, 8s each) */
+  pushPopups(list) {
+    const items = list.slice(0, 3);
+    if (!items.length) return;
+    const ids = new Set(items.map((n) => n.id));
+    this.setState((st) => ({ popups: [...items, ...(st.popups || []).filter((p) => !ids.has(p.id))].slice(0, 3) }));
+    items.forEach((n) => this.timers.push(setTimeout(() => this.dismissPopup(n.id), 8000)));
+  }
+  dismissPopup = (id) => this.setState((st) => ({ popups: (st.popups || []).filter((p) => p.id !== id) }));
   /* live: Notification Log publishes "notification" to its user; a new Workflow Action may need my
      decision. Both are optional (the demo shim may have no socket). Registered once. */
   wireNotifLive() {
