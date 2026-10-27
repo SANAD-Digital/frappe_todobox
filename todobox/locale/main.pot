@@ -3304,3 +3304,31 @@ msgstr ""
 #: todobox/public/js/api.js
 msgid "Mention"
 msgstr ""
+
+#: todobox/services/workflow_notify.py
+msgid "{0} {1} is waiting for your decision ({2})"
+msgstr ""
+
+#: todobox/services/workflow_notify.py
+msgid "{0} moved {1} {2} to: {3}"
+msgstr ""
+
+#: todobox/public/js/api.js
+msgid "Status update"
+msgstr ""
+
+#: todobox/public/js/api.js
+msgid "Decision reminder"
+msgstr ""
+
+#: todobox/public/js/api.js
+msgid "Tasks"
+msgstr ""
+
+#: todobox/public/js/api.js
+msgid "Replies"
+msgstr ""
+
+#: todobox/public/js/api.js
+msgid "Reminders"
+msgstr ""

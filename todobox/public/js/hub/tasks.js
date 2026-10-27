@@ -139,9 +139,12 @@
   openNotifTarget = (n) => {
     if (!n) return;
     if (n.docname && !n.todo) {
-      this.wfGo('pending');
-      this.wfOpenDoc(n.docname);
-      this.scrollToRow(n.docname);
+      /* a status update on my document opens "Sent & following up"; the rest wait on my decision.
+         The document may be new to the list: reload it first. */
+      this.wfGo(n.kind === 'wf_update' ? 'sent' : 'pending');
+      const show = () => { this.wfOpenDoc(n.docname); this.scrollToRow(n.docname); };
+      show();
+      if (this.W && this.W.refresh) this.W.refresh(true).then(() => { if (this.W.hydrateChecks) this.W.hydrateChecks(); show(); });
       return;
     }
     if (!n.todo) return;

@@ -94,7 +94,7 @@ msgstr "تم تنفيذ الإجراء '{0}' على {1}"
 
 msgctxt "ToDoBox"
 msgid "Actions"
-msgstr "إجراءات"
+msgstr "الإجراءات"
 
 msgid "Add"
 msgstr "إضافة"
@@ -3546,3 +3546,31 @@ msgstr "ردّ عليك"
 #: todobox/public/js/api.js
 msgid "Mention"
 msgstr "إشارة"
+
+#: todobox/services/workflow_notify.py
+msgid "{0} {1} is waiting for your decision ({2})"
+msgstr "{0} {1} بانتظار قرارك ({2})"
+
+#: todobox/services/workflow_notify.py
+msgid "{0} moved {1} {2} to: {3}"
+msgstr "نقل {0} {1} {2} إلى: {3}"
+
+#: todobox/public/js/api.js
+msgid "Status update"
+msgstr "تحديث الحالة"
+
+#: todobox/public/js/api.js
+msgid "Decision reminder"
+msgstr "تذكير بقرار"
+
+#: todobox/public/js/api.js
+msgid "Tasks"
+msgstr "المهام"
+
+#: todobox/public/js/api.js
+msgid "Replies"
+msgstr "الردود"
+
+#: todobox/public/js/api.js
+msgid "Reminders"
+msgstr "التذكيرات"

@@ -102,6 +102,7 @@ def on_todo_after_insert(doc, method=None):
 			document_name=doc.name,
 			from_user=doc.assigned_by,
 			notif_type="Assignment",
+			kind="assign",
 		)
 
 
@@ -146,7 +147,7 @@ def get_notifications():
 		out.append(
 			{
 				"id": log.name,
-				"kind": _kind(log) if is_todo else "wf",
+				"kind": _kind(log) if is_todo else (log.get("todobox_kind") or "wf"),
 				"todo": log.document_name if is_todo else None,
 				"folder": folders.get(log.document_name, "inbox") if is_todo else None,
 				"doctype": None if is_todo else log.document_type,
@@ -172,12 +173,15 @@ def mark_notif_read(name):
 
 @frappe.whitelist()
 def mark_all_notifs_read():
-	"""Marks all of the current user's ToDo notifications as read."""
+	"""Marks all of the current user's ToDo and workflow-document notifications (what the bell shows) as read."""
+	from todobox.services.workflow import _active_workflows
+
 	log = DocType("Notification Log")
+	doctypes = ["ToDo", *[dt for dt in _active_workflows() if dt != "ToDo"]]
 	(
 		frappe.qb.update(log)
 		.set(log.read, 1)
-		.where((log.for_user == frappe.session.user) & (log.document_type == "ToDo") & (log.read == 0))
+		.where((log.for_user == frappe.session.user) & (log.document_type.isin(doctypes)) & (log.read == 0))
 	).run()
 	frappe.db.commit()
 	return {"status": "success"}

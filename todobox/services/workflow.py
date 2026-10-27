@@ -13,6 +13,7 @@ from frappe.model.workflow import apply_workflow, get_transitions, get_workflow_
 from frappe.utils import add_days, cint, flt, fmt_money, get_datetime, now_datetime
 
 from todobox.services.common import TRANSLATION_CONTEXT, can
+from todobox.services.notifications import create_notification_log
 
 AVATAR_COLORS = [
 	"#8a5a2b", "#3f4ea8", "#6a4fa6", "#2e7757", "#976420",
@@ -767,15 +768,15 @@ def nudge(doctype, docname):
 	for skip in (frappe.session.user, "Administrator", "Guest"):
 		targets.discard(skip)
 	for u in list(targets)[:25]:
-		frappe.get_doc({
-			"doctype": "Notification Log",
-			"for_user": u,
-			"type": "Alert",
-			"document_type": doctype,
-			"document_name": docname,
-			"subject": _("Reminder: {0} is waiting for your decision").format(docname),
-			"from_user": frappe.session.user,
-		}).insert(ignore_permissions=True)
+		create_notification_log(
+			for_user=u,
+			subject=_("Reminder: {0} is waiting for your decision").format(docname),
+			document_type=doctype,
+			document_name=docname,
+			notif_type="Alert",
+			dedupe=False,
+			kind="wf_remind",
+		)
 	frappe.db.commit()
 	holder = " · ".join(labels) or ", ".join(frappe.utils.get_fullname(u) for u in list(targets)[:3])
 	return {"ok": 1, "sent": len(targets), "holder": holder}

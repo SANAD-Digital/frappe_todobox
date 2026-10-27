@@ -431,6 +431,7 @@ def update_todo(name, patch):
 			document_name=todo.name,
 			from_user=me,
 			notif_type="Assignment",
+			kind="done",
 		)
 
 	frappe.db.commit()
@@ -646,6 +647,7 @@ def create_todos(
 				document_name=todo.name,
 				from_user=me,
 				notif_type="Assignment",
+				kind="assign",
 			)
 		for user in cc:
 			if user not in (me, recipient):
@@ -657,6 +659,7 @@ def create_todos(
 					document_name=todo.name,
 					from_user=me,
 					notif_type="Share",
+					kind="cc",
 				)
 
 	frappe.db.commit()
@@ -772,6 +775,7 @@ def forward_todo(name, to, mode="full", reason=""):
 		document_name=fwd_doc.name,
 		from_user=me,
 		notif_type="Assignment",
+		kind="forward",
 	)
 
 	frappe.db.commit()
@@ -824,6 +828,7 @@ def remind_todo(name, text=None):
 			document_type="ToDo",
 			document_name=todo.name,
 			notif_type="Alert",
+			kind="remind",
 		)
 	frappe.db.commit()
 	return get_todo(name)

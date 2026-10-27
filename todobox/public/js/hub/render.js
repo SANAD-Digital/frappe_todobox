@@ -20,7 +20,7 @@
       emptyZero: '0',
       openCompose: this.openCompose, composeOpen: !!s.compose,
       toggleNotifs: () => this.setState({ notifsOpen: !s.notifsOpen }),
-      closeNotifs: () => this.setState({ notifsOpen: false }), notifsEmpty: true,
+      closeNotifs: () => this.setState({ notifsOpen: false }), notifsEmpty: true, notifTabs: [],
       ...this.themeVals(true),
       /* the header (wordmark, user menu, ⌘K hint) is visible while loading too */
       ...this.accountVals(),
@@ -336,6 +336,9 @@
       };
     };
     const notifUnread = notifList.filter((n) => !n.read).length;
+    const notifTab = s.notifTab || 'all';
+    const notifGroup = (A.NOTIF_GROUPS || []).find((g) => g.id === notifTab);
+    const notifShown = notifGroup && notifGroup.kinds ? notifList.filter((n) => notifGroup.kinds.includes(n.kind)) : notifList;
 
     const now = new Date();
     /* completed tasks: comment-only composer */
@@ -454,7 +457,18 @@
           : 'background:var(--panel);border:1px solid var(--line2);color:var(--fg2);'),
       ...this.queryBuilderVals(allLabels),
 
-      notifsOpen: s.notifsOpen, notifUnread: notifUnread, notifsEmpty: notifList.length === 0,
+      notifsOpen: s.notifsOpen, notifUnread: notifUnread, notifsEmpty: notifShown.length === 0,
+      notifTabs: (A.NOTIF_GROUPS || []).map((g) => {
+        const on = notifTab === g.id;
+        const unread = notifList.filter((n) => !n.read && (!g.kinds || g.kinds.includes(n.kind))).length;
+        return {
+          label: g.label, count: unread || '', on: on ? '1' : '0',
+          style: 'flex:0 0 auto;height:26px;padding:0 10px;display:flex;align-items:center;gap:5px;border-radius:99px;cursor:pointer;font-size:11.5px;font-family:inherit;white-space:nowrap;'
+            + (on ? 'background:var(--primary);border:1px solid var(--primary);color:var(--on-accent);font-weight:600;' : 'background:transparent;border:1px solid var(--line2);color:var(--fg2);'),
+          countStyle: unread ? 'min-width:16px;height:16px;padding:0 4px;display:grid;place-items:center;border-radius:9px;font-size:10px;font-variant-numeric:tabular-nums;' + (on ? 'background:color-mix(in oklab, var(--on-accent) 22%, transparent);' : 'background:var(--sunk);color:var(--fg2);') : 'display:none;',
+          onPick: () => this.setState({ notifTab: g.id }),
+        };
+      }),
       bellLabel: __('Notifications — {0} unread', [notifUnread]),
       bellStyle: 'position:relative;width:32px;height:32px;display:grid;place-items:center;background:' + (s.notifsOpen ? 'var(--sunk)' : 'transparent') + ';border:1px solid ' + (s.notifsOpen ? 'var(--line2)' : 'transparent') + ';border-radius:8px;cursor:pointer;color:var(--fg2);',
       bellBadge: notifUnread ? 'position:absolute;top:1px;inset-inline-end:2px;min-width:15px;height:15px;padding:0 3px;display:grid;place-items:center;background:var(--red);color:var(--on-accent);border-radius:9px;font-size:10px;font-family:var(--font);font-variant-numeric:tabular-nums;' : 'display:none;',
@@ -462,7 +476,7 @@
       closeNotifs: () => this.setState({ notifsOpen: false }),
       markAllRead: () => { this.api.markAllNotifsRead(); this.loadAux();
     this.loadTemplates(); },
-      notifs: notifList.map((n) => {
+      notifs: notifShown.map((n) => {
         const k = A.NOTIF_KINDS[n.kind] || { icon: 'bell', tone: 'fg2' };
         const c = 'var(--' + k.tone + ')';
         return {

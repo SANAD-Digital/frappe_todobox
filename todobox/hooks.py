@@ -58,6 +58,11 @@ doc_events = {
 	"Comment": {
 		"after_insert": "todobox.services.live.on_comment_insert",
 	},
+	"*": {
+		"on_update": "todobox.services.workflow_notify.on_workflow_change",
+		"on_update_after_submit": "todobox.services.workflow_notify.on_workflow_change",
+		"on_cancel": "todobox.services.workflow_notify.on_workflow_change",
+	},
 }
 
 scheduler_events = {

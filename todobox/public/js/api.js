@@ -303,7 +303,19 @@ export const NOTIF_KINDS = {
   stale: { icon: 'hourglass', tone: 'amber', label: __('Stale') },
   remind: { icon: 'bell', tone: 'primary', label: __('Reminder') },
   wf: { icon: 'bolt', tone: 'amber', label: __('Required action') },
+  wf_update: { icon: 'send', tone: 'amber', label: __('Status update') },
+  wf_remind: { icon: 'bell', tone: 'amber', label: __('Decision reminder') },
+  done: { icon: 'check-circle', tone: 'green', label: __('Completed') },
+  forward: { icon: 'forward', tone: 'primary', label: __('Forwarded') },
 };
+/* the bell's tabs: each groups notification kinds (an unknown kind is only under "All") */
+export const NOTIF_GROUPS = [
+  { id: 'all', label: __('All') },
+  { id: 'tasks', label: __('Tasks'), kinds: ['assign', 'cc', 'forward', 'done'] },
+  { id: 'replies', label: __('Replies'), kinds: ['reply', 'first', 'answer', 'mention'] },
+  { id: 'actions', label: __('Actions'), kinds: ['wf', 'wf_update', 'wf_remind'] },
+  { id: 'reminders', label: __('Reminders'), kinds: ['remind', 'overdue', 'stale', 'rule'] },
+];
 export async function getNotifications() {
   const res = await safe(() => bridge().getNotifications());
   return Array.isArray(res) ? res : [];
