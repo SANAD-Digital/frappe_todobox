@@ -2519,7 +2519,7 @@ class Component extends window.TTCompose(DCLogic, React) {
       this.ro = new ResizeObserver(() => this.onResize());
       this.ro.observe(document.documentElement);
     }
-    this.off = this.api.onRealtime(() => this.load(true));
+    this.off = this.api.onRealtime(this.liveRefresh);
     /* a load failure must never leave the UI broken */
     try { await this.load(); if (window.TMSplash) window.TMSplash.ready(); }
     catch (e) { console.error('load failed', e); this.setState({ loading: false }); if (window.TMSplash) window.TMSplash.fail(e); }

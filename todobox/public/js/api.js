@@ -123,9 +123,38 @@ let subs = [];
 let _rtWired = false;
 let _rtTimer = null;
 let _hiddenAt = 0;
-function emitRealtime() {
+let _rtNames = new Set();
+let _rtKinds = new Set();
+/* batches events for 600ms; subscribers get { names: [ToDo names], kinds: ['task'|'comment'|
+   'reference'|'notifications'|'workflow'|'all'] } (no names = refresh what is on screen) */
+function emitRealtime(data) {
+  ((data && data.names) || []).forEach((n) => _rtNames.add(n));
+  _rtKinds.add((data && data.kind) || 'all');
   clearTimeout(_rtTimer);
-  _rtTimer = setTimeout(() => subs.forEach((s) => { try { s(); } catch (e) { console.error(e); } }), 800);
+  _rtTimer = setTimeout(() => {
+    const ev = { names: [..._rtNames], kinds: [..._rtKinds] };
+    _rtNames = new Set(); _rtKinds = new Set();
+    subs.forEach((s) => { try { s(ev); } catch (e) { console.error(e); } });
+  }, 600);
+}
+/* without a connected socket the page polls a small signature of what the user can see, and
+   refreshes only the parts that changed */
+const POLL_MS = 15000;
+let _pulse = null;
+function socketUp() {
+  const sock = window.frappe && window.frappe.realtime && window.frappe.realtime.socket;
+  return !!(sock && sock.connected);
+}
+async function poll(force) {
+  if (document.hidden || (!force && socketUp())) return;
+  const p = await srv('get_pulse');
+  if (!p) return;
+  const prev = _pulse;
+  _pulse = p;
+  if (!prev) return;
+  if (p.tasks !== prev.tasks) emitRealtime({ kind: 'task' });
+  if (p.notifications !== prev.notifications) emitRealtime({ kind: 'notifications' });
+  if (p.workflow !== prev.workflow) emitRealtime({ kind: 'workflow' });
 }
 function wireRealtime() {
   if (_rtWired) return;
@@ -133,13 +162,17 @@ function wireRealtime() {
   try {
     const rt = window.frappe && window.frappe.realtime;
     if (rt) {
-      rt.on('list_update', (data) => { if (!data || data.doctype === 'ToDo') emitRealtime(); });
+      rt.on('todobox_update', (data) => emitRealtime(data));
+      rt.on('list_update', (data) => { if (data && data.doctype === 'ToDo') emitRealtime({ kind: 'task', names: [data.name] }); });
       rt.doctype_subscribe('ToDo');
     }
-  } catch (e) { /* no socket.io: refresh only on returning to the tab */ }
+  } catch (e) { /* no socket.io: the poll below keeps the page fresh */ }
+  poll(true);
+  setInterval(() => poll(false), POLL_MS);
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) { _hiddenAt = Date.now(); return; }
-    if (_hiddenAt && Date.now() - _hiddenAt > 30000) emitRealtime();
+    if (_hiddenAt && Date.now() - _hiddenAt > 30000) { emitRealtime({ kind: 'all' }); _pulse = null; }
+    poll(true);
   });
 }
 export function onRealtime(fn) {

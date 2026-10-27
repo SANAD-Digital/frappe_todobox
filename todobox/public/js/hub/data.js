@@ -112,34 +112,54 @@ window.TodoboxColor = (() => {
     this.tmNotifLive = true;
     const rt = window.frappe && window.frappe.realtime;
     if (!rt || typeof rt.on !== 'function') return;
-    let t1 = null, t2 = null;
+    let t1 = null;
     try {
       rt.on('notification', () => { clearTimeout(t1); t1 = setTimeout(() => this.loadAux(), 700); });
-      rt.on('list_update', (d) => {
-        if (!d || d.doctype !== 'Workflow Action' || !this.W || !this.W.LOADED || !this.W.refresh || !this.W.pendingForMe) return;
-        clearTimeout(t2);
-        t2 = setTimeout(() => {
-          const before = new Set(this.W.pendingForMe().map((x) => x.name));
-          this.W.refresh(true).then(() => {
-            const me = this.W.ME || (this.api && this.api.ME);
-            /* who moved it last (trail rows are [state, user, hours, note]); my own move stays silent */
-            const lastBy = (x) => { const tr = x.trail || []; return (tr.length && tr[tr.length - 1][1]) || x.owner; };
-            const fresh = this.W.pendingForMe().filter((x) => !before.has(x.name) && lastBy(x) !== me);
-            if (fresh.length && window.TodoboxSound) window.TodoboxSound.play('chime');
-            if (this.W.hydrateChecks) this.W.hydrateChecks();
-            this.forceUpdate();
-          });
-        }, 900);
-      });
+      rt.on('list_update', (d) => { if (d && d.doctype === 'Workflow Action') this.onWfChange(); });
       if (typeof rt.doctype_subscribe === 'function') rt.doctype_subscribe('Workflow Action');
     } catch (e) { /* realtime is optional */ }
   }
+  /* Workflow Actions changed: reload "Required actions", chime for a document newly waiting on me */
+  onWfChange() {
+    if (!this.W || !this.W.LOADED || !this.W.refresh || !this.W.pendingForMe) return;
+    clearTimeout(this.tmWfTimer);
+    this.tmWfTimer = setTimeout(() => {
+      const before = new Set(this.W.pendingForMe().map((x) => x.name));
+      this.W.refresh(true).then(() => {
+        const me = this.W.ME || (this.api && this.api.ME);
+        /* who moved it last (trail rows are [state, user, hours, note]); my own move stays silent */
+        const lastBy = (x) => { const tr = x.trail || []; return (tr.length && tr[tr.length - 1][1]) || x.owner; };
+        const fresh = this.W.pendingForMe().filter((x) => !before.has(x.name) && lastBy(x) !== me);
+        if (fresh.length && window.TodoboxSound) window.TodoboxSound.play('chime');
+        if (this.W.hydrateChecks) this.W.hydrateChecks();
+        this.forceUpdate();
+      });
+    }, 900);
+  }
+  /* api.onRealtime: someone changed a task I take part in, commented on it or on its document,
+     or (polling) my notifications / workflow actions changed. Refresh in place: same task open,
+     same draft, no jump to the first row. */
+  liveRefresh = async (ev) => {
+    const kinds = (ev && ev.kinds) || ['all'];
+    const all = kinds.includes('all');
+    if (all || kinds.some((k) => k !== 'notifications' && k !== 'workflow')) {
+      await this.load(this.state.sel, true);
+      const sel = this.state.sel;
+      const touched = all || kinds.includes('reference') || ((ev && ev.names) || []).includes(sel);
+      if (sel && touched && (this.state.refDocs || {})[sel] && this.loadRefDetail) this.loadRefDetail(sel, true);
+      if (this.state.screen === 'day') this.loadDay();
+    }
+    if (all || kinds.includes('notifications')) this.loadAux();
+    if (all || kinds.includes('workflow')) this.onWfChange();
+  };
   loadAutomation = async () => {
     if (!this.api.loadAutomation) return;
     const r = await this.api.loadAutomation();
     this.setState({ rules: r.rules, recurring: r.recurring, canManageRules: r.canManageRules, recRoles: r.roles || [] }, () => { if (this.syncRecRoles) this.syncRecRoles(); });
   };
-  async load(keepSel) {
+  /** live: a background refresh (liveRefresh): the open task stays open even when it is not in
+      this list (opened from a notification or a document), and the events view stays as it is */
+  async load(keepSel, live) {
     /* request token: a slower earlier response must not overwrite a newer folder/filter */
     const seq = this.loadSeq = (this.loadSeq || 0) + 1;
     const { folder, quick, search, label, sort } = this.state;
@@ -150,9 +170,14 @@ window.TodoboxColor = (() => {
     if (seq !== this.loadSeq) return;
     const tasks = Array.isArray(rows) ? rows : [];
     const counts = cnt || {};
-    let sel = keepSel || this.state.sel;
+    let sel = (typeof keepSel === 'string' && keepSel) || this.state.sel;
+    if (live && sel && !tasks.find((t) => t.name === sel)) {
+      const t = await this.api.getTodo(sel);
+      if (seq !== this.loadSeq) return;
+      if (t) tasks.unshift(t);
+    }
     if (!tasks.find((t) => t.name === sel)) sel = tasks.length ? tasks[0].name : null;
-    this.setState({ tasks, counts, sel, loading: false, showEvents: false });
+    this.setState(live ? { tasks, counts, sel, loading: false } : { tasks, counts, sel, loading: false, showEvents: false });
     if (sel) this.markRead(sel);
   }
 

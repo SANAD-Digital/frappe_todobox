@@ -12,6 +12,7 @@ from todobox.services.checklist import (
 )
 from todobox.services.day_plan import drop_from_day, get_day_plan, reorder_day
 from todobox.services.language import set_my_language
+from todobox.services.live import get_pulse
 from todobox.services.doc_actions import (
 	add_reference_comment,
 	get_doc_actions,
@@ -55,6 +56,7 @@ __all__ = [
 	"get_active_users",
 	"get_analytics",
 	"get_counts",
+	"get_pulse",
 	"get_day_plan",
 	"get_doc_actions",
 	"get_notifications",

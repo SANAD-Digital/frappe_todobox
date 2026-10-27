@@ -191,13 +191,29 @@ def _open_actions_for_me(me, roles):
 		)
 
 	seen, out = set(), []
-	for a in by_user + by_role:
+	for a in sorted(by_user + by_role, key=lambda a: a.creation, reverse=True):
 		key = (a.reference_doctype, a.reference_name)
 		if key in seen:
 			continue
 		seen.add(key)
 		out.append(a)
-	return out
+	return _with_existing_docs(out)
+
+
+def _with_existing_docs(actions):
+	"""Drops actions whose document was deleted: Frappe leaves their Workflow Action open, and
+	enough of them would fill the list limit before the real ones."""
+	names = {}
+	for a in actions:
+		names.setdefault(a.reference_doctype, set()).add(a.reference_name)
+	existing = set()
+	for dt, dt_names in names.items():
+		try:
+			found = frappe.get_all(dt, filters={"name": ("in", list(dt_names))}, pluck="name")
+		except Exception:
+			found = []
+		existing.update((dt, n) for n in found)
+	return [a for a in actions if (a.reference_doctype, a.reference_name) in existing]
 
 
 def _holders(action_names):

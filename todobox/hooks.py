@@ -45,9 +45,19 @@ doc_events = {
 	"ToDo": {
 		"before_insert": "todobox.services.automation.apply_rules",
 		"validate": "todobox.services.analytics.stamp_completed_on",
-		"after_insert": "todobox.services.notifications.on_todo_after_insert",
-		"on_update": "todobox.services.tags.sync_todo_tags",
-	}
+		"after_insert": [
+			"todobox.services.notifications.on_todo_after_insert",
+			"todobox.services.live.on_todo_change",
+		],
+		"on_update": [
+			"todobox.services.tags.sync_todo_tags",
+			"todobox.services.live.on_todo_change",
+		],
+		"on_trash": "todobox.services.live.on_todo_change",
+	},
+	"Comment": {
+		"after_insert": "todobox.services.live.on_comment_insert",
+	},
 }
 
 scheduler_events = {

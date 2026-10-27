@@ -180,7 +180,7 @@ def _threads(names):
 	"""{todo_name: [comment rows]} in one query."""
 	if not names:
 		return {}
-	fields = ["name", "reference_name", "comment_type", "comment_by", "content", "creation"]
+	fields = ["name", "reference_name", "comment_type", "comment_email", "owner", "content", "creation"]
 	has_reply = frappe.db.has_column("Comment", "is_reply")
 	if has_reply:
 		fields.append("is_reply")
@@ -193,7 +193,7 @@ def _threads(names):
 	):
 		kind = "reply" if has_reply and c.is_reply else ("comment" if c.comment_type == "Comment" else "event")
 		out.setdefault(c.reference_name, []).append(
-			{"id": c.name, "kind": kind, "user": c.comment_by, "html": c.content, "ts": str(c.creation)}
+			{"id": c.name, "kind": kind, "user": c.comment_email or c.owner, "html": c.content, "ts": str(c.creation)}
 		)
 	return out
 
