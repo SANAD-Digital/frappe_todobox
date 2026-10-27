@@ -79,9 +79,18 @@
       const dueDM = t.date.slice(8, 10) + '/' + t.date.slice(5, 7);
       /* urgency: overdue → red, today → amber, within two days → brand, later → neutral */
       const soon = !overdue && !dueToday && t.status === 'Open' && t.date > A.TODAY && t.date <= soonLimit;
-      const dueChip = (this.chip(overdue ? __('Overdue · {0}', [dueDM]) : dueToday ? __('Today · {0}', [dueDM]) : dueDM,
-        overdue ? 'var(--red)' : dueToday ? 'var(--amber)' : soon ? 'var(--primary)' : 'var(--fg2)',
-        overdue ? 'var(--red-soft)' : dueToday ? 'var(--amber-soft)' : soon ? 'var(--primary-soft)' : 'var(--sunk)'));
+      /* completed: the due chip says when, against the due date (on time / early / late) */
+      const done = A.doneVsDue(t);
+      const dueChip = done
+        ? this.chip('✓ ' + done.text, 'var(--' + done.tone + ')', 'var(--' + done.tone + '-soft)')
+        : (this.chip(overdue ? __('Overdue · {0}', [dueDM]) : dueToday ? __('Today · {0}', [dueDM]) : dueDM,
+          overdue ? 'var(--red)' : dueToday ? 'var(--amber)' : soon ? 'var(--primary)' : 'var(--fg2)',
+          overdue ? 'var(--red-soft)' : dueToday ? 'var(--amber-soft)' : soon ? 'var(--primary-soft)' : 'var(--sunk)'));
+      /* a task I sent: has the assignee opened it yet? */
+      if (t.status === 'Open' && t.assigned_by === ME && t.allocated_to !== ME) {
+        chips.push(t.seen ? this.chip('✓ ' + __('Seen'), 'var(--fg2)', 'var(--sunk)') : this.chip(__('Not opened yet'), 'var(--amber)', 'var(--amber-soft)'));
+      }
+      if (t.status === 'Cancelled') chips.push(this.chip(__('Cancelled'), 'var(--fg2)', 'var(--sunk)'));
       if (t.reference_name) chips.push(this.chip(t.reference_name, 'var(--fg2)', 'var(--sunk)'));
       (t.labels || []).slice(0, 1).forEach((l) => chips.push(this.chip(l, 'var(--fg2)', 'var(--sunk)')));
       if (t.attachments && t.attachments.length) chips.push(this.chip(__('Attachment'), 'var(--fg2)', 'var(--sunk)'));
@@ -106,7 +115,7 @@
           (active ? '' : hov ? ';background:var(--hover)' : '') +
           ';touch-action:pan-y;transform:translateX(' + sw + 'px);' + (sw ? 'transition:none;' : 'transition:transform .2s var(--ease);'),
         senderStyle: 'font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:170px;font-weight:' + (t.read ? '500' : '700') + ';',
-        subjectStyle: 'font-size:13px;line-height:var(--row-lh);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:' + (t.read ? '400' : '600') + ';',
+        subjectStyle: 'font-size:13px;line-height:var(--row-lh);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;' + (t.status === 'Open' ? '' : 'color:var(--fg3);') + 'font-weight:' + (t.read ? '400' : '600') + ';',
         dotStyle: t.read ? 'display:none;' : 'position:absolute;top:12px;inset-inline-end:6px;width:7px;height:7px;border-radius:50%;background:var(--primary);',
         snippet: this.plainText(last.html).slice(0, 90),
         chips: [dueChip, ...chips],
@@ -116,7 +125,7 @@
       return {
         name: t.name, initials: u.initials, sender: u.name, subject: t.subject,
         /* shell styling hooks (data-* attributes only — see todobox-shell.css) */
-        prio: String(t.priority || 'Low').toLowerCase(), unread: t.read ? '0' : '1',
+        prio: String(t.priority || 'Low').toLowerCase(), unread: t.read ? '0' : '1', doneFlag: t.status === 'Open' ? '0' : '1',
         checkedFlag: s.checked.includes(t.name) ? '1' : '0', overdueFlag: overdue ? '1' : '0',
         snippet: (() => { const x = this.plainText(last.html).slice(0, 90); return x ? ' — ' + x : ''; })(), time: this.fmtTime(t.modified),
         replies: replies > 1 ? '(' + replies + ')' : '',
@@ -131,7 +140,7 @@
           ';padding:0 18px;border-radius:12px;font-size:13px;font-weight:600;color:var(--on-accent);background:' + (sw > 0 ? 'var(--green)' : 'var(--primary)') + ';',
         swipeLabel: sw > 0 ? '✓ ' + __('Complete') : sw < 0 ? '😴 ' + __('Snooze') : '',
         senderStyle: 'min-width:0;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:' + (t.read ? 'var(--fg2)' : 'var(--fg)') + ';font-weight:' + (t.read ? '500' : '700') + ';',
-        subjectStyle: 'font-size:13px;color:var(--fg);font-weight:' + (t.read ? '400' : '600') + ';',
+        subjectStyle: 'font-size:13px;color:' + (t.status === 'Open' ? 'var(--fg)' : 'var(--fg3)') + ';font-weight:' + (t.read ? '400' : '600') + ';',
         dotStyle: t.read ? 'display:none;' : 'width:7px;height:7px;flex:0 0 7px;border-radius:50%;background:var(--primary);',
         chips: chipsShown, chipsMore, hasChipsMore: !!chipsMore, due: tiny(dueChip), cf,
         timeStyle: 'font-size:11px;color:var(--fg3);font-family:var(--font);font-variant-numeric:tabular-nums;white-space:nowrap;flex:0 0 auto;visibility:' + (hov && isDesktop ? 'hidden' : 'visible') + ';',
@@ -228,6 +237,17 @@
         /* Frappe indicator-pill: colour comes from data-tone in todobox-shell.css */
         statusStyle: '',
         statusTone: sel.status === 'Open' ? (sel.date < A.TODAY ? 'red' : 'blue') : sel.status === 'Closed' ? 'green' : 'gray',
+        ...(() => {
+          const dn = A.doneVsDue(sel);
+          const sent = sel.status === 'Open' && sel.assigned_by === ME && sel.allocated_to !== ME;
+          const who = to.name || sel.allocated_to;
+          return {
+            doneNote: dn && sel.completed_on ? dn.text + ' · ' + this.dayLabel(sel.completed_on) : '',
+            doneNoteStyle: dn && sel.completed_on ? 'font-size:11.5px;font-weight:600;color:var(--' + dn.tone + ');white-space:nowrap;' : 'display:none;',
+            seenNote: sent ? (sel.seen ? '✓ ' + __('{0} has opened it', [who]) : __('{0} has not opened it yet', [who])) : '',
+            seenNoteStyle: sent ? 'font-size:11.5px;white-space:nowrap;color:' + (sel.seen ? 'var(--fg2)' : 'var(--amber)') + ';' : 'display:none;',
+          };
+        })(),
         prioTone: sel.priority === 'High' ? 'red' : sel.priority === 'Medium' ? 'orange' : 'gray',
         fromInitials: from.initials || '?',
         toName: to.name || sel.allocated_to, toInitials: to.initials || '?',

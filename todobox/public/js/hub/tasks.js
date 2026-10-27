@@ -68,6 +68,11 @@
     this.load(name);
   };
 
+  /** The open task's detail is on screen (side by side on a wide desktop, or the detail pane) */
+  detailVisible() {
+    const s = this.state;
+    return s.screen === 'mail' && ((s.view === 'desktop' && !s.narrow) || s.pane === 'detail' || s.mobileScreen === 'detail');
+  }
   markRead(name) {
     const t = (this.state.tasks || []).find((x) => x.name === name);
     if (t && t.read) return;

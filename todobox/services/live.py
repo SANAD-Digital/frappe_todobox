@@ -23,6 +23,11 @@ def _publish(users, names, kind):
 		frappe.publish_realtime(EVENT, {"names": names, "kind": kind}, user=user, after_commit=True)
 
 
+def publish_task_update(todo, kind, exclude=None):
+	"""A change that does not save the ToDo (e.g. read_by), published to its other participants."""
+	_publish(_participants(todo) - {exclude}, [todo.name], kind)
+
+
 def on_todo_change(doc, method=None):
 	"""ToDo after_insert / on_update / on_trash."""
 	if frappe.flags.in_import or frappe.flags.in_migrate or frappe.flags.in_install:
@@ -71,8 +76,10 @@ def get_pulse():
 	values = query_values()
 	scope = []
 	my_scope(scope)
+	# read_by changes without touching modified (opening a task): its checksum shows them too
+	read_sum = "SUM(CRC32(IFNULL(read_by, '')))" if todo_has("read_by") else "0"
 	tasks = frappe.db.sql(
-		f"SELECT COUNT(*), MAX(modified) FROM `tabToDo` WHERE {scope[0]}", values
+		f"SELECT COUNT(*), CONCAT(MAX(modified), '/', {read_sum}) FROM `tabToDo` WHERE {scope[0]}", values
 	)[0]
 	# comments of the last day on my tasks and on the documents my open tasks refer to
 	values["since"] = frappe.utils.add_days(frappe.utils.now_datetime(), -1)

@@ -3332,3 +3332,31 @@ msgstr ""
 #: todobox/public/js/api.js
 msgid "Reminders"
 msgstr ""
+
+#: todobox/public/js/api.js
+msgid "Completed on time"
+msgstr ""
+
+#: todobox/public/js/api.js
+msgid "Completed {0} days early"
+msgstr ""
+
+#: todobox/public/js/api.js
+msgid "Completed {0} days late"
+msgstr ""
+
+#: todobox/public/js/api.js
+msgid "Seen"
+msgstr ""
+
+#: todobox/public/js/api.js
+msgid "Not opened yet"
+msgstr ""
+
+#: todobox/public/js/api.js
+msgid "{0} has opened it"
+msgstr ""
+
+#: todobox/public/js/api.js
+msgid "{0} has not opened it yet"
+msgstr ""

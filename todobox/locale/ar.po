@@ -3574,3 +3574,31 @@ msgstr "الردود"
 #: todobox/public/js/api.js
 msgid "Reminders"
 msgstr "التذكيرات"
+
+#: todobox/public/js/api.js
+msgid "Completed on time"
+msgstr "أُنجزت في الموعد"
+
+#: todobox/public/js/api.js
+msgid "Completed {0} days early"
+msgstr "أُنجزت قبل الموعد بـ{0} يوم"
+
+#: todobox/public/js/api.js
+msgid "Completed {0} days late"
+msgstr "أُنجزت متأخرة {0} يوم"
+
+#: todobox/public/js/api.js
+msgid "Seen"
+msgstr "اطُّلع عليها"
+
+#: todobox/public/js/api.js
+msgid "Not opened yet"
+msgstr "لم تُفتح بعد"
+
+#: todobox/public/js/api.js
+msgid "{0} has opened it"
+msgstr "فتحها {0}"
+
+#: todobox/public/js/api.js
+msgid "{0} has not opened it yet"
+msgstr "لم يفتحها {0} بعد"

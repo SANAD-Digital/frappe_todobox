@@ -20,6 +20,7 @@ from todobox.services.common import (
 	split_csv,
 	todo_has,
 )
+from todobox.services.live import publish_task_update
 from todobox.services.notifications import create_notification_log, reply_kind
 from todobox.services.org import can_see, ensure_assignable
 from todobox.services.query import my_scope, query_conditions, query_values
@@ -37,6 +38,7 @@ OPTIONAL_COLUMNS = (
 	"day_order",
 	"rule_applied",
 	"subject",
+	"completed_on",
 )
 
 # Fields update_todo may write (besides the virtual "read" and "custom_checklist" keys)
@@ -61,6 +63,14 @@ SORTS = {
 }
 
 
+# a task is unread for me until I open it; the one who created it has read it
+UNREAD_SQL = "(read_by IS NULL OR read_by NOT LIKE %(me_like)s) AND IFNULL(assigned_by, '') != %(me)s"
+
+
+def is_read(todo, me):
+	return me in split_csv(todo.get("read_by")) or todo.get("assigned_by") == me
+
+
 def _count(conditions, values):
 	return frappe.db.sql("SELECT COUNT(*) FROM `tabToDo` WHERE " + " AND ".join(conditions), values)[0][0]
 
@@ -76,7 +86,7 @@ def get_counts():
 		inbox.append("(snooze_until IS NULL OR snooze_until <= %(now)s)")
 	inbox_count = _count(inbox, values)
 	if todo_has("read_by"):
-		unread_count = _count([*inbox, "(read_by IS NULL OR read_by NOT LIKE %(me_like)s)"], values)
+		unread_count = _count([*inbox, UNREAD_SQL], values)
 	else:
 		unread_count = inbox_count
 
@@ -105,7 +115,7 @@ def get_counts():
 def _folder_conditions(folder, conditions, values):
 	me = values["me"]
 	if folder == "inbox":
-		conditions.append("allocated_to = %(me)s AND status = 'Open'")
+		conditions.append("allocated_to = %(me)s AND status IN ('Open', 'Closed')")
 		if todo_has("snooze_until"):
 			conditions.append("(snooze_until IS NULL OR snooze_until <= %(now)s)")
 	elif folder == "overdue":
@@ -146,7 +156,7 @@ def _quick_conditions(quick, conditions):
 	elif quick == "week":
 		conditions.append("date >= %(today)s AND date <= DATE_ADD(%(today)s, INTERVAL 7 DAY)")
 	elif quick == "unread" and todo_has("read_by"):
-		conditions.append("(read_by IS NULL OR read_by NOT LIKE %(me_like)s)")
+		conditions.append(UNREAD_SQL)
 
 
 def _reference_info(rows):
@@ -281,7 +291,10 @@ def _fetch_todos(conditions, values, order_by="modified DESC", limit=100):
 				"ref_status": ref_status,
 				"ref_amount": ref_amount,
 				"labels": split_csv(r.get("labels")),
-				"read": me in read_by if read_by else True,
+				"read": is_read(r, me),
+				# the assignee opened it (for the one who sent it)
+				"seen": (r.get("allocated_to") or me) in split_csv(read_by),
+				"completed_on": str(r.completed_on) if r.get("completed_on") else None,
 				"snooze_until": str(r.get("snooze_until")) if r.get("snooze_until") else None,
 				"snooze_rule": r.get("snooze_rule"),
 				"forwarded_from": r.get("forwarded_from"),
@@ -311,7 +324,8 @@ def list_todos(folder="inbox", quick="all", search="", label=None, sort="modifie
 	if search and search.strip():
 		query_conditions(search, conditions, values)
 
-	order_by = SORTS.get(sort, "modified DESC")
+	# open tasks first, then completed (or forwarded) ones, each in the chosen order
+	order_by = "(status = 'Open') DESC, " + SORTS.get(sort, "modified DESC")
 
 	return _fetch_todos(conditions, values, order_by)
 
@@ -370,6 +384,8 @@ def _set_read(todo, me, read):
 		return
 	users = [*users, me] if read else [u for u in users if u != me]
 	frappe.db.set_value("ToDo", todo.name, "read_by", ",".join(users), update_modified=False)
+	# no save, so no ToDo event: tell the others live that I opened it ("Seen" for the sender)
+	publish_task_update(todo, "seen", exclude=me)
 	frappe.db.commit()
 
 

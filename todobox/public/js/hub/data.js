@@ -191,7 +191,8 @@ window.TodoboxColor = (() => {
     if (!tasks.find((t) => t.name === sel)) sel = tasks.length ? tasks[0].name : null;
     this.setState(live ? { tasks, counts, sel, loading: false } : { tasks, counts, sel, loading: false, showEvents: false },
       () => { if (prev && prev.size) this.flashChanges(prev, tasks, sel, atBottom); });
-    if (sel) this.markRead(sel);
+    /* the first row is selected automatically; it only counts as opened when its detail is on screen */
+    if (sel && this.detailVisible()) this.markRead(sel);
   }
 
   /* ---------- screens ---------- */

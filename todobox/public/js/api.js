@@ -47,6 +47,16 @@ function lastMessage(t) {
   return msgs[msgs.length - 1] || null;
 }
 /* days I've been waiting for the other party to reply */
+/** A completed task: when it was completed against its due date → { text, tone } (null while open) */
+export function doneVsDue(t) {
+  if (!t || t.status !== 'Closed') return null;
+  if (!t.completed_on || !t.date) return { text: __('Completed'), tone: 'green' };
+  const days = Math.round((new Date(t.completed_on.slice(0, 10)) - new Date(t.date.slice(0, 10))) / 86400000);
+  if (days === 0) return { text: __('Completed on time'), tone: 'green' };
+  if (days < 0) return { text: __('Completed {0} days early', [-days]), tone: 'green' };
+  return { text: __('Completed {0} days late', [days]), tone: 'red' };
+}
+
 export function waitingDays(t) {
   if (t.status !== 'Open' || t.assigned_by !== ME || t.allocated_to === ME) return null;
   const m = lastMessage(t);

@@ -84,7 +84,9 @@ def query_conditions(search, conditions, values):
 			conditions.append("status = 'Open' AND date < %(today)s")
 		elif f == "unread":
 			if todo_has("read_by"):
-				conditions.append("(read_by IS NULL OR read_by NOT LIKE %(me_like)s)")
+				from todobox.services.todos import UNREAD_SQL
+
+				conditions.append(UNREAD_SQL)
 		elif f == "snoozed":
 			conditions.append("snooze_until > %(now)s" if todo_has("snooze_until") else "1=0")
 		elif f == "waiting":
