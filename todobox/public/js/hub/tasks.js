@@ -142,7 +142,7 @@
       /* a status update on my document opens "Sent & following up"; the rest wait on my decision.
          The document may be new to the list: reload it first. */
       this.wfGo(n.kind === 'wf_update' ? 'sent' : 'pending');
-      const show = () => { this.wfOpenDoc(n.docname); this.scrollToRow(n.docname); };
+      const show = () => { this.wfOpenDoc(n.docname); this.flashRow(n.docname, true); };
       show();
       if (this.W && this.W.refresh) this.W.refresh(true).then(() => { if (this.W.hydrateChecks) this.W.hydrateChecks(); show(); });
       return;
@@ -150,8 +150,68 @@
     if (!n.todo) return;
     const folder = n.folder || 'inbox';
     this.setState({ screen: 'mail', folder, label: null, activeView: null, search: '', searchInput: '', loading: true, sel: null },
-      () => Promise.resolve(this.load()).catch(() => {}).then(() => this.openTask(n.todo)).then(() => this.scrollToRow(n.todo)));
+      () => Promise.resolve(this.load()).catch(() => {}).then(() => this.openTask(n.todo)).then(() => {
+        /* a reply/mention: down to that message in the conversation (one smooth scroll at a time:
+           Chrome cancels a smooth scroll when another starts, so the row then only lights up) */
+        this.flashRow(n.todo, !n.comment);
+        if (n.comment) this.flashMsg(n.comment, true);
+      }));
   };
+
+  /* ---------- highlight ---------- */
+  /** Highlights an element for ~2s (and scrolls it into view); retries while it is still rendering.
+      The class is set on the DOM node directly, so re-renders in between keep it. */
+  flash(selector, scroll, tries = 25) {
+    const el = document.querySelector(selector);
+    if (!el) { if (tries > 0) setTimeout(() => this.flash(selector, scroll, tries - 1), 120); return; }
+    if (scroll) {
+      const smooth = !(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+      el.scrollIntoView({ block: 'center', behavior: smooth ? 'smooth' : 'auto' });
+    }
+    clearTimeout(el._ttFlash); clearTimeout(el._ttFade);
+    el.classList.add('tt-flash-fade', 'tt-flash');
+    el._ttFlash = setTimeout(() => el.classList.remove('tt-flash'), 1800);
+    el._ttFade = setTimeout(() => el.classList.remove('tt-flash-fade'), 2800);
+  }
+  flashRow(name, scroll, tries) { this.flash('[data-row="' + this.cssEsc(name) + '"]', scroll, tries); }
+  flashMsg(id, scroll, tries) { this.flash('[data-msg="' + this.cssEsc(id) + '"] [data-bubble]', scroll, tries); }
+  cssEsc(v) { return window.CSS && CSS.escape ? CSS.escape(String(v)) : String(v).replace(/"/g, '\\"'); }
+
+  /** After a background refresh: highlight tasks that are new or got a message from someone else,
+      and, in the open task, the messages that just arrived */
+  /** The scrolling box of the open conversation, and whether it is (about) at the bottom */
+  threadScroller() {
+    let el = document.querySelector('.tt-thread');
+    while (el && el !== document.body) {
+      const oy = getComputedStyle(el).overflowY;
+      if ((oy === 'auto' || oy === 'scroll') && el.scrollHeight > el.clientHeight) return el;
+      el = el.parentElement;
+    }
+    return null;
+  }
+  threadAtBottom() {
+    const el = this.threadScroller();
+    return !el || el.scrollTop + el.clientHeight >= el.scrollHeight - 80;
+  }
+
+  /** atBottom: the conversation was scrolled to its end before the refresh, so it follows the new
+      messages (like a chat); otherwise they only light up where they are */
+  flashChanges(prev, tasks, sel, atBottom) {
+    const me = this.api && this.api.ME;
+    const msgs = (t) => (t.thread || []).filter((x) => x.kind !== 'event' && x.kind !== 'desc');
+    tasks.forEach((t) => {
+      const p = prev.get(t.name);
+      const fresh = msgs(t), last = fresh[fresh.length - 1];
+      const changed = p ? fresh.length > msgs(p).length && last && last.user !== me : t.assigned_by !== me;
+      if (changed) this.flashRow(t.name, false, 3);
+    });
+    const now = tasks.find((t) => t.name === sel), was = prev.get(sel);
+    if (now && was) {
+      const seen = new Set((was.thread || []).map((x) => x.id));
+      const added = msgs(now).filter((x) => !seen.has(x.id) && x.user !== me);
+      added.forEach((x, i) => this.flashMsg(x.id, atBottom && i === added.length - 1, 3));
+    }
+  }
 
   /** Bring a list row (task or workflow document) into view once it has rendered; retries briefly
       because the list may still be loading */

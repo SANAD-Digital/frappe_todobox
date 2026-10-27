@@ -1,5 +1,7 @@
 """Notifications for ToDos, stored as Frappe Notification Log entries."""
 
+from datetime import timedelta
+
 import frappe
 from frappe import _
 from frappe.query_builder import DocType
@@ -140,6 +142,7 @@ def get_notifications():
 		limit=50,
 	)
 	folders = get_todo_folders([log.document_name for log in logs if log.document_type == "ToDo"])
+	comments = _reply_comments(logs)
 	out = []
 	for log in logs:
 		text = frappe.utils.strip_html(log.email_content or log.subject or "").strip()
@@ -150,6 +153,7 @@ def get_notifications():
 				"kind": _kind(log) if is_todo else (log.get("todobox_kind") or "wf"),
 				"todo": log.document_name if is_todo else None,
 				"folder": folders.get(log.document_name, "inbox") if is_todo else None,
+				"comment": comments.get(log.name),
 				"doctype": None if is_todo else log.document_type,
 				"docname": None if is_todo else log.document_name,
 				"subject": log.subject or log.document_name,
@@ -159,6 +163,42 @@ def get_notifications():
 				"read": bool(log.read),
 			}
 		)
+	return out
+
+
+REPLY_KINDS = ("reply", "first", "answer", "mention")
+
+
+def _reply_comments(logs):
+	"""{log name: Comment name} for reply/mention notifications on ToDos: the sender's last message on
+	the task at the time of the notification (it is created right after the message), so opening the
+	notification can scroll to that message."""
+	replies = [
+		log for log in logs if log.document_type == "ToDo" and log.from_user and _kind(log) in REPLY_KINDS
+	]
+	if not replies:
+		return {}
+	rows = frappe.get_all(
+		"Comment",
+		filters={
+			"reference_doctype": "ToDo",
+			"reference_name": ("in", list({log.document_name for log in replies})),
+			"comment_type": "Comment",
+			"creation": (">=", min(log.creation for log in replies) - timedelta(minutes=5)),
+		},
+		fields=["name", "reference_name", "comment_email", "owner", "creation"],
+		order_by="creation desc",
+	)
+	out = {}
+	for log in replies:
+		for c in rows:
+			if (
+				c.reference_name == log.document_name
+				and (c.comment_email or c.owner) == log.from_user
+				and c.creation <= log.creation
+			):
+				out[log.name] = c.name
+				break
 	return out
 
 

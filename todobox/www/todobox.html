@@ -193,6 +193,9 @@ html[data-dark="1"] .tms-err button{background:#ededed;color:#171717}
   [dir="ltr"] .tt-aside-start{box-shadow:14px 0 32px rgba(0,0,0,.10)!important;animation-name:slidein-l!important}
   [dir="rtl"] .tt-aside-end{animation-name:slidein-l!important}
   [dir="ltr"] .tt-aside-end{box-shadow:-14px 0 32px rgba(0,0,0,.10)!important}
+  /* highlight of something just opened or just arrived (a list row, a message): on for ~2s, then fades */
+  .tt-flash{background-color:color-mix(in oklab, var(--primary) 16%, var(--panel)) !important;box-shadow:0 0 0 2px color-mix(in oklab, var(--primary) 60%, transparent) !important;}
+  .tt-flash-fade{transition:background-color .9s var(--ease), box-shadow .9s var(--ease) !important;}
   @keyframes tt-pop-down{from{transform:translateY(-10px);opacity:0}to{transform:none;opacity:1}}
   @keyframes fadeup{from{transform:translateY(6px);opacity:0}to{transform:translateY(0);opacity:1}}
   @keyframes pop{from{transform:scale(.97);opacity:0}to{transform:scale(1);opacity:1}}
@@ -1046,7 +1049,7 @@ html[data-dark="1"] .tms-err button{background:#ededed;color:#171717}
               <button onClick="{{ expandEvents }}" style="align-self:center;margin-bottom:10px;height:26px;padding:0 12px;background:var(--panel2);border:1px solid var(--line);border-radius:99px;cursor:pointer;font-size:11px;color:var(--fg2);">{{ d.hiddenLabel }}</button>
             </sc-if>
             <sc-for list="{{ d.thread }}" as="it" hint-placeholder-count="3">
-              <div style="display:flex;flex-direction:column;">
+              <div data-msg="{{ it.id }}" style="display:flex;flex-direction:column;">
                 <sc-if value="{{ it.divider }}" hint-placeholder-val="{{ false }}">
                   <div style="display:flex;align-items:center;gap:10px;margin:14px 0 10px;">
                     <div style="flex:1;height:1px;background:var(--line);"></div>
@@ -1063,7 +1066,7 @@ html[data-dark="1"] .tms-err button{background:#ededed;color:#171717}
                 <sc-if value="{{ it.isBubble }}" hint-placeholder-val="{{ true }}">
                   <div style="{{ it.wrap }}">
                     <div style="{{ it.avatar }}">{{ it.initials }}</div>
-                    <div style="{{ it.bubble }}">
+                    <div data-bubble="1" style="{{ it.bubble }}">
                       <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;">
                         <span style="font-size:12px;font-weight:600;">{{ it.who }}</span>
                         <sc-if value="{{ it.isInternal }}" hint-placeholder-val="{{ false }}">

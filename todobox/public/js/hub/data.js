@@ -180,6 +180,8 @@ window.TodoboxColor = (() => {
     if (seq !== this.loadSeq) return;
     const tasks = Array.isArray(rows) ? rows : [];
     const counts = cnt || {};
+    const prev = live ? new Map((this.state.tasks || []).map((t) => [t.name, t])) : null;
+    const atBottom = live && this.threadAtBottom();
     let sel = (typeof keepSel === 'string' && keepSel) || this.state.sel;
     if (live && sel && !tasks.find((t) => t.name === sel)) {
       const t = await this.api.getTodo(sel);
@@ -187,7 +189,8 @@ window.TodoboxColor = (() => {
       if (t) tasks.unshift(t);
     }
     if (!tasks.find((t) => t.name === sel)) sel = tasks.length ? tasks[0].name : null;
-    this.setState(live ? { tasks, counts, sel, loading: false } : { tasks, counts, sel, loading: false, showEvents: false });
+    this.setState(live ? { tasks, counts, sel, loading: false } : { tasks, counts, sel, loading: false, showEvents: false },
+      () => { if (prev && prev.size) this.flashChanges(prev, tasks, sel, atBottom); });
     if (sel) this.markRead(sel);
   }
 

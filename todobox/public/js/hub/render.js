@@ -197,7 +197,7 @@
         const bg = internal ? 'var(--amber-soft)' : x.kind === 'desc' ? 'var(--panel2)' : 'var(--panel)';
         const bd = internal ? 'var(--amber)' : 'var(--line)';
         return {
-          divider, dividerLabel: this.dayLabel(x.ts),
+          id: x.id, divider, dividerLabel: this.dayLabel(x.ts),
           isEvent: x.kind === 'event', isBubble: x.kind !== 'event', isInternal: internal,
           icon: '↪', who: (U[x.user] || {}).name || x.user, initials: (U[x.user] || {}).initials || '?',
           text: x.kind === 'event' ? this.plainText(x.html) : x.html, rich: x.kind === 'event' ? null : this.richHtml(x.html), time: x.ts.slice(11, 16),
