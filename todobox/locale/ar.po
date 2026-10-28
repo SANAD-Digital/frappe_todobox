@@ -3771,3 +3771,29 @@ msgstr "عرض المهمة المحالة"
 #: todobox/public/js/hub/render.js
 msgid "The original task is shown for reference — you cannot reply to it or change it."
 msgstr "المهمة الأصلية معروضة للاطلاع فقط — لا يمكنك الرد عليها أو تعديلها."
+
+#: todobox/public/js/hub/files.js
+msgid "Uploaded by {0} · {1}"
+msgstr "رفعه {0} · {1}"
+
+#: todobox/public/js/hub/files.js
+msgid "All attachments ({0})"
+msgstr "كل المرفقات ({0})"
+
+#: todobox/public/js/hub/files.js
+msgid "Attachments · {0}"
+msgstr "المرفقات · {0}"
+
+#: todobox/public/js/hub/files.js
+msgid "Uploading…"
+msgstr "جارٍ الرفع…"
+
+#: todobox/public/js/hub/files.js
+msgid "Remove file"
+msgstr "إزالة الملف"
+
+msgid "Document attachments"
+msgstr "مرفقات المستند"
+
+msgid "ToDo attachments"
+msgstr "مرفقات المهمة"

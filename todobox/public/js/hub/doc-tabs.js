@@ -132,11 +132,13 @@
     if (!readable) return { hasRefTabs: false, refOnTask: true, refOnDoc: false, refPanelRole: undefined, refPanelId: undefined, refPanelLabel: undefined };
 
     const hasWf = !!((rd && rd.has_workflow) || acts.has_workflow);
+    const taskFiles = this.fileItems(sel);
+    const nFiles = ((rd && rd.files) || []).length + taskFiles.length;
     const tabs = [
       { id: 'task', label: __('ToDo') },
       { id: 'data', label: __('Data') },
       { id: 'comments', label: __('Comments') + (rd && (rd.comments || []).length ? ' (' + rd.comments.length + ')' : '') },
-      { id: 'files', label: __('Attachments') + (rd && (rd.files || []).length ? ' (' + rd.files.length + ')' : '') },
+      { id: 'files', label: __('Attachments') + (nFiles ? ' (' + nFiles + ')' : '') },
       ...(hasWf ? [{ id: 'log', label: __('History') }] : []),
     ];
     let cur = s.refTab && s.refTab.task === sel.name ? s.refTab.id : 'task';
@@ -166,6 +168,12 @@
       refOnComments: onDoc && loaded && cur === 'comments',
       refOnFiles: onDoc && loaded && cur === 'files',
       refOnLog: onDoc && loaded && cur === 'log',
+      /* the Attachments tab: the document's files, then the task's (who, when, with which message) */
+      hasTaskFiles: taskFiles.length > 0, noTaskFiles: !taskFiles.length,
+      taskFiles: taskFiles.map((f, i) => ({
+        name: f.name, meta: this.fileMeta(f), note: f.note || '', hasNote: !!f.note,
+        onOpen: () => this.openFilePreview(taskFiles.filter((x) => x.url), i),
+      })),
       rd: {
         ...panel,
         noFields: loaded && !(rd.fields || []).length,

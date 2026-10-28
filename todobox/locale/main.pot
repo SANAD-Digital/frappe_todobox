@@ -3529,3 +3529,29 @@ msgstr ""
 #: todobox/public/js/hub/render.js
 msgid "The original task is shown for reference — you cannot reply to it or change it."
 msgstr ""
+
+#: todobox/public/js/hub/files.js
+msgid "Uploaded by {0} · {1}"
+msgstr ""
+
+#: todobox/public/js/hub/files.js
+msgid "All attachments ({0})"
+msgstr ""
+
+#: todobox/public/js/hub/files.js
+msgid "Attachments · {0}"
+msgstr ""
+
+#: todobox/public/js/hub/files.js
+msgid "Uploading…"
+msgstr ""
+
+#: todobox/public/js/hub/files.js
+msgid "Remove file"
+msgstr ""
+
+msgid "Document attachments"
+msgstr ""
+
+msgid "ToDo attachments"
+msgstr ""

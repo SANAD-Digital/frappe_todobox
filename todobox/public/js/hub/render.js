@@ -233,9 +233,10 @@
       const canAddCheck = this.canAddCheck(sel);
       const showCk = ck.length > 0 || (canAddCheck && s.forceChecklist === sel.name);
 
+      const refV = this.refTabVals(sel);
       d = {
         /* linked-document tabs (doc-tabs.js): hasRefTabs, refTabs, refOnTask, rd, … */
-        ...this.refTabVals(sel),
+        ...refV,
         name: sel.name, subject: sel.subject, thread_id: sel.thread_id,
         statusLabel: sel.status === 'Open' ? __('Open') : sel.status === 'Closed' ? __('Completed') : __('Cancelled'),
         /* Frappe indicator-pill: colour comes from data-tone in todobox-shell.css */
@@ -328,11 +329,14 @@
         }),
         hasRef: !!sel.reference_name, refName: sel.reference_name,
         refMeta: (sel.reference_type || '') + (sel.ref_status ? ' · ' + sel.ref_status : ''),
-        hasAttachments: !!(sel.attachments && sel.attachments.length),
-        attachments: (sel.attachments || []).map((a, i, all) => ({
+        /* with a linked document they live in its Attachments tab instead */
+        hasAttachments: !!(sel.attachments && sel.attachments.length) && !refV.hasRefTabs,
+        attachments: (sel.attachments || []).map((a, i) => ({
           label: typeof a === 'string' ? a : a.name,
-          onOpen: () => this.openFilePreview(all.map((x) => (typeof x === 'string' ? { name: x, url: '' } : { name: x.name, url: x.url })), i),
+          onOpen: () => this.openFilePreview(this.fileItems(sel), i),
         })),
+        attachCount: __('All attachments ({0})', [(sel.attachments || []).length]),
+        openFilesDlg: () => this.setState({ filesDlg: sel.name }),
 
         isWaiting: wdSel !== null,
         waitStyle: 'display:flex;align-items:center;gap:12px;margin:14px 20px 0;padding:12px 15px;border-radius:10px;border:1px solid ' +
@@ -782,6 +786,30 @@
       composerKeyHint: __('Enter to send · Shift+Enter for new line'),
       fileInputRef: this.fileInput,
       pickAttachment: this.attachToTodo,
+      /* files picked for the next reply (sent with it) */
+      replyFiles: this.replyFilesOf(s.sel).map((f) => ({
+        label: f.label, busy: !!f.busy, title: f.busy ? __('Uploading…') : f.label,
+        style: 'display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 4px 0 9px;background:var(--panel2);border:1px solid var(--line);border-radius:7px;font-size:11.5px;color:var(--fg2);max-width:220px;' + (f.busy ? 'opacity:.6;' : ''),
+        onRemove: () => this.dropReplyFile(s.sel, f),
+      })),
+      hasReplyFiles: this.replyFilesOf(s.sel).length > 0,
+      onThreadClick: this.onThreadClick,
+      /* "All attachments": every file of the task with who, when and the message it came with */
+      ...(() => {
+        const t = s.filesDlg ? s.tasks.find((x) => x.name === s.filesDlg) : null;
+        const items = this.fileItems(t);
+        return {
+          filesDlgOpen: !!t,
+          closeFilesDlg: () => this.setState({ filesDlg: null }),
+          filesDlgTitle: t ? __('Attachments · {0}', [t.subject]) : '',
+          filesDlgRows: items.map((f, i) => ({
+            name: f.name, meta: this.fileMeta(f), note: f.note || '', hasNote: !!f.note,
+            noteBy: f.note_by && f.note_by !== f.by ? ((U[f.note_by] || {}).name || f.note_by) : '',
+            iconRef: '#i-paperclip',
+            onOpen: () => { this.setState({ filesDlg: null }); this.openFilePreview(items.filter((x) => x.url), i); },
+          })),
+        };
+      })(),
       onAttachFile: this.onTodoLocalFiles,
 
       /* bulk */

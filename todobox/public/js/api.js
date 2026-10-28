@@ -105,7 +105,7 @@ export async function getTodo(name) { return safe(() => bridge().getTodo(name));
 
 export async function updateTodo(name, patch) { return safe(() => bridge().updateTodo(name, patch)); }
 
-export async function addComment(name, { kind = 'reply', html = '', mentions = [] }) { return safe(() => bridge().addComment(name, kind, html, mentions)); }
+export async function addComment(name, { kind = 'reply', html = '', mentions = [], files = [] }) { return safe(() => bridge().addComment(name, kind, html, mentions, files)); }
 
 /* a separate ToDo per recipient sharing thread_id; [] on failure (Frappe shows the reason) */
 export async function createTodos({ to = [], cc = [], subject = '', body = '', priority = 'Medium', date = TODAY, reference_type = null, reference_name = null, labels = [], checklist = [], ref_amount = null, template = null, attachments = [] }) {

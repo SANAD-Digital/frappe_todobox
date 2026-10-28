@@ -234,12 +234,27 @@ def _attachments(names):
 	for f in frappe.get_all(
 		"File",
 		filters={"attached_to_doctype": "ToDo", "attached_to_name": ["in", names]},
-		fields=["attached_to_name", "file_name", "file_url"],
+		fields=["attached_to_name", "file_name", "file_url", "owner", "creation"],
+		order_by="creation asc",
 	):
 		out.setdefault(f.attached_to_name, []).append(
-			{"name": f.file_name or f.file_url, "url": f.file_url or ""}
+			{"name": f.file_name or f.file_url, "url": f.file_url or "", "by": f.owner, "at": str(f.creation)}
 		)
 	return out
+
+
+def _with_notes(files, thread):
+	"""Each file with the message it was sent in (its tb-file link): note = the message text, note_by."""
+	for f in files:
+		if not f["url"]:
+			continue
+		for m in thread:
+			if m.get("kind") in ("reply", "comment") and f'href="{frappe.utils.escape_html(f["url"])}"' in (m.get("html") or ""):
+				text = (m["html"] or "").split('<div class="tb-files">')[0]
+				f["note"] = frappe.utils.strip_html(text).strip()
+				f["note_by"] = m.get("user")
+				break
+	return files
 
 
 def _fetch_todos(conditions, values, order_by="modified DESC", limit=100):
@@ -324,7 +339,7 @@ def _fetch_todos(conditions, values, order_by="modified DESC", limit=100):
 				"task_template": r.get("task_template"),
 				"day_order": r.get("day_order"),
 				"rule_applied": r.get("rule_applied"),
-				"attachments": files.get(r.name, []),
+				"attachments": _with_notes(files.get(r.name, []), thread),
 				"modified": str(r.get("modified") or r.get("creation")),
 				"thread": thread,
 			}
@@ -528,12 +543,20 @@ def _mention_targets(mentions, me, participants=()):
 
 
 @frappe.whitelist()
-def add_comment(name, kind="reply", html="", mentions=None):
+def add_comment(name, kind="reply", html="", mentions=None, files=None):
 	"""Adds a reply/comment (or an Info event) to a ToDo and notifies the other participants.
 	`mentions` (JSON list of emails): each mentioned user gets a "Mention" notification and, when not a
-	participant yet, is added to the task's CC so they can open it."""
+	participant yet, is added to the task's CC so they can open it.
+	`files` (JSON list of File names): my uploads sent with this message: attached to the task and
+	listed in the message (tb-file links), so the conversation shows what came with what."""
 	doc = get_task(name)
 	me = frappe.session.user
+	staged = _staged_uploads(loads(files, []) or []) if kind in ("reply", "comment") else []
+	if staged:
+		esc = frappe.utils.escape_html
+		html = (html or "") + '<div class="tb-files">' + "".join(
+			f'<a class="tb-file" href="{esc(f.file_url)}">{esc(f.file_name or f.file_url)}</a>' for f in staged
+		) + "</div>"
 	# before adding it: is this the first message from someone other than the creator, and who sent the last one?
 	last = frappe.get_all(
 		"Comment",
@@ -547,6 +570,8 @@ def add_comment(name, kind="reply", html="", mentions=None):
 	comment = doc.add_comment("Comment" if kind in ("reply", "comment") else "Info", html)
 	if kind == "reply" and frappe.db.has_column("Comment", "is_reply"):
 		comment.db_set("is_reply", 1, update_modified=False)
+	if staged:
+		_attach_uploads([f.name for f in staged], doc.name)
 
 	clean_html = frappe.utils.strip_html(html or "").strip()
 	mentioned = _mention_targets(mentions, me, _participants(doc)) if kind in ("reply", "comment") else {}
@@ -605,6 +630,17 @@ def compose_description(subject, body):
 	if "<" in body and ">" in body:
 		return f"<p>{frappe.utils.escape_html(subject)}</p>{frappe.utils.sanitize_html(body)}"
 	return f"{subject}\n\n{body}"
+
+
+def _staged_uploads(names):
+	"""My uploads not attached to anything yet (picked in the reply box, not sent)."""
+	if not names:
+		return []
+	return frappe.get_all(
+		"File",
+		filters={"name": ("in", list(names)), "owner": frappe.session.user, "attached_to_name": ("is", "not set")},
+		fields=["name", "file_url", "file_name"],
+	)
 
 
 def _attach_uploads(file_names, todo_name):

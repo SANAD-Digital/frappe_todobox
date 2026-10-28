@@ -11,6 +11,29 @@
     return 'other';
   }
 
+  /** A task's files for the viewer and the attachments window: who uploaded each, when, and the
+      message it came with (server: todos._with_notes) */
+  fileItems(t) {
+    return ((t && t.attachments) || []).map((a) => (typeof a === 'string' ? { name: a, url: '' } : { ...a }));
+  }
+  fileMeta(f) {
+    const U = (this.api && this.api.USERS) || {};
+    const who = f.by ? ((U[f.by] || {}).name || f.by) : '';
+    const when = f.at ? this.dayLabel(f.at) + ' ' + f.at.slice(11, 16) : '';
+    return who && when ? __('Uploaded by {0} · {1}', [who, when]) : (who || when);
+  }
+  /** a tb-file link inside a message: open it in the viewer, among the task's files */
+  onThreadClick = (e) => {
+    const a = e.target && e.target.closest && e.target.closest('a.tb-file');
+    if (!a) return;
+    e.preventDefault();
+    const href = a.getAttribute('href');
+    const all = this.fileItems(this.selTask()).filter((f) => f.url);
+    const i = all.findIndex((f) => f.url === href);
+    if (i < 0) this.openFilePreview([{ name: a.textContent, url: href }], 0);
+    else this.openFilePreview(all, i);
+  };
+
   /** files: [{name, url}]; opens the preview at item index */
   openFilePreview = (files, index) => {
     const list = (files || []).filter((f) => f && f.url);
@@ -53,6 +76,8 @@
       filePvBackdrop: 'position:fixed;inset:0;background:rgba(12,14,18,.72);z-index:60;animation:' + (pv.closing ? 'tt-fadeout .17s ease-in forwards' : 'tt-fadein .2s ease-out') + ';',
       filePvAnim: 'animation:' + (pv.closing ? 'tt-pv-out .17s ease-in forwards' : 'tt-pv-in .24s cubic-bezier(.2,.9,.3,1)') + ';',
       filePvName: f.name || src,
+      filePvMeta: this.fileMeta(f),
+      filePvNote: f.note || '', filePvHasNote: !!f.note,
       filePvCount: pv.list.length > 1 ? (pv.i + 1) + ' / ' + pv.list.length : '',
       filePvMulti: pv.list.length > 1,
       filePvUrl: src,

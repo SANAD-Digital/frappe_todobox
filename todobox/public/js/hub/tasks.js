@@ -324,57 +324,36 @@
   fileInput = React.createRef();
 
   /** Attach a file to an existing task: Frappe's FileUploader linked directly to the ToDo */
-  attachToTodo = () => {
-    const name = this.state.sel;
-    if (!name) return;
-    const P = this.pf();
-    if (!P || !P.ui) { if (this.fileInput.current) this.fileInput.current.click(); return; }
-    if (!P.ui.FileUploader) {
-      if (this.fileInput.current) this.fileInput.current.click();
-      return;
-    }
-    const added = [];
-    let timer = null;
-    new P.ui.FileUploader({
-      doctype: 'ToDo',
-      docname: name,
-      folder: 'Home/Attachments',
-      allow_multiple: true,
-      on_success: (file) => {
-        if (!file) return;
-        added.push(file.file_name || file.file_url);
-        clearTimeout(timer);
-        timer = setTimeout(() => this.afterTodoAttach(name, added.splice(0)), 300);
-      },
-    });
-  };
+  /* ---------- reply attachments: uploaded on pick, attached to the task only when the reply is sent ---------- */
+  attachToTodo = () => { if (this.state.sel && this.fileInput.current) this.fileInput.current.click(); };
+  replyFilesOf(name) { return ((this.state.replyFiles || {})[name || this.state.sel] || []); }
+  setReplyFiles(name, fn) { this.setState((st) => ({ replyFiles: { ...(st.replyFiles || {}), [name]: fn((st.replyFiles || {})[name] || []) } })); }
   onTodoLocalFiles = async (e) => {
     const files = Array.from(e.target.files || []);
     e.target.value = '';
     const name = this.state.sel;
     const P = this.pf();
     if (!files.length || !name) return;
-    const done = [];
     for (const f of files) {
+      const tmp = 'up-' + Math.random().toString(36).slice(2);
+      this.setReplyFiles(name, (l) => [...l, { tmp, label: f.name, busy: true }]);
       const fd = new FormData();
       fd.append('file', f, f.name);
-      fd.append('doctype', 'ToDo');
-      fd.append('docname', name);
       fd.append('is_private', '1');
       fd.append('folder', 'Home/Attachments');
+      let doc = null;
       try {
         const r = await fetch('/api/method/upload_file', { method: 'POST', body: fd, credentials: 'same-origin', headers: { 'X-Frappe-CSRF-Token': (P && P.csrf_token) || '' } });
-        if (r.ok) done.push(f.name);
-      } catch (err) { /* */ }
+        if (r.ok) doc = ((await r.json()) || {}).message || null;
+      } catch (err) { doc = null; }
+      if (!doc || !doc.name) { this.toast(__('Could not upload the file')); this.setReplyFiles(name, (l) => l.filter((x) => x.tmp !== tmp)); continue; }
+      this.setReplyFiles(name, (l) => l.map((x) => (x.tmp === tmp ? { name: doc.name, label: doc.file_name || f.name, url: doc.file_url } : x)));
     }
-    if (done.length) this.afterTodoAttach(name, done);
-    else this.toast(__('Could not upload the file'));
   };
-  afterTodoAttach = async (name, labels) => {
-    if (!labels.length) return;
-    await this.api.addComment(name, { kind: 'event', html: __('Added attachment {0}', [labels.map((l) => '«' + l + '»').join(', ')]) });
-    this.toast(__('Attached {0} file(s)', [labels.length]));
-    this.load(name);
+  /** ✕ on a picked file: it was never sent, so the upload is deleted */
+  dropReplyFile = (name, file) => {
+    this.setReplyFiles(name, (l) => l.filter((x) => x !== file));
+    if (file.name) this.discardUploads([file.name]);
   };
 
   /** Completed / cancelled tasks are read-only: only comments and attachments are allowed */
@@ -473,18 +452,22 @@
     if (this._sending) return;
     const draft = this.state.draft || '';
     const txt = draft.trim();
-    if (!txt) { this.toast(__('Write some text first')); return; }
     const name = this.state.sel;
+    const files = this.replyFilesOf(name);
+    if (files.some((f) => f.busy)) { this.toast(__('Wait for the uploads to finish')); return; }
+    if (!txt && !files.length) { this.toast(__('Write some text first')); return; }
     const locked = this.isLocked(this.taskByName(name));
     if (locked) alsoComplete = false;
     const mentions = this.mentionEmails(txt);
     this._sending = true;
     this.setState({ sending: true, draft: '', mention: null });
-    const res = await this.api.addComment(name, { kind: locked ? 'comment' : this.state.tab, html: txt, mentions: mentions });
+    this.setReplyFiles(name, () => []);
+    const res = await this.api.addComment(name, { kind: locked ? 'comment' : this.state.tab, html: txt, mentions: mentions, files: files.map((f) => f.name) });
     this._sending = false;
     if (!res) {
       /* failed (the API returns null on error): put the text back */
       this.setState((st) => ({ sending: false, draft: st.draft ? draft + '\n' + st.draft : draft }));
+      this.setReplyFiles(name, (l) => [...files, ...l]);
       this.toast(__('Could not send, please try again'));
       return;
     }

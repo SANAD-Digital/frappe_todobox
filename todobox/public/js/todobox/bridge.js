@@ -53,8 +53,8 @@
 		listTodos: function (params) { return message(API + "list_todos", params || {}); },
 		getTodo: function (name) { return message(API + "get_todo", { name: name }); },
 		updateTodo: function (name, patch) { return message(API + "update_todo", { name: name, patch: patch }); },
-		addComment: function (name, kind, html, mentions) {
-			return message(API + "add_comment", { name: name, kind: kind, html: html, mentions: JSON.stringify(mentions || []) });
+		addComment: function (name, kind, html, mentions, files) {
+			return message(API + "add_comment", { name: name, kind: kind, html: html, mentions: JSON.stringify(mentions || []), files: JSON.stringify(files || []) });
 		},
 		createTodos: function (data) { return message(API + "create_todos", data || {}); },
 		forwardTodo: function (name, args) {
