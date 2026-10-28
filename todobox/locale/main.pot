@@ -3360,3 +3360,19 @@ msgstr ""
 #: todobox/public/js/api.js
 msgid "{0} has not opened it yet"
 msgstr ""
+
+#: todobox/public/js/hub/render.js
+msgid "Sender & recipient"
+msgstr ""
+
+#: todobox/public/js/hub/render.js
+msgid "Not completed"
+msgstr ""
+
+
+
+#: todobox/public/js/hub/render.js
+msgctxt "ToDoBox"
+msgid "Priority"
+msgstr ""
+

@@ -12,7 +12,8 @@ from frappe.utils import add_days, cint, now_datetime, today
 
 from todobox.services.common import SAVED_VIEW_DOCTYPE, loads, todo_has
 
-QUERY_KEYS = ("from", "to", "label", "ref", "due", "is")
+QUERY_KEYS = ("from", "to", "label", "ref", "due", "is", "prio")
+PRIORITIES = {"high": "High", "medium": "Medium", "low": "Low"}
 
 
 def parse_query(q):
@@ -51,6 +52,9 @@ def query_conditions(search, conditions, values):
 	if p.get("to"):
 		values["q_to"] = f"%{p['to']}%"
 		conditions.append("allocated_to LIKE %(q_to)s")
+	if p.get("prio"):
+		values["q_prio"] = PRIORITIES.get(p["prio"].lower(), p["prio"])
+		conditions.append("priority = %(q_prio)s")
 	if p.get("label"):
 		if todo_has("labels"):
 			values["q_label"] = f"%{p['label']}%"

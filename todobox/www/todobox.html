@@ -688,6 +688,13 @@ html[data-dark="1"] .tms-err button{background:#ededed;color:#171717}
               <button onClick="{{ qc.onPick }}" style="{{ qc.style }}">{{ qc.label }}<sc-if value="{{ qc.dot }}" hint-placeholder-val="{{ false }}"><span style="width:5px;height:5px;border-radius:99px;background:var(--primary);"></span></sc-if></button>
             </sc-for>
           </div>
+          <sc-if value="{{ qbShowSides }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;align-items:center;gap:6px;padding:9px 12px 0;">
+              <sc-for list="{{ qbSides }}" as="sd" hint-placeholder-count="2">
+                <button onClick="{{ sd.onPick }}" style="{{ sd.style }}">{{ sd.label }}<sc-if value="{{ sd.dot }}" hint-placeholder-val="{{ false }}"><span style="width:5px;height:5px;border-radius:99px;background:var(--primary);"></span></sc-if></button>
+              </sc-for>
+            </div>
+          </sc-if>
           <sc-if value="{{ qbSearchable }}" hint-placeholder-val="{{ false }}">
             <div style="display:flex;align-items:center;gap:7px;margin:9px 12px 0;height:30px;padding:0 10px;background:var(--sunk);border:1px solid var(--line2);border-radius:8px;">
               <svg data-ic="" style="width:13px;height:13px;color:var(--fg3);flex:0 0 auto;"><use href="#i-search"></use></svg>

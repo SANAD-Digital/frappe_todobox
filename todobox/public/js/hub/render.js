@@ -7,7 +7,7 @@
       loading: true, skeletons: [1, 2, 3, 4, 5, 6], uiDir: window.TT_DIR || 'ltr', isDesktop: true, isMobile: false, cards: [], folders: [], labels: [], quickFilters: [],
       screens: [], savedViews: [], notifs: [], dayRows: [], ...this.statsVals(),
       rules: [], recurring: [], autoFx: {}, tplFx: {}, svFx: {}, rcf: {},
-      filterChips: [], hasFilterChips: false, qbCats: [], qbValues: [], qbTip: ' ', hintsBtnStyle: 'display:none;',
+      filterChips: [], hasFilterChips: false, qbCats: [], qbSides: [], qbShowSides: false, qbValues: [], qbTip: ' ', hintsBtnStyle: 'display:none;',
       qbSearchable: false, qbNoResults: false, qbMore: '', qbq: '', qbSearchPlaceholder: __('Search…'), qbValuesStyle: 'display:flex;flex-wrap:wrap;gap:6px;padding:10px 12px;',
       qbShowDate: false, qbDateVal: '', qbDateLabel: ' ', qbDateStyle: 'display:none;', savingViewStrip: false, canSaveView: false,
       screenDay: false, screenStats: false, notifsOpen: false, snoozeOpen: false, automationOpen: false,

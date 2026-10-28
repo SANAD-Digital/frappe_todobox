@@ -1,14 +1,19 @@
 /* ToDoBox: filter builder and saved filters */
 (window.TTParts = window.TTParts || []).push((Base, React) => class extends Base {
   /* ---------- filter builder ---------- */
-  QB_KEYS = { from: __('Assigned By'), to: __('Assignee'), label: __('Tag'), ref: __('Document'), due: __('Due'), is: __('Status') };
+  QB_KEYS = { from: __('Assigned By'), to: __('Assignee'), label: __('Tag'), ref: __('Document'), due: __('Due'), is: __('Status'), prio: __('Priority') };
   qbApply = (q) => {
     clearTimeout(this.sd);
     this.setState({ searchInput: q, search: q, activeView: null, loading: true }, () => this.load());
   };
+  /* builder tabs: time, status, sender & recipient (assigned by / assignee), priority, tags */
+  QB_CATS = { due: __('Time'), is: __('Status'), people: __('Sender & recipient'), prio: __('Priority'), label: __('Tag') };
   qbToggle = (key, val) => {
-    const toks = String(this.state.searchInput || '').split(/\s+/).filter(Boolean);
+    let toks = String(this.state.searchInput || '').split(/\s+/).filter(Boolean);
     const exact = (key + ':' + val).toLowerCase();
+    /* completed / not completed exclude each other; the other statuses combine */
+    const rival = key === 'is' && { open: 'is:done', done: 'is:open' }[String(val).toLowerCase()];
+    if (rival) toks = toks.filter((t) => t.toLowerCase() !== rival);
     let next;
     if (toks.some((t) => t.toLowerCase() === exact)) next = toks.filter((t) => t.toLowerCase() !== exact);
     else if (key === 'is') next = toks.concat([key + ':' + val]);
@@ -28,7 +33,9 @@
     const users = Object.keys(USERS).filter((u) => u !== 'Guest').map((u) => ({ val: String(u).split('@')[0], label: USERS[u].name }));
     const mk = (rows) => rows.map(([val, label]) => ({ val, label }));
     return {
-      due: mk([['overdue', __('Overdue')], ['today', __('Today')], ['<3d', __('Within {0} days', [3])], ['<7d', __('Within a week')]]),      is: mk([['unread', __('Unread')], ['open', __('Open')], ['waiting', __('Waiting on others')], ['snoozed', __('Snoozed')], ['done', __('Completed')]]),
+      due: mk([['overdue', __('Overdue')], ['today', __('Today')], ['<3d', __('Within {0} days', [3])], ['<7d', __('Within a week')]]),
+      is: mk([['open', __('Not completed')], ['done', __('Completed')], ['unread', __('Unread')], ['waiting', __('Waiting on others')], ['snoozed', __('Snoozed')]]),
+      prio: mk([['high', __('High')], ['medium', __('Medium')], ['low', __('Low')]]),
       label: (labelSet || []).map((l) => ({ val: String(l).trim().replace(/\s+/g, '_'), label: l })),
       to: users, from: users,
     };
@@ -36,9 +43,13 @@
   queryBuilderVals(labelSet) {
     const s = this.state;
     const sets = this.qbValueSets(labelSet);
-    const order = ['due', 'is', 'label', 'to', 'from'];
+    /* time, status, sender & recipient, priority, then tags */
+    const order = ['due', 'is', 'people', 'prio', 'label'];
     const toks = String(s.searchInput || '').split(/\s+/).filter(Boolean);
-    const cat = sets[s.qbCat] ? s.qbCat : 'due';
+    /* "Sender & recipient" shows one side at a time: assigned by (from) or assignee (to) */
+    const side = s.qbSide === 'to' ? 'to' : 'from';
+    const tab = order.includes(s.qbCat) ? s.qbCat : (s.qbCat === 'from' || s.qbCat === 'to') ? 'people' : 'due';
+    const cat = tab === 'people' ? (s.qbCat === 'to' || s.qbCat === 'from' ? s.qbCat : side) : tab;
     const dueTok = toks.find((t) => t.toLowerCase().indexOf('due:') === 0) || '';
     const dueDate = /^due:\d{4}-\d{2}-\d{2}$/i.test(dueTok) ? dueTok.slice(4) : '';
     const all = sets[cat] || [];
@@ -47,7 +58,7 @@
     const filtered = q ? all.filter((o) => (o.label + ' ' + o.val).toLowerCase().includes(q)) : all;
     const shown = searchable ? filtered.slice(0, 8) : filtered;
     const chips = toks.map((raw) => {
-      const m = raw.match(/^(from|to|label|ref|due|is):(.+)$/i);
+      const m = raw.match(/^(from|to|label|ref|due|is|prio):(.+)$/i);
       const key = m ? m[1].toLowerCase() : null;
       const val = m ? m[2] : raw;
       const hit = key && sets[key] ? sets[key].find((o) => String(o.val).toLowerCase() === String(val).toLowerCase()) : null;
@@ -57,11 +68,18 @@
     return {
       filterChips: chips, hasFilterChips: chips.length > 0,
       qbCats: order.map((k) => ({
-        label: this.QB_KEYS[k],
-        dot: toks.some((t) => t.toLowerCase().indexOf(k + ':') === 0),
-        onPick: () => this.setState({ qbCat: k, qbq: '' }),
+        label: this.QB_CATS[k],
+        dot: (k === 'people' ? ['from', 'to'] : [k]).some((kk) => toks.some((t) => t.toLowerCase().indexOf(kk + ':') === 0)),
+        onPick: () => this.setState({ qbCat: k === 'people' ? side : k, qbq: '' }),
         style: 'height:26px;padding:0 11px;display:flex;align-items:center;gap:6px;border-radius:99px;cursor:pointer;font-size:12px;font-family:inherit;'
-          + (k === cat ? 'background:var(--sunk);border:1px solid var(--line2);color:var(--fg);font-weight:600;' : 'background:transparent;border:1px solid transparent;color:var(--fg3);'),
+          + (k === tab ? 'background:var(--sunk);border:1px solid var(--line2);color:var(--fg);font-weight:600;' : 'background:transparent;border:1px solid transparent;color:var(--fg3);'),
+      })),
+      qbShowSides: tab === 'people',
+      qbSides: [['from', this.QB_KEYS.from], ['to', this.QB_KEYS.to]].map(([k, label]) => ({
+        label, onPick: () => this.setState({ qbCat: k, qbSide: k, qbq: '' }),
+        dot: toks.some((t) => t.toLowerCase().indexOf(k + ':') === 0),
+        style: 'height:24px;padding:0 10px;display:flex;align-items:center;gap:5px;border-radius:7px;cursor:pointer;font-size:11.5px;font-family:inherit;'
+          + (k === cat ? 'background:var(--primary-soft);border:1px solid var(--primary-line);color:var(--primary);font-weight:600;' : 'background:transparent;border:1px solid var(--line2);color:var(--fg2);'),
       })),
       qbValues: shown.map((o) => {
         const on = toks.some((t) => t.toLowerCase() === (cat + ':' + o.val).toLowerCase());
