@@ -5,9 +5,35 @@
   openSnooze = (names) => {
     const list = [].concat(names || this.state.sel || []);
     if (list.length === 1 && !this.guardLocked(this.taskByName(list[0]))) return;
-    this.setState({ snoozeFor: names || this.state.sel });
+    this.setState({ snoozeFor: names || this.state.sel, snoozePick: null });
   };
-  closeSnooze = () => this.setState({ snoozeFor: null });
+  closeSnooze = () => this.setState({ snoozeFor: null, snoozePick: null });
+  /** whole days from today to 'YYYY-MM-DD…' */
+  daysFromToday(v) {
+    const d = new Date(String(v).slice(0, 10) + 'T00:00:00'), t = new Date();
+    t.setHours(0, 0, 0, 0);
+    return Math.round((d - t) / 86400000);
+  }
+  /** the snooze period in words: "Tomorrow", "In 2 days", "In a week", "In 3 weeks", "In a month"… */
+  snoozeSpan(v) {
+    if (!v) return '';
+    const n = this.daysFromToday(v);
+    if (n <= 0) return __('Today');
+    if (n === 1) return __('Tomorrow');
+    if (n === 2) return __('In 2 days');
+    if (n === 7) return __('In a week');
+    if (n === 30 || n === 31) return __('In a month');
+    if (n % 7 === 0 && n <= 28) return __('In {0} weeks', [n / 7]);
+    return n <= 10 ? __('In {0} days', [n]) : __('{0} days from now', [n]);
+  }
+  /** quick picks in the snooze dialog */
+  snoozePreset = (days) => {
+    const d = new Date(); d.setDate(d.getDate() + days);
+    const v = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    const ctl = this._fx && this._fx.snoozeUntil;
+    if (ctl) { ctl.set_value(v); ctl.set_error(false); }
+    this.setState({ snoozePick: v });
+  };
   saveSnooze = async () => {
     const ctl = this._fx && this._fx.snoozeUntil;
     const day = ctl && ctl.get_value(); /* Date field → 'YYYY-MM-DD'; the API takes a datetime: start of that day */
@@ -17,7 +43,8 @@
     this.setState({ snoozeFor: null });
     let res = null;
     for (const name of names) res = await this.api.snoozeTodo(name, until);
-    if (res) this.toast(__('Snoozed until {0}', [this.fmtSnooze(res)]));
+    if (res) this.toast(__('Snoozed until {0}', [this.fmtSnooze(res)]) + ' · ' + this.snoozeSpan(until));
+    this.setState({ snoozePick: null });
     this.load();
     this.refreshAfterChange();
   };

@@ -3555,3 +3555,296 @@ msgstr ""
 
 msgid "ToDo attachments"
 msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Add recipients"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "All statuses"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Approvals"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Assignee"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Cancelled"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Complete"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Creating…"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Daily"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Description"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Disabled"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Document Type"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Draft"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Enabled"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Filters"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Finance"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Insights"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Monthly"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Moved"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Next run"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "No reason recorded"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Nothing overdue"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Open"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Preview"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Quarterly"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Reports"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Run now"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Search people"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Send reminder"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Sender"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Stale"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Title"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Unassigned"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "User"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Warehouse"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Weekly"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Yearly"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "{0} days"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "{0} min"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "{0} overdue"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "{0} selected"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "in {0} days"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Strikethrough"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Link"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Quote"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Template"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Use a template"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Suggested"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Context"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Not permitted"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Name"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Theme"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Role"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Task"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Items"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Item"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "1 row"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "{0} rows"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "No one assigned"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Activity"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Field"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Condition"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Last Updated On"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Document Status"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Display"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Beta"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Reply"
+msgstr ""
+
+msgid "In 2 days"
+msgstr ""
+
+msgid "In a month"
+msgstr ""
+
+msgid "In {0} weeks"
+msgstr ""
+
+msgid "{0} days from now"
+msgstr ""
+
+msgid "Go to: Calendar"
+msgstr ""
+
+msgid "No tasks due on this day"
+msgstr ""
+
+msgid "Language {0} does not exist"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "In {0} days"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Calendar"
+msgstr ""

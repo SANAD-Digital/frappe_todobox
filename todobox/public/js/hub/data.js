@@ -201,6 +201,7 @@ window.TodoboxColor = (() => {
     if (id === 'day') this.loadDay();
     if (id === 'stats') this.loadStats();
     if (id === 'templates') this.loadTemplates();
+    if (id === 'calendar') this.loadCalendar();
   };
   async loadDay() { this.setState({ day: await this.api.getDayPlan() }); }
   statsQ() { return { period: '30d', date_from: '', date_to: '', scope: 'me', user: '', ...(this.state.statsQ || {}) }; }

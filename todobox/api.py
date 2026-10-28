@@ -10,6 +10,7 @@ from todobox.services.checklist import (
 	remove_checklist_item,
 	toggle_checklist_item,
 )
+from todobox.services.calendar import get_calendar
 from todobox.services.day_plan import drop_from_day, get_day_plan, reorder_day
 from todobox.services.language import set_my_language
 from todobox.services.live import get_pulse
@@ -63,6 +64,7 @@ __all__ = [
 	"get_analytics",
 	"get_counts",
 	"get_pulse",
+	"get_calendar",
 	"get_day_plan",
 	"get_doc_actions",
 	"get_notifications",

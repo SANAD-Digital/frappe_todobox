@@ -347,6 +347,8 @@ export async function markAllNotifsRead() {
 }
 
 /* ---------- 10. Today plan ---------- */
+/** Calendar: my tasks with a due date in [start, end] ('YYYY-MM-DD') */
+export async function getCalendar(start, end) { return (await srv('get_calendar', { start, end })) || []; }
 export async function getDayPlan() { return (await safe(() => bridge().getDayPlan())) || []; }
 export async function reorderDay(name, dir) { return (await srv('reorder_day', { name, direction: dir })) || getDayPlan(); }
 export async function dropFromDay(name) { return (await srv('drop_from_day', { name })) || getDayPlan(); }

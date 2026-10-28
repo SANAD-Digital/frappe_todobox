@@ -68,8 +68,9 @@
       snoozeUntil: this.fxSlot('snoozeUntil', (el) => {
         const one = typeof this.state.snoozeFor === 'string' ? (this.state.tasks || []).find((t) => t.name === this.state.snoozeFor) : null;
         const ctl = new (X().Field)(el, { value: (one && one.snooze_until && String(one.snooze_until).slice(0, 10)) || null, label: __('Snooze until'), reqd: 1,
-          onChange: () => ctl.set_error(false) },
+          onChange: (v) => { ctl.set_error(false); this.setState({ snoozePick: v || null }); } },
         { fieldtype: 'Date', fieldname: 'snooze_until' });
+        if (one && one.snooze_until) setTimeout(() => this.setState({ snoozePick: String(one.snooze_until).slice(0, 10) }), 0);
         setTimeout(() => ctl.focus(), 50);
         return ctl;
       }),

@@ -10,7 +10,7 @@
       filterChips: [], hasFilterChips: false, qbCats: [], qbSides: [], qbShowSides: false, qbValues: [], qbTip: ' ', hintsBtnStyle: 'display:none;',
       qbSearchable: false, qbNoResults: false, qbMore: '', qbq: '', qbSearchPlaceholder: __('Search…'), qbValuesStyle: 'display:flex;flex-wrap:wrap;gap:6px;padding:10px 12px;',
       qbShowDate: false, qbDateVal: '', qbDateLabel: ' ', qbDateStyle: 'display:none;', savingViewStrip: false, canSaveView: false,
-      screenDay: false, screenStats: false, notifsOpen: false, snoozeOpen: false, automationOpen: false,
+      screenDay: false, screenStats: false, screenCal: false, calWeeks: [], calHeads: [], calFilters: [], calDayRows: [], notifsOpen: false, snoozeOpen: false, automationOpen: false,
       filtersChevron: 'width:13px;height:13px;', wfHeadChevron: 'width:14px;height:14px;',
       hasDetail: false, noDetail: false, detailHeadStyle: '', wfHeadBarStyle: '', titleSize: '16px', headActionsInline: false, headActionsRow: false, showList: true, showDetail: true, narrow: s.narrow, listCount: '', notifUnread: 0, sortLabel: '',
       listPaneStyle: 'flex:0 0 410px;min-width:0;display:flex;flex-direction:column;min-height:0;background:var(--panel2);border-inline-start:1px solid var(--line);border-inline-end:1px solid var(--line2);',
@@ -328,7 +328,7 @@
           return ctl;
         }),
         hasRef: !!sel.reference_name, refName: sel.reference_name,
-        refMeta: (sel.reference_type || '') + (sel.ref_status ? ' · ' + sel.ref_status : ''),
+        refMeta: (sel.reference_type ? __(sel.reference_type) : '') + (sel.ref_status ? ' · ' + sel.ref_status : ''),
         /* with a linked document they live in its Attachments tab instead */
         hasAttachments: !!(sel.attachments && sel.attachments.length) && !refV.hasRefTabs,
         attachments: (sel.attachments || []).map((a, i) => ({
@@ -349,7 +349,7 @@
         isSnoozed: !!sel.snooze_until,
         snoozeText: sel.snooze_rule
           ? __('On hold until the status of {0} changes — returns automatically on the first change', [sel.reference_name])
-          : __('Snoozed until {0}', [String(sel.snooze_until).slice(0, 16)]),
+          : __('Snoozed until {0}', [String(sel.snooze_until).slice(0, 16)]) + ' · ' + this.snoozeSpan(sel.snooze_until),
 
         partiesLabel: ((U[sel.assigned_by] || {}).name || sel.assigned_by) + ((window.TT_DIR || 'ltr') === 'rtl' ? ' ← ' : ' → ') + ((U[sel.allocated_to] || {}).name || sel.allocated_to),
         fromAvatarSm: this.ava(sel.assigned_by, 21),
@@ -421,6 +421,7 @@
       folders, labels, quickFilters, cards, d, hasDetail: !!d, noDetail: !d && !s.loading,
       narrow: s.narrow,
       screenDay: s.screen === 'day', screenStats: s.screen === 'stats',
+      ...this.calendarVals(),
       ...this.templateVals(s, isDesktop),
       showList: s.screen === 'mail' && (!(s.narrow || !isDesktop) || s.pane === 'list'),
       showDetail: s.screen === 'mail' && (!(s.narrow || !isDesktop) || s.pane === 'detail'),
@@ -462,6 +463,7 @@
       screens: (() => { const onScreen = (id) => s.screen === id && (id !== 'mail' || (s.folder === 'inbox' && !s.label && !s.activeView)); return [
         { id: 'mail', label: __('Inbox'), icon: 'inbox', badge: s.counts.inboxUnread || '' },
         { id: 'day', label: __('Today\'s plan'), icon: 'sunrise', badge: dayRows.length || '' },
+        { id: 'calendar', label: __('Calendar'), icon: 'calendar', badge: '' },
         { id: 'stats', label: __('Analytics'), icon: 'chart', badge: '' },
         { id: 'templates', label: __('Task templates'), icon: 'template', badge: '' },
       ].map((x) => ({
@@ -586,6 +588,16 @@
       }),
 
       snoozeOpen: !!s.snoozeFor,
+      snoozePresets: [[1, __('Tomorrow')], [2, __('In 2 days')], [7, __('In a week')], [14, __('In 2 weeks')], [30, __('In a month')]].map(([n, label]) => {
+        const on = !!s.snoozePick && this.daysFromToday(s.snoozePick) === n;
+        return {
+          label, onPick: () => this.snoozePreset(n),
+          style: 'height:28px;padding:0 11px;border-radius:99px;cursor:pointer;font-size:12px;white-space:nowrap;border:1px solid ' + (on ? 'var(--primary)' : 'var(--line2)') +
+            ';background:' + (on ? 'var(--primary-soft)' : 'transparent') + ';color:' + (on ? 'var(--primary)' : 'var(--fg2)') + ';font-weight:' + (on ? '600' : '400') + ';',
+        };
+      }),
+      snoozeSpanText: s.snoozePick ? this.snoozeSpan(s.snoozePick) : '',
+      hasSnoozeSpan: !!s.snoozePick,
       closeSnooze: this.closeSnooze, openSnooze: () => this.openSnooze(),
       saveSnooze: this.saveSnooze,
       cancelSnooze: this.cancelSnooze, sendReminder: this.sendReminder,
@@ -885,6 +897,7 @@
       { icon: '#i-moon', label: __('Snooze until a set time'), key: 's', onDo: () => { this.setState({ cmdk: false }); this.openSnooze(); } },
       { icon: '#i-sunrise', label: __('Go to: Today\'s plan'), key: 'g d', onDo: () => { this.setState({ cmdk: false }); this.goScreen('day'); } },
       { icon: '#i-chart', label: __('Go to: Analytics'), key: 'g s', onDo: () => { this.setState({ cmdk: false }); this.goScreen('stats'); } },
+      { icon: '#i-calendar', label: __('Go to: Calendar'), key: 'g c', onDo: () => { this.setState({ cmdk: false }); this.goScreen('calendar'); } },
       { icon: '#i-hourglass', label: __('Go to: Waiting for reply'), key: 'g w', onDo: () => this.setState({ cmdk: false, screen: 'mail', folder: 'waiting', activeView: null, loading: true }, () => this.load()) },
       { icon: '#i-inbox', label: __('Go to: Inbox'), key: 'g i', onDo: () => this.setState({ cmdk: false, screen: 'mail', folder: 'inbox', activeView: null, loading: true }, () => this.load()) },
       { icon: '#i-bolt', label: __('Rules and recurring tasks'), key: '', onDo: () => { this.setState({ cmdk: false, automation: 'rules' }); this.loadAutomation(); } },

@@ -3797,3 +3797,296 @@ msgstr "مرفقات المستند"
 
 msgid "ToDo attachments"
 msgstr "مرفقات المهمة"
+
+msgctxt "ToDoBox"
+msgid "Add recipients"
+msgstr "إضافة مستلمين"
+
+msgctxt "ToDoBox"
+msgid "All statuses"
+msgstr "كل الحالات"
+
+msgctxt "ToDoBox"
+msgid "Approvals"
+msgstr "اعتمادات"
+
+msgctxt "ToDoBox"
+msgid "Assignee"
+msgstr "المستلم"
+
+msgctxt "ToDoBox"
+msgid "Cancelled"
+msgstr "ملغاة"
+
+msgctxt "ToDoBox"
+msgid "Complete"
+msgstr "إنجاز"
+
+msgctxt "ToDoBox"
+msgid "Creating…"
+msgstr "إنشاء…"
+
+msgctxt "ToDoBox"
+msgid "Daily"
+msgstr "يوميًا"
+
+msgctxt "ToDoBox"
+msgid "Description"
+msgstr "الوصف"
+
+msgctxt "ToDoBox"
+msgid "Disabled"
+msgstr "معطّل"
+
+msgctxt "ToDoBox"
+msgid "Document Type"
+msgstr "نوع المستند"
+
+msgctxt "ToDoBox"
+msgid "Draft"
+msgstr "مسودة"
+
+msgctxt "ToDoBox"
+msgid "Enabled"
+msgstr "مفعّل"
+
+msgctxt "ToDoBox"
+msgid "Filters"
+msgstr "الفلاتر"
+
+msgctxt "ToDoBox"
+msgid "Finance"
+msgstr "مالية"
+
+msgctxt "ToDoBox"
+msgid "Insights"
+msgstr "رؤى"
+
+msgctxt "ToDoBox"
+msgid "Monthly"
+msgstr "شهريًا"
+
+msgctxt "ToDoBox"
+msgid "Moved"
+msgstr "نُقل"
+
+msgctxt "ToDoBox"
+msgid "Next run"
+msgstr "التشغيل القادم"
+
+msgctxt "ToDoBox"
+msgid "No reason recorded"
+msgstr "دون سبب مسجّل"
+
+msgctxt "ToDoBox"
+msgid "Nothing overdue"
+msgstr "لا توجد مهام متأخرة"
+
+msgctxt "ToDoBox"
+msgid "Open"
+msgstr "مفتوحة"
+
+msgctxt "ToDoBox"
+msgid "Preview"
+msgstr "معاينة"
+
+msgctxt "ToDoBox"
+msgid "Quarterly"
+msgstr "ربع سنوي"
+
+msgctxt "ToDoBox"
+msgid "Reports"
+msgstr "تقارير"
+
+msgctxt "ToDoBox"
+msgid "Run now"
+msgstr "تشغيل الآن"
+
+msgctxt "ToDoBox"
+msgid "Search people"
+msgstr "بحث عن أشخاص"
+
+msgctxt "ToDoBox"
+msgid "Send reminder"
+msgstr "إرسال تذكير"
+
+msgctxt "ToDoBox"
+msgid "Sender"
+msgstr "المرسل"
+
+msgctxt "ToDoBox"
+msgid "Stale"
+msgstr "ركود"
+
+msgctxt "ToDoBox"
+msgid "Title"
+msgstr "العنوان"
+
+msgctxt "ToDoBox"
+msgid "Unassigned"
+msgstr "غير مسند"
+
+msgctxt "ToDoBox"
+msgid "User"
+msgstr "المستخدم"
+
+msgctxt "ToDoBox"
+msgid "Warehouse"
+msgstr "مستودع"
+
+msgctxt "ToDoBox"
+msgid "Weekly"
+msgstr "أسبوعيًا"
+
+msgctxt "ToDoBox"
+msgid "Yearly"
+msgstr "سنويًا"
+
+msgctxt "ToDoBox"
+msgid "{0} days"
+msgstr "{0} يوم"
+
+msgctxt "ToDoBox"
+msgid "{0} min"
+msgstr "{0} د"
+
+msgctxt "ToDoBox"
+msgid "{0} overdue"
+msgstr "{0} متأخر"
+
+msgctxt "ToDoBox"
+msgid "{0} selected"
+msgstr "{0} محدَّد"
+
+msgctxt "ToDoBox"
+msgid "in {0} days"
+msgstr "بعد {0} أيام"
+
+msgctxt "ToDoBox"
+msgid "Strikethrough"
+msgstr "يتوسطه خط"
+
+msgctxt "ToDoBox"
+msgid "Link"
+msgstr "رابط"
+
+msgctxt "ToDoBox"
+msgid "Quote"
+msgstr "اقتباس"
+
+msgctxt "ToDoBox"
+msgid "Template"
+msgstr "القالب"
+
+msgctxt "ToDoBox"
+msgid "Use a template"
+msgstr "استخدم قالبًا"
+
+msgctxt "ToDoBox"
+msgid "Suggested"
+msgstr "مقترحون"
+
+msgctxt "ToDoBox"
+msgid "Context"
+msgstr "السياق"
+
+msgctxt "ToDoBox"
+msgid "Not permitted"
+msgstr "غير مسموح"
+
+msgctxt "ToDoBox"
+msgid "Name"
+msgstr "الاسم"
+
+msgctxt "ToDoBox"
+msgid "Theme"
+msgstr "المظهر"
+
+msgctxt "ToDoBox"
+msgid "Role"
+msgstr "الصلاحية"
+
+msgctxt "ToDoBox"
+msgid "Task"
+msgstr "المهمة"
+
+msgctxt "ToDoBox"
+msgid "Items"
+msgstr "البنود"
+
+msgctxt "ToDoBox"
+msgid "Item"
+msgstr "البند"
+
+msgctxt "ToDoBox"
+msgid "1 row"
+msgstr "صف واحد"
+
+msgctxt "ToDoBox"
+msgid "{0} rows"
+msgstr "{0} صفوف"
+
+msgctxt "ToDoBox"
+msgid "No one assigned"
+msgstr "لا أحد مسند"
+
+msgctxt "ToDoBox"
+msgid "Activity"
+msgstr "النشاط"
+
+msgctxt "ToDoBox"
+msgid "Field"
+msgstr "الحقل"
+
+msgctxt "ToDoBox"
+msgid "Condition"
+msgstr "الشرط"
+
+msgctxt "ToDoBox"
+msgid "Last Updated On"
+msgstr "آخر تحديث في"
+
+msgctxt "ToDoBox"
+msgid "Document Status"
+msgstr "حالة المستند"
+
+msgctxt "ToDoBox"
+msgid "Display"
+msgstr "العرض"
+
+msgctxt "ToDoBox"
+msgid "Beta"
+msgstr "تجريبي"
+
+msgctxt "ToDoBox"
+msgid "Reply"
+msgstr "رد"
+
+msgid "In 2 days"
+msgstr "بعد يومين"
+
+msgid "In a month"
+msgstr "بعد شهر"
+
+msgid "In {0} weeks"
+msgstr "بعد {0} أسابيع"
+
+msgid "{0} days from now"
+msgstr "بعد {0} يومًا"
+
+msgid "Go to: Calendar"
+msgstr "الانتقال إلى: التقويم"
+
+msgid "No tasks due on this day"
+msgstr "لا مهام مستحقة في هذا اليوم"
+
+msgid "Language {0} does not exist"
+msgstr "اللغة {0} غير موجودة"
+
+msgctxt "ToDoBox"
+msgid "In {0} days"
+msgstr "بعد {0} أيام"
+
+msgctxt "ToDoBox"
+msgid "Calendar"
+msgstr "التقويم"
