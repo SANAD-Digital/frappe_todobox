@@ -1,5 +1,6 @@
 /* ToDoBox: @mentions in the task composer (reply / comment)
-   - typing "@" + at least one letter (at the start or after a space) opens a user list under the textarea
+   - typing "@" (at the start or after a space) opens a user list under the textarea: the task's sender,
+     assignee and CC first; letters after it search everyone
    - ↑/↓ move, Enter/Tab pick, Esc closes (without reaching the global shortcuts), click picks
    - picking inserts "@Full Name " and remembers label → email; on send, the emails whose "@Full Name"
      is still in the text go to the server, which notifies them (and adds them to CC so they can open the task) */
@@ -14,11 +15,20 @@
       .replace(/[أإآٱ]/g, 'ا').replace(/ى/g, 'ي').replace(/ة/g, 'ه').replace(/ؤ/g, 'و').replace(/ئ/g, 'ي');
   }
 
+  /** The open task's sender, assignee and CC (not me): the list shown for a bare "@" */
+  mentionParties() {
+    const U = this.api.USERS, me = this.api.ME, t = this.selTask && this.selTask();
+    if (!t) return [];
+    const ids = [t.assigned_by, t.allocated_to, ...(t.cc_users || [])];
+    return [...new Set(ids)].filter((id) => id && id !== me && id !== 'Guest')
+      .map((id) => ({ id, name: (U[id] || {}).name || id, initials: (U[id] || {}).initials || '?' }));
+  }
+
   /** Up to 8 users (not me, not Guest) whose name words start with every query word, or whose email starts with it */
   mentionMatches(q) {
     const U = this.api.USERS, me = this.api.ME;
     const words = this.mentionFold(q).split(/\s+/).filter(Boolean);
-    if (!words.length) return [];
+    if (!words.length) return this.mentionParties();
     const whole = words.join(' ');
     const out = [];
     for (const id of Object.keys(U)) {
@@ -39,10 +49,10 @@
   /** The "@query" right before the caret, or null. The @ must be at the start or after whitespace. */
   mentionQueryAt(value, caret) {
     const before = value.slice(0, caret);
-    const m = /(^|\s)@([^\s@][^\n@]{0,40})$/.exec(before);
+    const m = /(^|\s)@((?:[^\s@][^\n@]{0,40})?)$/.exec(before);
     if (!m) return null;
     const q = m[2];
-    if (/\s$/.test(q) || q.split(/\s+/).length > 3) return null;
+    if (q && (/\s$/.test(q) || q.split(/\s+/).length > 3)) return null;
     return { start: caret - q.length - 1, q };
   }
 
@@ -110,6 +120,7 @@
     this._mentionDismissed = null;
     this.setState({ draft, composerOpen: true, mention: null }, () => {
       try { if (el) { el.focus(); el.setSelectionRange(pos, pos); } } catch (e) { /* */ }
+      this.mentionDetect(el);
     });
   };
 
