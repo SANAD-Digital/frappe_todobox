@@ -5,6 +5,7 @@
    - Escape closes the phone drawer (clicks its backdrop).
    - mirrors html[data-dark] to Frappe's html[data-theme] so desk-style selectors work.
    - micro-interactions: completion "check pop + strike", checklist / checkbox pop.
+   - Ctrl/Cmd+S in any popup (dialog, drawer, inline form) runs its primary action.
    Everything is event delegation on document; React-owned markup is never replaced. */
 (() => {
   const KEY = 'todobox_nav_w', MIN = 200, MAX = 360, STEP = 16;
@@ -99,5 +100,33 @@
       flash(done.closest('.tt-row, .tt-day-row'), 'is-completing', 900);
       return;
     }
+  }, true);
+
+  /* ---- Ctrl/Cmd+S: the primary action of the popup in use ---- */
+  const PRIMARY = '.tb-btn-primary, .tmc-send, .tt-btn-p, .tm-msg-ok';
+  const POPUPS = '.tm-msg, .tb-confirm-dlg, .tb-dlg, .tt-sv-editor, .tmc, [role="dialog"], [role="alertdialog"]';
+  const shown = (el) => !!el && el.getClientRects().length > 0 && getComputedStyle(el).visibility !== 'hidden';
+  const usable = (b) => shown(b) && !b.disabled && b.getAttribute('aria-disabled') !== 'true';
+  /** the innermost inline form or popup around the focus, else the popup on top */
+  const scopeOf = (focus) => {
+    const near = focus && focus.closest && (focus.closest('.tm-fx-form') || focus.closest(POPUPS));
+    if (near && shown(near)) return near;
+    const all = [...document.querySelectorAll(POPUPS)].filter(shown);
+    const z = (el) => { let n = el; while (n && n !== document.body) { const v = parseInt(getComputedStyle(n).zIndex, 10); if (!isNaN(v)) return v; n = n.parentElement; } return 0; };
+    return all.sort((a, b) => z(a) - z(b)).pop() || null;
+  };
+  window.addEventListener('keydown', (e) => {
+    if (!(e.ctrlKey || e.metaKey) || e.altKey || e.shiftKey || String(e.key).toLowerCase() !== 's') return;
+    const scope = scopeOf(document.activeElement);
+    if (!scope) return;
+    /* in a popup the browser's "save page" never makes sense */
+    e.preventDefault();
+    e.stopPropagation();
+    const btn = [...scope.querySelectorAll(PRIMARY)].filter(usable).pop();
+    if (!btn) return;
+    /* let a Frappe control commit what was just typed (it applies on change/blur) before the click */
+    const a = document.activeElement;
+    if (a && a !== document.body && a.blur && !(a.isContentEditable)) a.blur();
+    setTimeout(() => btn.click(), 80);
   }, true);
 })();
