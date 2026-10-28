@@ -3485,3 +3485,47 @@ msgstr ""
 #: todobox/www/todobox.html
 msgid "Add CC"
 msgstr ""
+
+#: todobox/public/js/hub/render.js
+msgid "New due date (optional)"
+msgstr ""
+
+#: todobox/public/js/hub/render.js
+msgid "Keep {0} (who sent me the task) in CC"
+msgstr ""
+
+#: todobox/public/js/hub/render.js
+msgid "Keep the task’s CC ({0})"
+msgstr ""
+
+#: todobox/public/js/hub/render.js
+msgid "Forwarded to {0}"
+msgstr ""
+
+#: todobox/public/js/hub/render.js
+msgid "Forwarded from {0}"
+msgstr ""
+
+#: todobox/public/js/hub/render.js
+msgid "You forwarded this task to {0}"
+msgstr ""
+
+#: todobox/public/js/hub/render.js
+msgid "Forwarded to {0} by {1}"
+msgstr ""
+
+#: todobox/public/js/hub/render.js
+msgid "Open the original task"
+msgstr ""
+
+#: todobox/public/js/hub/render.js
+msgid "This task was forwarded to {0} · {1}"
+msgstr ""
+
+#: todobox/public/js/hub/render.js
+msgid "Open the forwarded task"
+msgstr ""
+
+#: todobox/public/js/hub/render.js
+msgid "The original task is shown for reference — you cannot reply to it or change it."
+msgstr ""

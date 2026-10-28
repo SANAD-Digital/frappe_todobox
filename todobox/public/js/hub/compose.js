@@ -83,6 +83,11 @@
           this.setState((st) => (st.forward ? { forward: { ...st.forward, to: v || null } } : null));
         },
       })),
+      /* optional new due date for the recipient (empty: the task's own date) */
+      fwdDate: this.fxSlot('fwdDate', (el) => new (X().Field)(el, {
+        value: (this.state.forward && this.state.forward.date) || null, label: __('New due date (optional)'),
+        onChange: (v) => this.setState((st) => (st.forward ? { forward: { ...st.forward, date: v || null } } : null)),
+      }, { fieldtype: 'Date', fieldname: 'fwd_date' })),
       fwdReason: this.fxSlot('fwdReason', (el) => new (X().Data)(el, {
         value: (this.state.forward && this.state.forward.reason) || '', inputId: 'tm-fwd-reason',
         label: __('Forward reason (logged as a comment in the thread)'),
@@ -140,9 +145,11 @@
   plainText(raw) { return String(raw == null ? '' : raw).replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim(); }
 
   /* ---------- forward ---------- */
+  /** the forward dialog's starting values: whoever sent me the task and its CCs follow the new task */
+  newForward() { return { to: null, mode: 'full', reason: '', keepSenderCc: true, copyCc: true, date: null, busy: false }; }
   openForward = () => {
     if (!this.state.sel || !this.guardLocked(this.taskByName(this.state.sel))) return;
-    this.setState({ forward: { to: null, mode: 'full', reason: '', busy: false } });
+    this.setState({ forward: this.newForward() });
   };
   closeForward = () => this.setState({ forward: null });
   submitForward = async () => {

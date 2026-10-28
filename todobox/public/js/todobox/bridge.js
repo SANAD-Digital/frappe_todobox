@@ -58,7 +58,10 @@
 		},
 		createTodos: function (data) { return message(API + "create_todos", data || {}); },
 		forwardTodo: function (name, args) {
-			return message(API + "forward_todo", { name: name, to: args.to, mode: args.mode || "full", reason: args.reason || "" });
+			return message(API + "forward_todo", {
+				name: name, to: args.to, mode: args.mode || "full", reason: args.reason || "",
+				keep_sender_cc: args.keepSenderCc ? 1 : 0, copy_cc: args.copyCc ? 1 : 0, date: args.date || null,
+			});
 		},
 		snoozeTodo: function (name, until, rule) { return message(API + "snooze_todo", { name: name, until: until, rule: rule }); },
 		unsnoozeTodo: function (name) { return message(API + "unsnooze_todo", { name: name }); },

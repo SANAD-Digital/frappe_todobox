@@ -94,7 +94,11 @@
       if (t.reference_name) chips.push(this.chip(t.reference_name, 'var(--fg2)', 'var(--sunk)'));
       (t.labels || []).slice(0, 1).forEach((l) => chips.push(this.chip(l, 'var(--fg2)', 'var(--sunk)')));
       if (t.attachments && t.attachments.length) chips.push(this.chip(__('Attachment'), 'var(--fg2)', 'var(--sunk)'));
-      if (t.forwarded_from === ME) chips.push(this.chip(__('Forwarded'), 'var(--fg2)', 'var(--sunk)'));
+      /* the forward chain, in words: forwarded to whom / from whom */
+      const nm = (u) => (U[u] || {}).name || u;
+      if ((t.forwards || []).length) chips.push(this.chip(__('Forwarded to {0}', [t.forwards.map((f) => nm(f.to)).join('، ')]), 'var(--primary)', 'var(--primary-soft)'));
+      else if (t.forwarded_from === ME) chips.push(this.chip(__('Forwarded to {0}', [nm(t.allocated_to)]), 'var(--primary)', 'var(--primary-soft)'));
+      else if (t.forwarded_from && t.allocated_to === ME) chips.push(this.chip(__('Forwarded from {0}', [nm(t.forwarded_from)]), 'var(--primary)', 'var(--primary-soft)'));
       if ((t.custom_checklist || []).length) chips.push(this.chip(__('{0}/{1} steps', [t.custom_checklist.filter((c) => c.done).length, t.custom_checklist.length]), 'var(--fg2)', 'var(--sunk)'));
       const wd = A.waitingDays(t);
       if (wd !== null) chips.push(this.chip(wd === 0 ? __('Awaiting reply') : __('No reply for {0} days', [wd]), wd >= A.STALE_DAYS ? 'var(--amber)' : 'var(--fg2)', wd >= A.STALE_DAYS ? 'var(--amber-soft)' : 'var(--sunk)'));
@@ -155,7 +159,7 @@
         actionsStyle: 'display:' + (isDesktop && hov && !this.isLocked(t) ? 'flex' : 'none') + ';position:absolute;top:calc(var(--row-py) - 3px);inset-inline-end:8px;gap:4px;padding:2px;border-radius:9px;background:var(--panel);box-shadow:0 1px 3px rgba(0,0,0,.12);',
         actions: this.isLocked(t) ? [] : [
           { act: 'complete', iconRef: '#i-check', title: __('Complete (e)'), onDo: (ev) => { ev.stopPropagation(); this.complete(t.name); } },
-          { act: 'forward', iconRef: '#i-forward', title: __('Forward (f)'), onDo: (ev) => { ev.stopPropagation(); this.open(t.name); this.setState({ forward: { to: null, mode: 'full', reason: '', busy: false } }); } },
+          { act: 'forward', iconRef: '#i-forward', title: __('Forward (f)'), onDo: (ev) => { ev.stopPropagation(); this.open(t.name); this.setState({ forward: this.newForward() }); } },
           { act: 'snooze', iconRef: '#i-moon', title: __('Snooze (s)'), onDo: (ev) => { ev.stopPropagation(); this.open(t.name); this.openSnooze(t.name); } },
         ],
         onOpen: () => { if (this.justSwiped) { this.justSwiped = false; return; } this.open(t.name); },
@@ -270,8 +274,27 @@
           setTimeout(() => ctl.focus && ctl.focus(), 0);
           return ctl;
         }),
+        /* the forward chain, both ways: where this task came from and where it went */
+        fwdLinks: (() => {
+          const nm = (u) => (U[u] || {}).name || u;
+          const stLabel = (st) => (st === 'Open' ? __('Open') : st === 'Closed' ? __('Completed') : __('Cancelled'));
+          const out = [];
+          if (sel.parent_todo) {
+            out.push({
+              text: sel.forwarded_from === ME ? __('You forwarded this task to {0}', [nm(sel.allocated_to)]) : __('Forwarded to {0} by {1}', [nm(sel.allocated_to), nm(sel.forwarded_from)]),
+              link: __('Open the original task'), onOpen: () => this.openTask(sel.parent_todo),
+            });
+          }
+          (sel.forwards || []).forEach((f) => out.push({
+            text: __('This task was forwarded to {0} · {1}', [nm(f.to), stLabel(f.status)]),
+            link: __('Open the forwarded task'), onOpen: () => this.openTask(f.name),
+          }));
+          return out;
+        })(),
+        hasFwdLinks: !!(sel.parent_todo || (sel.forwards || []).length),
+        isReadonly: !!sel.readonly,
         /* a completed or cancelled task: reopen it from the header (creator or assignee) */
-        showReopen: sel.status !== 'Open' && (sel.allocated_to === ME || sel.assigned_by === ME || canManage),
+        showReopen: !sel.readonly && sel.status !== 'Open' && (sel.allocated_to === ME || sel.assigned_by === ME || canManage),
         reopen: () => this.reopenTask(sel.name),
         ccToggleLabel: (sel.cc_users || []).length ? (s.ccOpen ? __('Hide CC') : __('CC ({0})', [sel.cc_users.length])) : __('No CC'),
         props, thread, hasHidden: hidden > 0, hiddenLabel: __('Show {0} earlier events', [hidden]),
@@ -342,6 +365,8 @@
           onRemove: () => this.removeCheck(c.id),
         })),
       };
+      /* the reply box: not on the linked-document tabs, not on a read-only original */
+      d.composerOn = !!d.refOnTask && !sel.readonly;
     }
 
     /* ---------- today plan ---------- */
@@ -774,6 +799,23 @@
       /* forward */
       forwardOpen: !!s.forward, closeForward: this.closeForward, submitForward: this.submitForward,
       forwardBusy: !!(s.forward && s.forward.busy), forwardBtnOpacity: s.forward && s.forward.busy ? 'opacity:.6;pointer-events:none;' : '',
+      /* options: whoever sent me the task / the task's CCs follow the new task as CC */
+      forwardOpts: (() => {
+        const t = s.forward && s.sel ? s.tasks.find((x) => x.name === s.sel) : null;
+        if (!t) return [];
+        const nm = (u) => (U[u] || {}).name || u;
+        const opts = [];
+        if (t.assigned_by && t.assigned_by !== ME) opts.push(['keepSenderCc', __('Keep {0} (who sent me the task) in CC', [nm(t.assigned_by)])]);
+        if ((t.cc_users || []).length) opts.push(['copyCc', __('Keep the task’s CC ({0})', [t.cc_users.map(nm).join('، ')])]);
+        return opts.map(([key, label]) => {
+          const on = !!s.forward[key];
+          return {
+            label, on,
+            onPick: () => this.setState((st) => (st.forward ? { forward: { ...st.forward, [key]: !st.forward[key] } } : null)),
+            box: 'flex:0 0 16px;width:16px;height:16px;display:grid;place-items:center;border-radius:4px;color:var(--on-accent);border:1.5px solid ' + (on ? 'var(--primary)' : 'var(--line2)') + ';background:' + (on ? 'var(--primary)' : 'transparent') + ';',
+          };
+        });
+      })(),
       forwardModes: [
         { id: 'full', label: __('Full forward'), note: __('My task is cancelled (not counted as completed) and a new task opens for the recipient in the same thread.') },
         { id: 'delegate', label: __('Delegate'), note: __('The task stays assigned to me and a parallel task is created — it appears under “Forwarded” and I track its progress.') },

@@ -2,7 +2,7 @@
 
 import frappe
 from frappe import _
-from frappe.utils import get_datetime, getdate, now_datetime, today
+from frappe.utils import cint, get_datetime, getdate, now_datetime, today
 
 from todobox.services.checklist import get_checklists, has_checklist_table, normalize_checklist, set_checklist
 from todobox.services.common import (
@@ -34,6 +34,7 @@ OPTIONAL_COLUMNS = (
 	"snooze_until",
 	"snooze_rule",
 	"forwarded_from",
+	"parent_todo",
 	"labels",
 	"task_template",
 	"day_order",
@@ -210,6 +211,21 @@ def _threads(names):
 	return out
 
 
+def _forwards(names):
+	"""{todo: [{name, to, status}]}: the tasks forwarded from each of these (ToDo.parent_todo)."""
+	if not names or not todo_has("parent_todo"):
+		return {}
+	out = {}
+	for r in frappe.get_all(
+		"ToDo",
+		filters={"parent_todo": ("in", names)},
+		fields=["name", "parent_todo", "allocated_to", "status"],
+		order_by="creation asc",
+	):
+		out.setdefault(r.parent_todo, []).append({"name": r.name, "to": r.allocated_to, "status": r.status})
+	return out
+
+
 def _attachments(names):
 	"""{todo_name: [{name, url}]} in one query."""
 	if not names:
@@ -254,6 +270,7 @@ def _fetch_todos(conditions, values, order_by="modified DESC", limit=100):
 	checklists = get_checklists(names)
 	threads = _threads(names)
 	files = _attachments(names)
+	forwards = _forwards(names)
 	refs = _reference_info(rows)
 	today_str = values.get("today") or today()
 
@@ -300,6 +317,9 @@ def _fetch_todos(conditions, values, order_by="modified DESC", limit=100):
 				"snooze_until": str(r.get("snooze_until")) if r.get("snooze_until") else None,
 				"snooze_rule": r.get("snooze_rule"),
 				"forwarded_from": r.get("forwarded_from"),
+				# the forward chain: the task this one was forwarded from, and where this one was forwarded to
+				"parent_todo": r.get("parent_todo"),
+				"forwards": forwards.get(r.name, []),
 				"custom_checklist": checklists.get(r.name, []),
 				"task_template": r.get("task_template"),
 				"day_order": r.get("day_order"),
@@ -340,7 +360,29 @@ def get_todo(name):
 	conditions, values = ["name = %(todo_name)s"], {**query_values(), "todo_name": name}
 	my_scope(conditions)
 	rows = _fetch_todos(conditions, values, limit=1)
-	return rows[0] if rows else None
+	if rows:
+		return rows[0]
+	# the original of a task forwarded to me: readable for context, not mine to act on
+	if _in_forward_of(name, values["me"]):
+		rows = _fetch_todos(["name = %(todo_name)s"], values, limit=1)
+		if rows:
+			rows[0]["readonly"] = 1
+			return rows[0]
+	return None
+
+
+def _in_forward_of(name, user):
+	"""The user takes part in a task forwarded from this one (assignee, forwarder or CC)."""
+	if not todo_has("parent_todo"):
+		return False
+	for t in frappe.get_all(
+		"ToDo",
+		filters={"parent_todo": name},
+		fields=["allocated_to", "assigned_by", *(["cc_users"] if todo_has("cc_users") else [])],
+	):
+		if user in (t.allocated_to, t.assigned_by) or user in split_csv(t.get("cc_users")):
+			return True
+	return False
 
 
 def get_todo_folders(names):
@@ -736,9 +778,11 @@ def _share_reference(ref_type, ref_name, user):
 
 
 @frappe.whitelist()
-def forward_todo(name, to, mode="full", reason=""):
+def forward_todo(name, to, mode="full", reason="", keep_sender_cc=1, copy_cc=1, date=None):
 	"""full: my task is Cancelled and the recipient gets an open copy in the same thread.
-	delegate: my task stays open and a parallel task is created that I follow from "Forwarded"."""
+	delegate: my task stays open and a parallel task is created that I follow from "Forwarded".
+	keep_sender_cc: whoever sent me the task follows the new one as CC; copy_cc: so do the task's CCs;
+	date: a new due date for the recipient (default: the same)."""
 	me = frappe.session.user
 	original = frappe.get_doc("ToDo", name)
 	reason = (reason or "").strip()
@@ -775,6 +819,20 @@ def forward_todo(name, to, mode="full", reason=""):
 	if meta.has_field("thread_id") and not original.get("thread_id"):
 		frappe.db.set_value("ToDo", original.name, "thread_id", thread_id, update_modified=False)
 
+	if date:
+		fwd_doc.date = getdate(date)
+	cc = []
+	if cint(copy_cc):
+		cc += split_csv(original.get("cc_users"))
+	if cint(keep_sender_cc) and original.assigned_by:
+		cc.append(original.assigned_by)
+	# people I can see, not the recipient nor me (I am the new task's sender)
+	cc = [u for u in dict.fromkeys(cc) if u not in (to, me) and can_see(u)]
+	if cc and meta.has_field("cc_users"):
+		fwd_doc.cc_users = ",".join(cc)
+	else:
+		cc = []
+
 	fwd_doc.flags.ignore_todo_rules = True
 	fwd_doc.insert(ignore_permissions=True)
 	_share_reference(original.reference_type, original.reference_name, to)
@@ -802,6 +860,16 @@ def forward_todo(name, to, mode="full", reason=""):
 		notif_type="Assignment",
 		kind="forward",
 	)
+	for user in cc:
+		create_notification_log(
+			for_user=user,
+			subject=_("You have been added as CC on task: {0}").format(short_subject(original, 60)),
+			document_type="ToDo",
+			document_name=fwd_doc.name,
+			from_user=me,
+			notif_type="Share",
+			kind="cc",
+		)
 
 	frappe.db.commit()
 	return {"status": "success", "new_name": fwd_doc.name, "to_name": to_name}

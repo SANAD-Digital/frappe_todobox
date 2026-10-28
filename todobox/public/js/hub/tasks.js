@@ -378,7 +378,8 @@
   };
 
   /** Completed / cancelled tasks are read-only: only comments and attachments are allowed */
-  isLocked(t) { return !!(t && t.status && t.status !== 'Open'); }
+  /* closed/cancelled, or the original of a task forwarded to me (readable, not mine to act on) */
+  isLocked(t) { return !!(t && ((t.status && t.status !== 'Open') || t.readonly)); }
   guardLocked(t) {
     if (!this.isLocked(t)) return true;
     this.toast(__('This task is completed — you can only add comments and attachments'));

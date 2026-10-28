@@ -3727,3 +3727,47 @@ msgstr "أُضيف إلى النسخة"
 #: todobox/www/todobox.html
 msgid "Add CC"
 msgstr "إضافة نسخة"
+
+#: todobox/public/js/hub/render.js
+msgid "New due date (optional)"
+msgstr "تاريخ استحقاق جديد (اختياري)"
+
+#: todobox/public/js/hub/render.js
+msgid "Keep {0} (who sent me the task) in CC"
+msgstr "إبقاء {0} (مرسل المهمة إليّ) نسخة"
+
+#: todobox/public/js/hub/render.js
+msgid "Keep the task’s CC ({0})"
+msgstr "إبقاء النسخة الحالية ({0})"
+
+#: todobox/public/js/hub/render.js
+msgid "Forwarded to {0}"
+msgstr "محالة إلى {0}"
+
+#: todobox/public/js/hub/render.js
+msgid "Forwarded from {0}"
+msgstr "محالة من {0}"
+
+#: todobox/public/js/hub/render.js
+msgid "You forwarded this task to {0}"
+msgstr "أحلت هذه المهمة إلى {0}"
+
+#: todobox/public/js/hub/render.js
+msgid "Forwarded to {0} by {1}"
+msgstr "أحالها {1} إلى {0}"
+
+#: todobox/public/js/hub/render.js
+msgid "Open the original task"
+msgstr "عرض المهمة الأصلية"
+
+#: todobox/public/js/hub/render.js
+msgid "This task was forwarded to {0} · {1}"
+msgstr "أُحيلت هذه المهمة إلى {0} · {1}"
+
+#: todobox/public/js/hub/render.js
+msgid "Open the forwarded task"
+msgstr "عرض المهمة المحالة"
+
+#: todobox/public/js/hub/render.js
+msgid "The original task is shown for reference — you cannot reply to it or change it."
+msgstr "المهمة الأصلية معروضة للاطلاع فقط — لا يمكنك الرد عليها أو تعديلها."

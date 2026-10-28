@@ -114,8 +114,8 @@ export async function createTodos({ to = [], cc = [], subject = '', body = '', p
 }
 
 /* reassign: validation and permissions on the server; null on rejection (Frappe shows the reason) */
-export async function forwardTodo(name, { to, mode = 'full', reason = '' }) {
-  return safe(() => bridge().forwardTodo(name, { to, mode, reason }));
+export async function forwardTodo(name, { to, mode = 'full', reason = '', keepSenderCc = true, copyCc = true, date = null }) {
+  return safe(() => bridge().forwardTodo(name, { to, mode, reason, keepSenderCc, copyCc, date }));
 }
 
 /* server-side recipient search (don't load all users); results are merged into USERS for name display */
