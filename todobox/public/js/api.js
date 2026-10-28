@@ -211,6 +211,11 @@ export async function unsnooze(name) { return safe(() => bridge().unsnoozeTodo(n
 
 /* ---------- 3. Follow-up: reminders on stale tasks ---------- */
 export async function remindTodo(name, text) { return srv('remind_todo', { name, text: text || '' }); }
+/* lifecycle: cancel (creator), reopen (creator or assignee), take someone off CC */
+export async function cancelTodo(name, reason) { return srv('cancel_todo', { name, reason: reason || '' }); }
+export async function reopenTodo(name) { return srv('reopen_todo', { name }); }
+export async function removeCc(name, user) { return srv('remove_cc', { name, user }); }
+export async function addCc(name, users) { return srv('add_cc', { name, users: JSON.stringify(users || []) }); }
 export const STALE_DAYS = 3;
 
 /* ---------- 4. Checklist (checklist_items -> ToDoBox Checklist Item) ---------- */
@@ -317,11 +322,13 @@ export const NOTIF_KINDS = {
   wf_remind: { icon: 'bell', tone: 'amber', label: __('Decision reminder') },
   done: { icon: 'check-circle', tone: 'green', label: __('Completed') },
   forward: { icon: 'forward', tone: 'primary', label: __('Forwarded') },
+  cancel: { icon: 'x', tone: 'fg2', label: __('Cancelled') },
+  reopen: { icon: 'repeat', tone: 'primary', label: __('Reopened') },
 };
 /* the bell's tabs: each groups notification kinds (an unknown kind is only under "All") */
 export const NOTIF_GROUPS = [
   { id: 'all', label: __('All') },
-  { id: 'tasks', label: __('Tasks'), kinds: ['assign', 'cc', 'forward', 'done'] },
+  { id: 'tasks', label: __('Tasks'), kinds: ['assign', 'cc', 'forward', 'done', 'cancel', 'reopen'] },
   { id: 'replies', label: __('Replies'), kinds: ['reply', 'first', 'answer', 'mention'] },
   { id: 'actions', label: __('Actions'), kinds: ['wf', 'wf_update', 'wf_remind'] },
   { id: 'reminders', label: __('Reminders'), kinds: ['remind', 'overdue', 'stale', 'rule'] },

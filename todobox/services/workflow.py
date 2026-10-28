@@ -114,6 +114,14 @@ def _tone_for(transition, state_index, styles):
 	return "green", 0, 0
 
 
+def finished_states(wf):
+	"""States where a document is done: no transition leaves them, or the document is submitted or
+	cancelled there (e.g. "Approved" that can still be cancelled). "Sent & following up" stops there
+	and the tasks linked to the document are closed (workflow_notify)."""
+	non_final = {t.state for t in wf.transitions}
+	return [s.state for s in wf.states if s.state not in non_final or cint(s.doc_status) in (1, 2)]
+
+
 def workflow_payload(wf):
 	state_index = {s.state: i for i, s in enumerate(wf.states)}
 	styles = _state_styles([s.state for s in wf.states])
@@ -141,8 +149,7 @@ def workflow_payload(wf):
 			"destructive": destructive,
 			"conditionText": t.condition or "",
 		})
-	non_final = {t.state for t in wf.transitions}
-	final = [s.state for s in wf.states if s.state not in non_final]
+	final = finished_states(wf)
 	return {
 		"document_type": wf.document_type,
 		"workflow_state_field": wf.workflow_state_field,

@@ -33,6 +33,53 @@
     this.load(this.state.sel);
   };
 
+  /* ---------- lifecycle: reopen, cancel, CC, title ---------- */
+  reopenTask = async (name) => {
+    const res = await this.api.reopenTodo(name);
+    if (!res) { this.toast(__('Could not reopen the task')); return; }
+    this.toast(__('Task reopened'));
+    /* keep it open even when it leaves this folder (e.g. reopened from Completed) */
+    this.load(name, true);
+  };
+  cancelTask = async (name) => {
+    const t = this.taskByName(name);
+    const ok = await this.tbConfirm(__('Cancel "{0}"? The assignee is notified and the task leaves their inbox.', [(t && t.subject) || name]),
+      { title: __('Cancel task'), primary: __('Cancel task'), danger: true });
+    if (!ok) return;
+    const res = await this.api.cancelTodo(name);
+    if (!res) { this.toast(__('Could not cancel the task')); return; }
+    this.toast(__('Task cancelled'));
+    this.load(name, true);
+  };
+  removeCcUser = async (name, user) => {
+    const res = await this.api.removeCc(name, user);
+    if (!res) { this.toast(__('Could not update CC')); return; }
+    if (user === this.api.ME) { this.toast(__('You were removed from CC')); this.load(); return; }
+    this.toast(__('Removed from CC'));
+    this.load(name);
+  };
+  /** The "+ CC" picker changed: add the new people, take off the removed ones */
+  setCcUsers = async (name, next) => {
+    const t = this.taskByName(name);
+    const cur = (t && t.cc_users) || [];
+    const added = next.filter((u) => !cur.includes(u)), removed = cur.filter((u) => !next.includes(u));
+    if (added.length) {
+      const res = await this.api.addCc(name, added);
+      if (!res) { this.toast(__('Could not update CC')); this.load(name); return; }
+      this.toast(__('Added to CC'));
+    }
+    for (const u of removed) await this.api.removeCc(name, u);
+    this.load(name);
+  };
+  /** The title is edited in place (creator only): focus it with its text selected */
+  editTitle = () => {
+    const el = document.querySelector('[data-title-edit="true"]');
+    if (!el) return;
+    el.focus();
+    const r = document.createRange(); r.selectNodeContents(el);
+    const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+  };
+
   /* ---------- follow-up ---------- */
   sendReminder = async () => {
     const name = this.state.sel;

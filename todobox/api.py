@@ -28,7 +28,9 @@ from todobox.services.tags import search_tags
 from todobox.services.team import get_workload, search_users, user_link_query
 from todobox.services.templates import delete_task_template, get_task_templates, save_task_template
 from todobox.services.todos import (
+	add_cc,
 	add_comment,
+	cancel_todo,
 	create_todos,
 	discard_upload,
 	forward_todo,
@@ -36,6 +38,8 @@ from todobox.services.todos import (
 	get_todo,
 	list_todos,
 	remind_todo,
+	remove_cc,
+	reopen_todo,
 	snooze_todo,
 	unsnooze_todo,
 	update_todo,
@@ -44,7 +48,9 @@ from todobox.services.users import get_active_users
 
 __all__ = [
 	"add_checklist_item",
+	"add_cc",
 	"add_comment",
+	"cancel_todo",
 	"add_reference_comment",
 	"count_queries",
 	"create_todos",
@@ -69,6 +75,8 @@ __all__ = [
 	"mark_all_notifs_read",
 	"mark_notif_read",
 	"remind_todo",
+	"remove_cc",
+	"reopen_todo",
 	"remove_checklist_item",
 	"reorder_day",
 	"save_task_template",

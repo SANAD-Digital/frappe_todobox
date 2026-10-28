@@ -33,6 +33,31 @@ def on_workflow_change(doc, method=None):
 	except Exception:
 		# a notification must never block the transition itself
 		frappe.log_error(title="ToDoBox: workflow notification failed")
+	try:
+		_close_linked_tasks(doc, workflow, state)
+	except Exception:
+		frappe.log_error(title="ToDoBox: closing linked tasks failed")
+
+
+def _close_linked_tasks(doc, workflow, state):
+	"""The document is done (approved, rejected, archived…): its open tasks have nothing left to do,
+	so they are closed, with a note in their conversation."""
+	from todobox.services.workflow import finished_states
+
+	if state not in finished_states(frappe.get_cached_doc("Workflow", workflow)):
+		return
+	for name in frappe.get_all(
+		"ToDo",
+		filters={"reference_type": doc.doctype, "reference_name": doc.name, "status": "Open"},
+		pluck="name",
+	):
+		todo = frappe.get_doc("ToDo", name)
+		todo.status = "Closed"
+		todo.save(ignore_permissions=True)
+		todo.add_comment(
+			"Info",
+			_("Closed automatically: {0} {1} reached “{2}”").format(_(doc.doctype), doc.name, _(state)),
+		)
 
 
 def _notify(doc, workflow, state):

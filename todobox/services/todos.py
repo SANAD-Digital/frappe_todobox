@@ -7,6 +7,7 @@ from frappe.utils import get_datetime, getdate, now_datetime, today
 from todobox.services.checklist import get_checklists, has_checklist_table, normalize_checklist, set_checklist
 from todobox.services.common import (
 	can,
+	can_manage,
 	CHECKLIST_FIELD,
 	MANAGER_ONLY_FIELDS,
 	TEMPLATE_DOCTYPE,
@@ -115,7 +116,8 @@ def get_counts():
 def _folder_conditions(folder, conditions, values):
 	me = values["me"]
 	if folder == "inbox":
-		conditions.append("allocated_to = %(me)s AND status IN ('Open', 'Closed')")
+		# open first (list_todos), then completed and cancelled ones so they can be reopened
+		conditions.append("allocated_to = %(me)s AND status IN ('Open', 'Closed', 'Cancelled')")
 		if todo_has("snooze_until"):
 			conditions.append("(snooze_until IS NULL OR snooze_until <= %(now)s)")
 	elif folder == "overdue":
@@ -430,6 +432,9 @@ def update_todo(name, patch):
 			set_checklist(todo, normalize_checklist(steps))
 
 	closing = patch.get("status") == "Closed" and todo.status != "Closed"
+	if patch.get("status") == "Cancelled" and todo.status != "Cancelled":
+		ensure_can_manage(todo)  # cancelling is the creator's call (see cancel_todo)
+	old_subject = todo.get("subject") if todo_has("subject") else None
 
 	meta = frappe.get_meta("ToDo")
 	for key, value in patch.items():
@@ -437,6 +442,10 @@ def update_todo(name, patch):
 			todo.set(key, value)
 
 	todo.save(ignore_permissions=True)
+
+	new_subject = patch.get("subject")
+	if new_subject and old_subject is not None and new_subject != old_subject:
+		todo.add_comment("Info", _("Title changed from “{0}” to “{1}”").format(old_subject or "", new_subject))
 
 	if closing and todo.assigned_by and todo.assigned_by != me:
 		create_notification_log(
@@ -826,6 +835,114 @@ def unsnooze_todo(name):
 	todo.save(ignore_permissions=True)
 	frappe.db.commit()
 	return {"status": "success"}
+
+
+@frappe.whitelist()
+def cancel_todo(name, reason=""):
+	"""Cancels an open task (its creator only); logged in the conversation and told to the assignee."""
+	todo = get_task(name)
+	ensure_can_manage(todo)
+	if todo.status != "Open":
+		frappe.throw(_("Only an open task can be cancelled"))
+	me = frappe.session.user
+	todo.status = "Cancelled"
+	todo.save(ignore_permissions=True)
+	note = _("Task cancelled by {0}").format(frappe.utils.get_fullname(me))
+	if (reason or "").strip():
+		note += "<br>" + _("Reason: {0}").format(frappe.utils.escape_html(reason.strip()))
+	todo.add_comment("Info", note)
+	if todo.allocated_to and todo.allocated_to != me:
+		create_notification_log(
+			for_user=todo.allocated_to,
+			subject=_("Task cancelled: {0}").format(short_subject(todo, 40)),
+			content=reason or note,
+			document_type="ToDo",
+			document_name=todo.name,
+			from_user=me,
+			notif_type="Assignment",
+			dedupe=False,
+			kind="cancel",
+		)
+	frappe.db.commit()
+	return get_todo(name)
+
+
+@frappe.whitelist()
+def reopen_todo(name):
+	"""Reopens a completed or cancelled task (its creator or assignee); the other side is told."""
+	todo = get_task(name)
+	me = frappe.session.user
+	if me not in (todo.allocated_to, todo.assigned_by) and not can_manage(todo):
+		frappe.throw(_("You can only change tasks assigned to you or by you"), frappe.PermissionError)
+	if todo.status == "Open":
+		return get_todo(name)
+	todo.status = "Open"
+	todo.save(ignore_permissions=True)
+	todo.add_comment("Info", _("Task reopened by {0}").format(frappe.utils.get_fullname(me)))
+	for user in {todo.allocated_to, todo.assigned_by} - {me, None}:
+		create_notification_log(
+			for_user=user,
+			subject=_("Task reopened: {0}").format(short_subject(todo, 40)),
+			document_type="ToDo",
+			document_name=todo.name,
+			from_user=me,
+			notif_type="Assignment",
+			dedupe=False,
+			kind="reopen",
+		)
+	frappe.db.commit()
+	return get_todo(name)
+
+
+@frappe.whitelist()
+def add_cc(name, users):
+	"""Adds people to a task's CC (its creator or assignee): logged in the conversation, each one notified."""
+	todo = get_task(name)
+	me = frappe.session.user
+	if me not in (todo.allocated_to, todo.assigned_by) and not can_manage(todo):
+		frappe.throw(_("You can only change tasks assigned to you or by you"), frappe.PermissionError)
+	cc = split_csv(todo.get("cc_users"))
+	new = [u for u in dict.fromkeys(loads(users, []) or []) if u and u not in cc and u not in (todo.allocated_to, todo.assigned_by)]
+	if not new:
+		return get_todo(name)
+	ensure_assignable(new)
+	todo.cc_users = ",".join(cc + new)
+	todo.save(ignore_permissions=True)
+	todo.add_comment(
+		"Info",
+		_("{0} added {1} to CC").format(
+			frappe.utils.get_fullname(me), ", ".join(frappe.utils.get_fullname(u) for u in new)
+		),
+	)
+	for user in new:
+		create_notification_log(
+			for_user=user,
+			subject=_("You have been added as CC on task: {0}").format(short_subject(todo, 40)),
+			document_type="ToDo",
+			document_name=todo.name,
+			from_user=me,
+			notif_type="Share",
+			kind="cc",
+		)
+	frappe.db.commit()
+	return get_todo(name)
+
+
+@frappe.whitelist()
+def remove_cc(name, user):
+	"""Takes someone off a task's CC: the creator may remove anyone, a CC member only themselves."""
+	todo = get_task(name)
+	me = frappe.session.user
+	if user != me and not can_manage(todo):
+		frappe.throw(_("Only the task creator can remove others from CC"), frappe.PermissionError)
+	cc = split_csv(todo.get("cc_users"))
+	if user not in cc:
+		return get_todo(name)
+	todo.cc_users = ",".join(u for u in cc if u != user)
+	todo.save(ignore_permissions=True)
+	todo.add_comment("Info", _("{0} removed from CC").format(frappe.utils.get_fullname(user)))
+	frappe.db.commit()
+	return get_todo(name) if user != me else {"removed": 1}
 
 
 @frappe.whitelist()

@@ -863,7 +863,7 @@ html[data-dark="1"] .tms-err button{background:#ededed;color:#171717}
               <button onClick="{{ backToList }}" aria-label="Back to list" title="Back to list" style="width:32px;height:32px;flex:0 0 32px;display:grid;place-items:center;background:transparent;border:1px solid var(--line2);border-radius:8px;cursor:pointer;color:var(--fg2);"><svg data-ic="" class="tt-back-ic" style="width:15px;height:15px;"><use href="#i-arrow-back"></use></svg></button>
             </sc-if>
             <div style="flex:1;min-width:0;">
-              <div contentEditable="{{ d.titleEditable }}" suppressContentEditableWarning="{{ true }}" onBlur="{{ onRenameTitle }}" style="font-size:{{ titleSize }};font-weight:600;line-height:1.45;overflow-wrap:anywhere;outline:none;border-radius:6px;padding:2px 4px;margin-inline-start:-4px;" style-focus="background:var(--sunk)">{{ d.subject }}</div>
+              <div data-title-edit="{{ d.titleEditable }}" contentEditable="{{ d.titleEditable }}" suppressContentEditableWarning="{{ true }}" onBlur="{{ onRenameTitle }}" style="font-size:{{ titleSize }};font-weight:600;line-height:1.45;overflow-wrap:anywhere;outline:none;border-radius:6px;padding:2px 4px;margin-inline-start:-4px;" style-focus="background:var(--sunk)">{{ d.subject }}</div>
             </div>
             <sc-if value="{{ headActionsInline }}" hint-placeholder-val="{{ true }}">
               <div style="display:flex;align-items:center;gap:6px;flex:0 0 auto;">
@@ -877,6 +877,11 @@ html[data-dark="1"] .tms-err button{background:#ededed;color:#171717}
                 <svg data-ic="" style="width:14px;height:14px;"><use href="#i-moon"></use></svg>
               </button>
               </div>
+            </sc-if>
+            <sc-if value="{{ d.showReopen }}" hint-placeholder-val="{{ false }}">
+              <button onClick="{{ d.reopen }}" title="Reopen task" aria-label="Reopen task" style="flex:0 0 auto;width:32px;height:32px;display:grid;place-items:center;background:transparent;border:1px solid var(--line2);border-radius:8px;cursor:pointer;color:var(--fg2);" style-hover="border-color:var(--primary-line);color:var(--primary)">
+                <svg data-ic="" style="width:14px;height:14px;"><use href="#i-repeat"></use></svg>
+              </button>
             </sc-if>
             <div data-more-menu="" style="position:relative;flex:0 0 auto;">
                 <button onClick="{{ toggleMoreMenu }}" title="More" aria-label="More" aria-expanded="{{ moreMenuOpen }}" style="{{ moreBtnStyle }}">
@@ -915,9 +920,18 @@ html[data-dark="1"] .tms-err button{background:#ededed;color:#171717}
                 <sc-for list="{{ d.cc }}" as="p" hint-placeholder-count="2">
                   <span style="display:flex;align-items:center;gap:6px;height:24px;padding:0 10px 0 3px;background:var(--sunk);border-radius:99px;font-size:11.5px;color:var(--fg2);white-space:nowrap;">
                     <span style="{{ p.avatar }}">{{ p.initials }}</span>{{ p.name }}
+                    <button type="button" onClick="{{ p.onRemove }}" title="Remove from CC" aria-label="Remove from CC" style="{{ p.removeStyle }}" style-hover="background:var(--line);color:var(--fg)"><svg data-ic="" style="width:9px;height:9px;"><use href="#i-x"></use></svg></button>
                   </span>
                 </sc-for>
+                <sc-if value="{{ d.ccCanAdd }}" hint-placeholder-val="{{ false }}">
+                  <button onClick="{{ d.toggleCcPicker }}" title="Add CC" aria-expanded="{{ d.ccPickerOpen }}" style="height:24px;padding:0 10px;display:flex;align-items:center;gap:5px;flex:0 0 auto;background:transparent;border:1px dashed var(--line2);border-radius:99px;cursor:pointer;font-size:11.5px;color:var(--fg3);" style-hover="border-color:var(--primary-line);color:var(--primary)">
+                    <svg data-ic="" style="width:10px;height:10px;"><use href="#i-plus"></use></svg>CC
+                  </button>
+                </sc-if>
               </div>
+              <sc-if value="{{ d.ccPickerOpen }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-top:6px;min-width:0;"><div ref="{{ d.ccEditor }}"></div></div>
+              </sc-if>
             </sc-if>
           <sc-if value="{{ headActionsRow }}" hint-placeholder-val="{{ false }}">
             <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px;">

@@ -3376,3 +3376,112 @@ msgctxt "ToDoBox"
 msgid "Priority"
 msgstr ""
 
+
+#: todobox/services/todos.py
+msgid "Title changed from “{0}” to “{1}”"
+msgstr ""
+
+#: todobox/services/todos.py
+msgid "Only an open task can be cancelled"
+msgstr ""
+
+#: todobox/services/todos.py
+msgid "Task cancelled by {0}"
+msgstr ""
+
+#: todobox/services/todos.py
+msgid "Reason: {0}"
+msgstr ""
+
+#: todobox/services/todos.py
+msgid "Task cancelled: {0}"
+msgstr ""
+
+#: todobox/services/todos.py
+msgid "Task reopened by {0}"
+msgstr ""
+
+#: todobox/services/todos.py
+msgid "Task reopened: {0}"
+msgstr ""
+
+#: todobox/services/todos.py
+msgid "Only the task creator can remove others from CC"
+msgstr ""
+
+#: todobox/services/todos.py
+msgid "{0} removed from CC"
+msgstr ""
+
+#: todobox/services/todos.py
+msgid "Closed automatically: {0} {1} reached “{2}”"
+msgstr ""
+
+#: todobox/public/js/hub/tasks.js
+msgid "Reopened"
+msgstr ""
+
+#: todobox/public/js/hub/tasks.js
+msgid "Could not reopen the task"
+msgstr ""
+
+#: todobox/public/js/hub/tasks.js
+msgid "Task reopened"
+msgstr ""
+
+#: todobox/public/js/hub/tasks.js
+msgid "Cancel \"{0}\"? The assignee is notified and the task leaves their inbox."
+msgstr ""
+
+#: todobox/public/js/hub/tasks.js
+msgid "Cancel task"
+msgstr ""
+
+#: todobox/public/js/hub/tasks.js
+msgid "Could not cancel the task"
+msgstr ""
+
+#: todobox/public/js/hub/tasks.js
+msgid "Task cancelled"
+msgstr ""
+
+#: todobox/public/js/hub/tasks.js
+msgid "Could not update CC"
+msgstr ""
+
+#: todobox/public/js/hub/tasks.js
+msgid "You were removed from CC"
+msgstr ""
+
+#: todobox/public/js/hub/tasks.js
+msgid "Removed from CC"
+msgstr ""
+
+#: todobox/public/js/hub/tasks.js
+msgid "Edit title"
+msgstr ""
+
+#: todobox/public/js/hub/tasks.js
+msgid "Reopen task"
+msgstr ""
+
+#: todobox/public/js/hub/tasks.js
+msgid "Remove me from CC"
+msgstr ""
+
+
+#: todobox/public/js/hub/tasks.js
+msgid "Remove from CC"
+msgstr ""
+
+#: todobox/services/todos.py
+msgid "{0} added {1} to CC"
+msgstr ""
+
+#: todobox/public/js/hub/tasks.js
+msgid "Added to CC"
+msgstr ""
+
+#: todobox/www/todobox.html
+msgid "Add CC"
+msgstr ""

@@ -3618,3 +3618,112 @@ msgctxt "ToDoBox"
 msgid "Priority"
 msgstr "الأولوية"
 
+
+#: todobox/services/todos.py
+msgid "Title changed from “{0}” to “{1}”"
+msgstr "تغيّر العنوان من «{0}» إلى «{1}»"
+
+#: todobox/services/todos.py
+msgid "Only an open task can be cancelled"
+msgstr "لا يمكن إلغاء إلا مهمة مفتوحة"
+
+#: todobox/services/todos.py
+msgid "Task cancelled by {0}"
+msgstr "ألغى {0} المهمة"
+
+#: todobox/services/todos.py
+msgid "Reason: {0}"
+msgstr "السبب: {0}"
+
+#: todobox/services/todos.py
+msgid "Task cancelled: {0}"
+msgstr "أُلغيت المهمة: {0}"
+
+#: todobox/services/todos.py
+msgid "Task reopened by {0}"
+msgstr "أعاد {0} فتح المهمة"
+
+#: todobox/services/todos.py
+msgid "Task reopened: {0}"
+msgstr "أُعيد فتح المهمة: {0}"
+
+#: todobox/services/todos.py
+msgid "Only the task creator can remove others from CC"
+msgstr "منشئ المهمة وحده يستطيع إزالة الآخرين من النسخة"
+
+#: todobox/services/todos.py
+msgid "{0} removed from CC"
+msgstr "أُزيل {0} من النسخة"
+
+#: todobox/services/todos.py
+msgid "Closed automatically: {0} {1} reached “{2}”"
+msgstr "أُغلقت تلقائيًا: وصل {0} {1} إلى «{2}»"
+
+#: todobox/public/js/hub/tasks.js
+msgid "Reopened"
+msgstr "أُعيد فتحها"
+
+#: todobox/public/js/hub/tasks.js
+msgid "Could not reopen the task"
+msgstr "تعذّر إعادة فتح المهمة"
+
+#: todobox/public/js/hub/tasks.js
+msgid "Task reopened"
+msgstr "أُعيد فتح المهمة"
+
+#: todobox/public/js/hub/tasks.js
+msgid "Cancel \"{0}\"? The assignee is notified and the task leaves their inbox."
+msgstr "إلغاء «{0}»؟ سيُبلَّغ المكلَّف وتخرج المهمة من وارده."
+
+#: todobox/public/js/hub/tasks.js
+msgid "Cancel task"
+msgstr "إلغاء المهمة"
+
+#: todobox/public/js/hub/tasks.js
+msgid "Could not cancel the task"
+msgstr "تعذّر إلغاء المهمة"
+
+#: todobox/public/js/hub/tasks.js
+msgid "Task cancelled"
+msgstr "أُلغيت المهمة"
+
+#: todobox/public/js/hub/tasks.js
+msgid "Could not update CC"
+msgstr "تعذّر تحديث النسخة"
+
+#: todobox/public/js/hub/tasks.js
+msgid "You were removed from CC"
+msgstr "أُزلت من النسخة"
+
+#: todobox/public/js/hub/tasks.js
+msgid "Removed from CC"
+msgstr "أُزيل من النسخة"
+
+#: todobox/public/js/hub/tasks.js
+msgid "Edit title"
+msgstr "تعديل العنوان"
+
+#: todobox/public/js/hub/tasks.js
+msgid "Reopen task"
+msgstr "إعادة فتح المهمة"
+
+#: todobox/public/js/hub/tasks.js
+msgid "Remove me from CC"
+msgstr "إزالتي من النسخة"
+
+
+#: todobox/public/js/hub/tasks.js
+msgid "Remove from CC"
+msgstr "إزالة من النسخة"
+
+#: todobox/services/todos.py
+msgid "{0} added {1} to CC"
+msgstr "أضاف {0} {1} إلى النسخة"
+
+#: todobox/public/js/hub/tasks.js
+msgid "Added to CC"
+msgstr "أُضيف إلى النسخة"
+
+#: todobox/www/todobox.html
+msgid "Add CC"
+msgstr "إضافة نسخة"

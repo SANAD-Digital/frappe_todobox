@@ -251,7 +251,28 @@
         prioTone: sel.priority === 'High' ? 'red' : sel.priority === 'Medium' ? 'orange' : 'gray',
         fromInitials: from.initials || '?',
         toName: to.name || sel.allocated_to, toInitials: to.initials || '?',
-        cc: (sel.cc_users || []).map((c) => ({ name: (U[c] || {}).name || c, initials: (U[c] || {}).initials || '?', avatar: this.ava(c, 18) })),
+        cc: (sel.cc_users || []).map((c) => ({
+          name: (U[c] || {}).name || c, initials: (U[c] || {}).initials || '?', avatar: this.ava(c, 18),
+          /* the creator takes anyone off CC, a CC member only themselves */
+          removeStyle: canManage || c === ME ? 'width:16px;height:16px;display:grid;place-items:center;margin-inline-start:2px;background:transparent;border:0;border-radius:99px;cursor:pointer;color:var(--fg3);' : 'display:none;',
+          onRemove: () => this.removeCcUser(sel.name, c),
+        })),
+        /* "+ CC" (creator or assignee, open task): a people picker like the compose CC field */
+        ccCanAdd: !locked && (sel.allocated_to === ME || sel.assigned_by === ME || canManage),
+        ccPickerOpen: !locked && s.ccPicker === sel.name,
+        toggleCcPicker: () => this.setState((st) => ({ ccPicker: st.ccPicker === sel.name ? null : sel.name, ccOpen: true })),
+        ccEditor: this.fxSlot('ccEditor:' + sel.name, (el) => {
+          const ctl = new window.TMControls.UserMulti(el, {
+            value: ((this.selTask() || sel).cc_users || []).slice(), placeholder: __('Add people to keep in the loop…'), ariaLabel: __('CC'),
+            search: (q, ex) => A.searchUsers(q, [...(ex || []), sel.allocated_to, sel.assigned_by]), user: (id) => U[id] || { name: id },
+            onChange: (v) => this.setCcUsers(sel.name, v || []),
+          });
+          setTimeout(() => ctl.focus && ctl.focus(), 0);
+          return ctl;
+        }),
+        /* a completed or cancelled task: reopen it from the header (creator or assignee) */
+        showReopen: sel.status !== 'Open' && (sel.allocated_to === ME || sel.assigned_by === ME || canManage),
+        reopen: () => this.reopenTask(sel.name),
         ccToggleLabel: (sel.cc_users || []).length ? (s.ccOpen ? __('Hide CC') : __('CC ({0})', [sel.cc_users.length])) : __('No CC'),
         props, thread, hasHidden: hidden > 0, hiddenLabel: __('Show {0} earlier events', [hidden]),
         prioLabel: sel.priority === 'High' ? __('High') : sel.priority === 'Medium' ? __('Medium') : __('Low'),
@@ -680,6 +701,16 @@
           return t && t.reference_name
             ? [{ label: __('Open reference'), iconRef: '#i-link', onDo: () => { this.setState({ moreMenu: false }); this.openRef(t.reference_type, t.reference_name); } }]
             : [];
+        })()),
+        ...((() => {
+          const t = s.sel ? s.tasks.find((x) => x.name === s.sel) : null;
+          if (!t) return [];
+          const close = (fn) => () => { this.setState({ moreMenu: false }); fn(); };
+          return [
+            ...(t.status === 'Open' && this.canManage(t) ? [{ label: __('Edit title'), iconRef: '#i-pencil', onDo: close(() => this.editTitle()) }] : []),
+            ...((t.cc_users || []).includes(ME) ? [{ label: __('Remove me from CC'), iconRef: '#i-copy', onDo: close(() => this.removeCcUser(t.name, ME)) }] : []),
+            ...(t.status === 'Open' && this.canManage(t) ? [{ label: __('Cancel task'), iconRef: '#i-x', onDo: close(() => this.cancelTask(t.name)) }] : []),
+          ];
         })()),
         { label: __('Print'), iconRef: '#i-printer', onDo: () => { this.setState({ moreMenu: false }); this.printDoc('ToDo', s.sel); } },
         { label: __('Copy task link'), iconRef: '#i-link', onDo: () => { this.setState({ moreMenu: false }); this.copyTaskLink(s.sel); } },
