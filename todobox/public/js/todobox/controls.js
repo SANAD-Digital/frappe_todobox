@@ -190,6 +190,8 @@
 			doc: this.doc,
 			render_input: true,
 		});
+		/* no label: Frappe still renders an "&nbsp;" label line; .tm-nolabel hides it (CSS) */
+		if (!this.control.df.label) this.wrap.classList.add("tm-nolabel");
 		/* air-datepicker's popup container lives in <body>: give it Frappe's styles too */
 		jQuery("#datepickers-container").addClass("tm-frappe");
 		var $in = this.control.$input;

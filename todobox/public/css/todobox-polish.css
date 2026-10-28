@@ -162,7 +162,11 @@ html[data-dark="1"] .tmc-btn-primary:hover, [data-theme="dark"] .tmc-btn-primary
 	margin-block-end: 6px !important; padding: 0 !important; line-height: 1.3;
 }
 .tb-dlg .help-box, .tmc .help-box, .tm-fx-form .help-box, .tm-fx-page .help-box { font-size: var(--text-xs, 11px); color: var(--text-muted, var(--fg3)); }
-.tb-dlg .form-group, .tmc .form-group, .tm-fx-form .form-group, .tm-fx-page .form-group { margin-block-end: 16px; }
+/* (.tm-frappe in the selectors: frappe_controls.css loads after this file) */
+.tb-dlg .tm-frappe .form-group, .tmc .tm-frappe .form-group, .tm-fx-form .tm-frappe .form-group, .tm-fx-page .tm-frappe .form-group { margin-block-end: 10px; }
+/* a control without a label: no empty label line; a field alone in a sub-panel: no trailing gap */
+.tm-nolabel.tm-frappe .form-group > .clearfix { display: none; }
+.tmc-sub .tm-frappe .form-group { margin-block-end: 0; }
 
 /* inputs: borderless on --control-bg, ring on focus */
 .tb-dlg .form-control, .tmc .form-control, .tm-fx-form .form-control, .tm-fx-page .form-control,
@@ -348,3 +352,6 @@ html[data-dark="1"] .tm-frappe .form-control:focus, [data-theme="dark"] .tm-frap
 /* ---- closed (fx-close.js): overlay clone of the list row that slides out sideways ---- */
 .tt-fx-row { overflow: hidden; background-color: var(--panel, #fff); will-change: transform, opacity; }
 
+
+/* icons that point "back"/"forward" mirror in RTL (calendar month arrows) */
+[dir="rtl"] .tt-flip { transform: scaleX(-1); }
