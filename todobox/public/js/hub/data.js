@@ -178,8 +178,17 @@ window.TodoboxColor = (() => {
       this.api.getCounts(),
     ]);
     if (seq !== this.loadSeq) return;
-    const tasks = Array.isArray(rows) ? rows : [];
-    const counts = cnt || {};
+    /* a failed request (server restarting, network blip): keep what is on screen and try again */
+    if (!Array.isArray(rows) || !cnt) {
+      this.setState({ loading: false });
+      clearTimeout(this.loadRetryTimer);
+      const wait = this.loadRetryWait = Math.min((this.loadRetryWait || 1000) * 2, 30000);
+      this.loadRetryTimer = setTimeout(() => { if (seq === this.loadSeq) this.load(keepSel, true); }, wait);
+      return;
+    }
+    this.loadRetryWait = 0;
+    const tasks = rows;
+    const counts = cnt;
     const prev = live ? new Map((this.state.tasks || []).map((t) => [t.name, t])) : null;
     const atBottom = live && this.threadAtBottom();
     let sel = (typeof keepSel === 'string' && keepSel) || this.state.sel;

@@ -171,7 +171,8 @@
     this.timers.push(setTimeout(() => this.setState((s) => (s.undo && s.undo.name === name ? { undo: null } : {})), 6000));
     await this.api.updateTodo(name, { status: 'Closed' });
     await this.api.addComment(name, { kind: 'event', html: __('completed the task') });
-    this.setState({ counts: await this.api.getCounts() });
+    const counts = await this.api.getCounts();
+    if (counts) this.setState({ counts });
     this.refreshAfterChange();
   };
   snooze = (name) => this.openSnooze(name);

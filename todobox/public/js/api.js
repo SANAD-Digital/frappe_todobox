@@ -101,7 +101,8 @@ export const SORTS = [
   { id: 'oldest', label: __('Oldest created') },
 ];
 
-export async function getCounts() { return (await safe(() => bridge().getCounts())) || {}; }
+/* null when the request failed (the caller keeps what is on screen) */
+export async function getCounts() { return safe(() => bridge().getCounts()); }
 
 /* task with its thread and attachments */
 export async function getTodo(name) { return safe(() => bridge().getTodo(name)); }
