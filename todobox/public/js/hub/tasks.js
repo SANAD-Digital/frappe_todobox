@@ -425,10 +425,11 @@
     this.toast(__('Due: {0}', [date]));
   };
 
-  /** Copy the task link (Frappe ToDo form) to the clipboard */
+  /** Copy the task link (this app's address for the task, routing.js) to the clipboard */
   copyTaskLink = (name) => {
     if (!name) return;
-    this.copyText(location.origin + '/desk/todo/' + encodeURIComponent(name), __('Task link copied'), __('Could not copy the link'));
+    const base = this.routeBase ? this.routeBase() : '/todobox';
+    this.copyText(location.origin + base + '/all/' + encodeURIComponent(name), __('Task link copied'), __('Could not copy the link'));
   };
 
   /** Copy any text to the clipboard (async API, then execCommand, then the Desk helper) and toast the result */

@@ -2651,6 +2651,7 @@ html[data-dark="1"] .tms-err button{background:#ededed;color:#171717}
 <script src="/assets/todobox/js/hub/shell.js?v={{ asset_version }}"></script>
 <script src="/assets/todobox/js/hub/workflow-ui.js?v={{ asset_version }}"></script>
 <script src="/assets/todobox/js/hub/fx-close.js?v={{ asset_version }}"></script>
+<script src="/assets/todobox/js/hub/routing.js?v={{ asset_version }}"></script>
 <script src="/assets/todobox/js/hub/account.js?v={{ asset_version }}"></script>
 <script src="/assets/todobox/js/todobox/bridge.js?v={{ asset_version }}"></script>
 <script src="/assets/todobox/js/todobox/quicklook.js?v={{ asset_version }}"></script>
@@ -2732,8 +2733,14 @@ class Component extends window.TTCompose(DCLogic, React) {
       this.ro.observe(document.documentElement);
     }
     this.off = this.api.onRealtime(this.liveRefresh);
+    /* the address bar's folder / tag / search (routing.js): applied before the first load */
+    if (this.routeState) {
+      this._routeInit = this.routeState(this.routeRead());
+      const p = this._routeInit.patch;
+      if (p.screen === 'mail') await new Promise((res) => this.setState({ ...p, sel: this._routeInit.task || null }, res));
+    }
     /* a load failure must never leave the UI broken */
-    try { await this.load(); if (window.TMSplash) window.TMSplash.ready(); }
+    try { await this.load(); if (window.TMSplash) window.TMSplash.ready(); if (this.routeStart) this.routeStart(); }
     catch (e) { console.error('load failed', e); this.setState({ loading: false }); if (window.TMSplash) window.TMSplash.fail(e); }
     this.loadAux();
     this.loadTemplates();
