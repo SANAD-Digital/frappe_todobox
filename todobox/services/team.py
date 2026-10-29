@@ -1,11 +1,14 @@
 """Workload per user, recipient search for the "new task" composer and the user Link query (forward,
-recurring tasks) — all limited to the people I can see (see org.py)."""
+recurring tasks) — all limited to the people I can see (see org.py). The pickers also leave out the
+people hidden in ToDoBox Settings and, when assignment is restricted to the department, everyone
+outside mine."""
 
 import frappe
 from frappe.utils import cint, today
 
 from todobox.services.common import generate_color, generate_initials, get_direct_reports
-from todobox.services.org import visible_users
+from todobox.services.org import assignable_users, visible_users
+from todobox.services.settings import hidden_people
 
 
 @frappe.whitelist()
@@ -32,11 +35,13 @@ def get_workload():
 
 
 def _assignable_filters():
-	filters = {"enabled": 1, "user_type": "System User", "name": ["not in", ["Guest", frappe.session.user]]}
-	visible = visible_users()
-	if visible is not None:
-		# other companies stay out of the picker
-		filters["name"] = ["in", list(visible - {"Guest", frappe.session.user}) or [""]]
+	me = frappe.session.user
+	hidden = hidden_people() - {me}
+	filters = {"enabled": 1, "user_type": "System User", "name": ["not in", ["Guest", me, *hidden]]}
+	allowed = assignable_users()
+	if allowed is not None:
+		# other companies (and departments, when restricted) stay out of the picker
+		filters["name"] = ["in", list(allowed - {"Guest", me} - hidden) or [""]]
 	return filters
 
 
@@ -128,11 +133,13 @@ def search_users(txt="", limit=20, exclude=None):
 @frappe.whitelist()
 @frappe.validate_and_sanitize_search_inputs
 def user_link_query(doctype, txt, searchfield, start, page_len, filters):
-	"""Link-field query for User pickers: active system users I can see, matched on email or name."""
-	conditions = [["enabled", "=", 1], ["user_type", "=", "System User"], ["name", "!=", "Guest"]]
-	visible = visible_users()
-	if visible is not None:
-		conditions.append(["name", "in", list(visible)])
+	"""Link-field query for User pickers: active system users I may assign to (not hidden), matched on
+	email or name."""
+	hidden = hidden_people() - {frappe.session.user}
+	conditions = [["enabled", "=", 1], ["user_type", "=", "System User"], ["name", "not in", ["Guest", *hidden]]]
+	allowed = assignable_users()
+	if allowed is not None:
+		conditions.append(["name", "in", list(allowed - hidden) or [""]])
 	for key, value in (filters or {}).items():
 		conditions.append([key, *value] if isinstance(value, (list, tuple)) else [key, "=", value])
 	like = f"%{txt or ''}%"

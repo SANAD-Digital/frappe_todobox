@@ -2204,7 +2204,7 @@ msgstr ""
 msgid "You sent the last message in the conversation. The task has exceeded the stale limit ({0} days)."
 msgstr ""
 
-msgid "You sent the last message — the ball is in their court."
+msgid "You sent the last message and are waiting for a reply."
 msgstr ""
 
 msgid "Your best day in this period: {0} with {1} completed tasks."
@@ -3847,4 +3847,116 @@ msgstr ""
 
 msgctxt "ToDoBox"
 msgid "Calendar"
+msgstr ""
+
+msgid "Settings"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Settings"
+msgstr ""
+
+msgid "Who appears when choosing recipients, and what a task can link to. These settings apply to everyone."
+msgstr ""
+
+msgid "Could not load the settings."
+msgstr ""
+
+msgid "Try again"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Try again"
+msgstr ""
+
+msgid "Only a System Manager can change these settings."
+msgstr ""
+
+msgid "Only a System Manager can change ToDoBox settings"
+msgstr ""
+
+msgid "People"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "People"
+msgstr ""
+
+msgid "Hidden people do not appear when choosing recipients."
+msgstr ""
+
+msgid "Hide Administrator"
+msgstr ""
+
+msgid "Hidden users"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Hidden users"
+msgstr ""
+
+msgid "Hidden user groups"
+msgstr ""
+
+msgid "Add a user group…"
+msgstr ""
+
+msgid "No hidden user groups"
+msgstr ""
+
+msgid "Assign only within the department"
+msgstr ""
+
+msgid "Users can assign tasks only to people in their own department (from the Employee record)."
+msgstr ""
+
+msgid "Not available on this site: it needs Employee records with a department."
+msgstr ""
+
+msgid "Linkable documents"
+msgstr ""
+
+msgid "Only these document types can be linked to a task. Leave empty to allow all. Users still need read permission on the document."
+msgstr ""
+
+msgid "Document types"
+msgstr ""
+
+msgid "Add a document type…"
+msgstr ""
+
+msgid "All document types can be linked"
+msgstr ""
+
+msgid "Could not save the settings"
+msgstr ""
+
+msgid "Settings saved"
+msgstr ""
+
+msgid "Unsaved changes"
+msgstr ""
+
+msgid "You can only assign tasks to people in your department"
+msgstr ""
+
+msgid "You cannot link this document type"
+msgstr ""
+
+msgid "ToDoBox Settings"
+msgstr ""
+
+msgid "Linkable document types"
+msgstr ""
+
+msgid "ToDoBox Hidden User"
+msgstr ""
+
+msgid "ToDoBox Hidden User Group"
+msgstr ""
+
+msgid "ToDoBox Linkable DocType"
+msgstr ""
+
+msgid "User Group"
 msgstr ""

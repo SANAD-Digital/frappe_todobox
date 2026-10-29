@@ -2266,6 +2266,91 @@ html[data-dark="1"] .tms-err button{background:#ededed;color:#171717}
     </section>
     </sc-if>
 
+    <!-- ================= Settings (settings.js) ================= -->
+    <sc-if value="{{ screenSettings }}" hint-placeholder-val="{{ false }}">
+    <section style="flex:1;min-width:0;display:flex;flex-direction:column;background:var(--panel);overflow:hidden;">
+      <div style="flex:0 0 auto;padding:18px 22px 15px;border-bottom:1px solid var(--line);">
+        <div style="display:flex;align-items:center;gap:9px;">
+          <svg data-ic="" style="width:18px;height:18px;color:var(--primary);"><use href="#i-settings"></use></svg>
+          <span style="font-size:19px;font-weight:700;">Settings</span>
+        </div>
+        <div style="font-size:12px;color:var(--fg2);margin-top:5px;line-height:1.7;">Who appears when choosing recipients, and what a task can link to. These settings apply to everyone.</div>
+      </div>
+      <div style="flex:1;overflow-y:auto;padding:18px 22px 28px;">
+        <sc-if value="{{ setLoading }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:40px 16px;text-align:center;font-size:12px;color:var(--fg3);">Loading…</div>
+        </sc-if>
+        <sc-if value="{{ setFailed }}" hint-placeholder-val="{{ false }}">
+          <div style="margin:40px auto;max-width:320px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;">
+            <div style="font-size:13px;color:var(--fg2);line-height:1.8;">Could not load the settings.</div>
+            <button type="button" class="tb-btn tb-btn-default" onClick="{{ setRetry }}" style="height:32px;padding:0 14px;background:transparent;border:1px solid var(--line2);border-radius:8px;cursor:pointer;font-size:12px;">Try again</button>
+          </div>
+        </sc-if>
+        <sc-if value="{{ setReady }}" hint-placeholder-val="{{ true }}">
+        <div class="tm-fx-page tm-fx-scope" style="max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:14px;">
+          <sc-if value="{{ setReadOnly }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;align-items:center;gap:8px;padding:10px 13px;background:var(--sunk);border:1px solid var(--line);border-radius:10px;font-size:12px;color:var(--fg2);line-height:1.7;">
+              <svg data-ic="" style="width:14px;height:14px;flex:0 0 auto;color:var(--fg3);"><use href="#i-settings"></use></svg>
+              <span>Only a System Manager can change these settings.</span>
+            </div>
+          </sc-if>
+
+          <div style="padding:16px 18px 8px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;">
+            <div style="display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700;"><svg data-ic="" style="width:15px;height:15px;color:var(--fg2);"><use href="#i-users"></use></svg>People</div>
+            <div class="tm-fx-hint" style="margin-top:4px;">Hidden people do not appear when choosing recipients.</div>
+            <div class="tmc-field"><div ref="{{ setFx.hideAdmin }}"></div></div>
+            <div class="tmc-field"><div ref="{{ setFx.users }}"></div></div>
+            <div class="tmc-field"><div ref="{{ setFx.groups }}"></div></div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;margin:-2px 0 12px;">
+              <sc-for list="{{ setGroups }}" as="ch" hint-placeholder-count="2">
+                  <span style="display:flex;align-items:center;gap:4px;height:26px;padding:0 6px 0 11px;background:var(--sunk);border:1px solid var(--line);border-radius:99px;font-size:12px;color:var(--fg);white-space:nowrap;">
+                    <span dir="auto">{{ ch.label }}</span>
+                    <button type="button" onClick="{{ ch.onRemove }}" title="{{ ch.removeLabel }}" aria-label="{{ ch.removeLabel }}" style="{{ ch.removeStyle }}" style-hover="background:var(--line);color:var(--fg)"><svg data-ic="" style="width:9px;height:9px;"><use href="#i-x"></use></svg></button>
+                  </span>
+              </sc-for>
+              <sc-if value="{{ setNoGroups }}" hint-placeholder-val="{{ false }}">
+                <span style="font-size:11.5px;color:var(--fg3);">No hidden user groups</span>
+              </sc-if>
+            </div>
+          </div>
+
+          <div style="padding:16px 18px 8px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;">
+            <div style="display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700;margin-bottom:10px;"><svg data-ic="" style="width:15px;height:15px;color:var(--fg2);"><use href="#i-send"></use></svg>Assignment</div>
+            <div class="tmc-field"><div ref="{{ setFx.dept }}"></div></div>
+            <sc-if value="{{ setNoDept }}" hint-placeholder-val="{{ false }}">
+              <div style="margin:-4px 0 12px;padding:8px 11px;background:var(--amber-soft, var(--sunk));border-radius:8px;font-size:11.5px;color:var(--fg2);line-height:1.7;">Not available on this site: it needs Employee records with a department.</div>
+            </sc-if>
+          </div>
+
+          <div style="padding:16px 18px 8px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;">
+            <div style="display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700;"><svg data-ic="" style="width:15px;height:15px;color:var(--fg2);"><use href="#i-link"></use></svg>Linkable documents</div>
+            <div class="tm-fx-hint" style="margin-top:4px;">Only these document types can be linked to a task. Leave empty to allow all. Users still need read permission on the document.</div>
+            <div class="tmc-field"><div ref="{{ setFx.doctypes }}"></div></div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;margin:-2px 0 12px;">
+              <sc-for list="{{ setDoctypes }}" as="ch" hint-placeholder-count="2">
+                  <span style="display:flex;align-items:center;gap:4px;height:26px;padding:0 6px 0 11px;background:var(--sunk);border:1px solid var(--line);border-radius:99px;font-size:12px;color:var(--fg);white-space:nowrap;">
+                    <span dir="auto">{{ ch.label }}</span>
+                    <button type="button" onClick="{{ ch.onRemove }}" title="{{ ch.removeLabel }}" aria-label="{{ ch.removeLabel }}" style="{{ ch.removeStyle }}" style-hover="background:var(--line);color:var(--fg)"><svg data-ic="" style="width:9px;height:9px;"><use href="#i-x"></use></svg></button>
+                  </span>
+              </sc-for>
+              <sc-if value="{{ setNoDoctypes }}" hint-placeholder-val="{{ false }}">
+                <span style="font-size:11.5px;color:var(--fg3);">All document types can be linked</span>
+              </sc-if>
+            </div>
+          </div>
+
+          <sc-if value="{{ setCanEdit }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;align-items:center;gap:12px;">
+              <button class="tb-btn tb-btn-primary" onClick="{{ setSave }}" style="{{ setSaveStyle }}">{{ setSaveLabel }}</button>
+              <span style="font-size:12px;color:var(--fg3);">{{ setDirtyNote }}</span>
+            </div>
+          </sc-if>
+        </div>
+        </sc-if>
+      </div>
+    </section>
+    </sc-if>
+
   </div>
 
   <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
@@ -2643,6 +2728,7 @@ html[data-dark="1"] .tms-err button{background:#ededed;color:#171717}
 <script src="/assets/todobox/js/hub/wf-log.js?v={{ asset_version }}"></script>
 <script src="/assets/todobox/js/hub/stats.js?v={{ asset_version }}"></script>
 <script src="/assets/todobox/js/hub/calendar.js?v={{ asset_version }}"></script>
+<script src="/assets/todobox/js/hub/settings.js?v={{ asset_version }}"></script>
 <script src="/assets/todobox/js/hub/compose.js?v={{ asset_version }}"></script>
 <script src="/assets/todobox/js/hub/mentions.js?v={{ asset_version }}"></script>
 <script src="/assets/todobox/js/hub/helpers.js?v={{ asset_version }}"></script>

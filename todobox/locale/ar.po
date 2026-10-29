@@ -2196,8 +2196,8 @@ msgstr "وصلتك {0} مهام وأنجزت {1} — المتراكم لديك �
 msgid "You sent the last message in the conversation. The task has exceeded the stale limit ({0} days)."
 msgstr "أنت من أرسل آخر رسالة في المحادثة. المهمة تجاوزت حد الركود ({0} أيام)."
 
-msgid "You sent the last message — the ball is in their court."
-msgstr "أنت من أرسل آخر رسالة — الكرة في ملعبه."
+msgid "You sent the last message and are waiting for a reply."
+msgstr "أنت من أرسل آخر رسالة، وبانتظار الرد."
 
 msgid "Your best day in this period: {0} with {1} completed tasks."
 msgstr "أفضل يوم لك في هذه الفترة: {0} بـ {1} مهام منجزة."
@@ -4090,3 +4090,115 @@ msgstr "بعد {0} أيام"
 msgctxt "ToDoBox"
 msgid "Calendar"
 msgstr "التقويم"
+
+msgid "Settings"
+msgstr "الإعدادات"
+
+msgctxt "ToDoBox"
+msgid "Settings"
+msgstr "الإعدادات"
+
+msgid "Who appears when choosing recipients, and what a task can link to. These settings apply to everyone."
+msgstr "من يظهر عند اختيار المستلمين، وما المستندات التي يمكن ربطها بالمهمة. تنطبق هذه الإعدادات على الجميع."
+
+msgid "Could not load the settings."
+msgstr "تعذّر تحميل الإعدادات."
+
+msgid "Try again"
+msgstr "أعد المحاولة"
+
+msgctxt "ToDoBox"
+msgid "Try again"
+msgstr "أعد المحاولة"
+
+msgid "Only a System Manager can change these settings."
+msgstr "يستطيع مدير النظام فقط تغيير هذه الإعدادات."
+
+msgid "Only a System Manager can change ToDoBox settings"
+msgstr "يستطيع مدير النظام فقط تغيير إعدادات ToDoBox"
+
+msgid "People"
+msgstr "الأشخاص"
+
+msgctxt "ToDoBox"
+msgid "People"
+msgstr "الأشخاص"
+
+msgid "Hidden people do not appear when choosing recipients."
+msgstr "الأشخاص المخفيون لا يظهرون عند اختيار المستلمين."
+
+msgid "Hide Administrator"
+msgstr "إخفاء المدير (Administrator)"
+
+msgid "Hidden users"
+msgstr "المستخدمون المخفيون"
+
+msgctxt "ToDoBox"
+msgid "Hidden users"
+msgstr "المستخدمون المخفيون"
+
+msgid "Hidden user groups"
+msgstr "مجموعات المستخدمين المخفية"
+
+msgid "Add a user group…"
+msgstr "أضف مجموعة مستخدمين…"
+
+msgid "No hidden user groups"
+msgstr "لا توجد مجموعات مخفية"
+
+msgid "Assign only within the department"
+msgstr "الإسناد داخل القسم فقط"
+
+msgid "Users can assign tasks only to people in their own department (from the Employee record)."
+msgstr "لا يستطيع المستخدمون إسناد المهام إلا لزملائهم في القسم نفسه (حسب سجل الموظف)."
+
+msgid "Not available on this site: it needs Employee records with a department."
+msgstr "غير متاح في هذا الموقع: يتطلب سجلات موظفين مرتبطة بأقسام."
+
+msgid "Linkable documents"
+msgstr "المستندات القابلة للربط"
+
+msgid "Only these document types can be linked to a task. Leave empty to allow all. Users still need read permission on the document."
+msgstr "يمكن ربط المهمة بأنواع المستندات هذه فقط. اتركها فارغة للسماح بالكل. ويظل المستخدم بحاجة إلى صلاحية قراءة المستند."
+
+msgid "Document types"
+msgstr "أنواع المستندات"
+
+msgid "Add a document type…"
+msgstr "أضف نوع مستند…"
+
+msgid "All document types can be linked"
+msgstr "يمكن ربط جميع أنواع المستندات"
+
+msgid "Could not save the settings"
+msgstr "تعذّر حفظ الإعدادات"
+
+msgid "Settings saved"
+msgstr "تم حفظ الإعدادات"
+
+msgid "Unsaved changes"
+msgstr "تغييرات غير محفوظة"
+
+msgid "You can only assign tasks to people in your department"
+msgstr "يمكنك إسناد المهام لزملائك في القسم فقط"
+
+msgid "You cannot link this document type"
+msgstr "لا يمكنك ربط هذا النوع من المستندات"
+
+msgid "ToDoBox Settings"
+msgstr "إعدادات ToDoBox"
+
+msgid "Linkable document types"
+msgstr "أنواع المستندات القابلة للربط"
+
+msgid "ToDoBox Hidden User"
+msgstr "مستخدم مخفي في ToDoBox"
+
+msgid "ToDoBox Hidden User Group"
+msgstr "مجموعة مخفية في ToDoBox"
+
+msgid "ToDoBox Linkable DocType"
+msgstr "نوع مستند قابل للربط في ToDoBox"
+
+msgid "User Group"
+msgstr "مجموعة المستخدمين"

@@ -1,0 +1,84 @@
+{
+ "actions": [],
+ "creation": "2026-10-29 12:00:00.000000",
+ "description": "Site-wide ToDoBox options: who appears in pickers, department-only assignment, linkable document types.",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "people_section",
+  "hide_administrator",
+  "hidden_users",
+  "hidden_groups",
+  "restrict_to_department",
+  "links_section",
+  "linkable_doctypes"
+ ],
+ "fields": [
+  {
+   "fieldname": "people_section",
+   "fieldtype": "Section Break",
+   "label": "People"
+  },
+  {
+   "default": "1",
+   "fieldname": "hide_administrator",
+   "fieldtype": "Check",
+   "label": "Hide Administrator"
+  },
+  {
+   "fieldname": "hidden_users",
+   "fieldtype": "Table MultiSelect",
+   "label": "Hidden users",
+   "options": "ToDoBox Hidden User"
+  },
+  {
+   "fieldname": "hidden_groups",
+   "fieldtype": "Table MultiSelect",
+   "label": "Hidden user groups",
+   "options": "ToDoBox Hidden User Group"
+  },
+  {
+   "default": "0",
+   "description": "Needs the Employee and Department doctypes (ERPNext/HRMS). System Managers are not restricted.",
+   "fieldname": "restrict_to_department",
+   "fieldtype": "Check",
+   "label": "Assign only within the department"
+  },
+  {
+   "fieldname": "links_section",
+   "fieldtype": "Section Break",
+   "label": "Linked documents"
+  },
+  {
+   "description": "Empty: every document type the user can read.",
+   "fieldname": "linkable_doctypes",
+   "fieldtype": "Table MultiSelect",
+   "label": "Linkable document types",
+   "options": "ToDoBox Linkable DocType"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "issingle": 1,
+ "links": [],
+ "modified": "2026-10-29 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "ToDoBox",
+ "name": "ToDoBox Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

@@ -10,7 +10,7 @@
       filterChips: [], hasFilterChips: false, qbCats: [], qbSides: [], qbShowSides: false, qbValues: [], qbTip: ' ', hintsBtnStyle: 'display:none;',
       qbSearchable: false, qbNoResults: false, qbMore: '', qbq: '', qbSearchPlaceholder: __('Search…'), qbValuesStyle: 'display:flex;flex-wrap:wrap;gap:6px;padding:10px 12px;',
       qbShowDate: false, qbDateVal: '', qbDateLabel: ' ', qbDateStyle: 'display:none;', savingViewStrip: false, canSaveView: false,
-      screenDay: false, screenStats: false, screenCal: false, calWeeks: [], calHeads: [], calFilters: [], calDayRows: [], notifsOpen: false, snoozeOpen: false, automationOpen: false,
+      screenDay: false, screenStats: false, screenCal: false, screenSettings: false, setFx: {}, setGroups: [], setDoctypes: [], calWeeks: [], calHeads: [], calFilters: [], calDayRows: [], notifsOpen: false, snoozeOpen: false, automationOpen: false,
       filtersChevron: 'width:13px;height:13px;', wfHeadChevron: 'width:14px;height:14px;',
       hasDetail: false, noDetail: false, detailHeadStyle: '', wfHeadBarStyle: '', titleSize: '16px', headActionsInline: false, headActionsRow: false, showList: true, showDetail: true, narrow: s.narrow, listCount: '', notifUnread: 0, sortLabel: '',
       listPaneStyle: 'flex:0 0 410px;min-width:0;display:flex;flex-direction:column;min-height:0;background:var(--panel2);border-inline-start:1px solid var(--line);border-inline-end:1px solid var(--line2);',
@@ -342,7 +342,7 @@
         waitStyle: 'display:flex;align-items:center;gap:12px;margin:14px 20px 0;padding:12px 15px;border-radius:10px;border:1px solid ' +
           (stale ? 'var(--amber)' : 'var(--line2)') + ';background:' + (stale ? 'var(--amber-soft)' : 'var(--panel2)') + ';color:' + (stale ? 'var(--amber)' : 'var(--fg2)') + ';',
         waitTitle: wdSel === null ? '' : wdSel === 0 ? __('Waiting for a reply from {0}', [((U[sel.allocated_to] || {}).name || '')]) : __('{0} days without a reply from {1}', [wdSel, ((U[sel.allocated_to] || {}).name || '')]),
-        waitBody: stale ? __('You sent the last message in the conversation. The task has exceeded the stale limit ({0} days).', [A.STALE_DAYS]) : __('You sent the last message — the ball is in their court.'),
+        waitBody: stale ? __('You sent the last message in the conversation. The task has exceeded the stale limit ({0} days).', [A.STALE_DAYS]) : __('You sent the last message and are waiting for a reply.'),
         waitBtn: 'height:30px;padding:0 13px;border:0;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;flex:0 0 auto;background:' +
           (stale ? 'var(--amber)' : 'var(--fg)') + ';color:' + (stale ? 'var(--on-accent)' : 'var(--bg)') + ';',
 
@@ -422,6 +422,7 @@
       narrow: s.narrow,
       screenDay: s.screen === 'day', screenStats: s.screen === 'stats',
       ...this.calendarVals(),
+      ...this.settingsVals(),
       ...this.templateVals(s, isDesktop),
       showList: s.screen === 'mail' && (!(s.narrow || !isDesktop) || s.pane === 'list'),
       showDetail: s.screen === 'mail' && (!(s.narrow || !isDesktop) || s.pane === 'detail'),
@@ -466,6 +467,7 @@
         { id: 'calendar', label: __('Calendar'), icon: 'calendar', badge: '' },
         { id: 'stats', label: __('Analytics'), icon: 'chart', badge: '' },
         { id: 'templates', label: __('Task templates'), icon: 'template', badge: '' },
+        ...(this.setIsAdmin() ? [{ id: 'settings', label: __('Settings'), icon: 'settings', badge: '' }] : []),
       ].map((x) => ({
         label: x.label, iconRef: iref(x.icon), badge: x.badge, on: onScreen(x.id) ? '1' : '0',
         tip: navCol ? x.label + (x.badge ? ' (' + x.badge + ')' : '') : '',

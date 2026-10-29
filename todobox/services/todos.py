@@ -23,8 +23,9 @@ from todobox.services.common import (
 )
 from todobox.services.live import publish_task_update
 from todobox.services.notifications import create_notification_log, reply_kind
-from todobox.services.org import can_see, ensure_assignable
+from todobox.services.org import can_assign, ensure_assignable
 from todobox.services.query import my_scope, query_conditions, query_values
+from todobox.services.settings import ensure_linkable
 
 # Optional ToDo columns (ToDoBox custom fields) returned when present
 OPTIONAL_COLUMNS = (
@@ -526,7 +527,7 @@ def _participants(doc):
 
 def _mention_targets(mentions, me, participants=()):
 	"""Enabled, existing users from a JSON list/str of emails (me, Guest and duplicates removed), limited
-	to the task's participants and the people I can see."""
+	to the task's participants and the people I may assign to (a mention adds newcomers to the CC)."""
 	try:
 		emails = loads(mentions, []) or []
 	except ValueError:
@@ -534,7 +535,7 @@ def _mention_targets(mentions, me, participants=()):
 	if isinstance(emails, str):
 		emails = [emails]
 	emails = list(dict.fromkeys(e.strip() for e in emails if isinstance(e, str) and e.strip()))
-	emails = [e for e in emails if e not in (me, "Guest") and (e in participants or can_see(e))][:20]
+	emails = [e for e in emails if e not in (me, "Guest") and (e in participants or can_assign(e))][:20]
 	if not emails:
 		return {}
 	rows = frappe.get_all("User", filters={"name": ["in", emails], "enabled": 1}, fields=["name", "full_name"])
@@ -701,6 +702,8 @@ def create_todos(
 	if template and not (frappe.db.exists(TEMPLATE_DOCTYPE, template) and can(TEMPLATE_DOCTYPE, doc=template)):
 		template = None
 	ensure_assignable(to + cc)
+	if reference_type:
+		ensure_linkable(reference_type, reference_name)
 
 	me = frappe.session.user
 	meta = frappe.get_meta("ToDo")
@@ -862,8 +865,8 @@ def forward_todo(name, to, mode="full", reason="", keep_sender_cc=1, copy_cc=1, 
 		cc += split_csv(original.get("cc_users"))
 	if cint(keep_sender_cc) and original.assigned_by:
 		cc.append(original.assigned_by)
-	# people I can see, not the recipient nor me (I am the new task's sender)
-	cc = [u for u in dict.fromkeys(cc) if u not in (to, me) and can_see(u)]
+	# people I may assign to, not the recipient nor me (I am the new task's sender)
+	cc = [u for u in dict.fromkeys(cc) if u not in (to, me) and can_assign(u)]
 	if cc and meta.has_field("cc_users"):
 		fwd_doc.cc_users = ",".join(cc)
 	else:

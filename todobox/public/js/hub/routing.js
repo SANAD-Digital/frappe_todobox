@@ -1,7 +1,7 @@
 /* ToDoBox: the address bar follows the screen, so a reload (or a shared link) lands on the same place.
      /todobox/inbox                 a folder            /todobox/inbox/<task>     …and the open task
      /todobox/tag/<tag>[/<task>]    a tag               /todobox/search[/<task>]?q=…&view=…&sort=…
-     /todobox/day | calendar | analytics | templates
+     /todobox/day | calendar | analytics | templates | settings
      /todobox/actions/<pending|sent|log>[/<document>]
    A new screen or folder adds a history entry (Back returns to it); opening another task replaces it.
    The base path is the page's own (/todobox, or the demo's /todobox-demo/app). */
@@ -21,7 +21,7 @@
   /** state patch for a route (folder / tag / search / screen; the task is opened after the list loads) */
   routeState(r) {
     const [a, b, c] = r.path;
-    const SCREENS = { day: 'day', calendar: 'calendar', analytics: 'stats', templates: 'templates' };
+    const SCREENS = { day: 'day', calendar: 'calendar', analytics: 'stats', templates: 'templates', settings: 'settings' };
     const FOLDERS = ['inbox', 'overdue', 'today', 'sent', 'fwd', 'cc', 'waiting', 'snoozed', 'done', 'team', 'all'];
     if (!a) return { patch: {}, task: null };
     if (SCREENS[a]) return { patch: { screen: SCREENS[a] }, task: null };
@@ -39,7 +39,7 @@
   /** the address for the current state; key: what makes it a new history entry */
   routeOf(s) {
     const enc = encodeURIComponent;
-    const SCREENS = { day: 'day', calendar: 'calendar', stats: 'analytics', templates: 'templates' };
+    const SCREENS = { day: 'day', calendar: 'calendar', stats: 'analytics', templates: 'templates', settings: 'settings' };
     if (SCREENS[s.screen]) return { url: '/' + SCREENS[s.screen], key: s.screen };
     if (s.screen === 'wf') return { url: '/actions/' + (s.wfTab || 'pending') + (s.wfSel ? '/' + enc(s.wfSel) : ''), key: 'wf:' + s.wfTab };
     if (s.screen !== 'mail') return null;

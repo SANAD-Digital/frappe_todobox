@@ -15,7 +15,7 @@ from todobox.services.common import (
 	loads,
 	split_csv,
 )
-from todobox.services.org import ensure_assignable, restrict, visible_users
+from todobox.services.org import ensure_assignable, restrict_assignable, visible_users
 from todobox.services.todos import create_todos, get_todo
 
 RULES_CACHE_KEY = "todobox_rules_v2"
@@ -111,10 +111,10 @@ def next_date(current, frequency):
 
 def _recurring_recipients(rec):
 	"""The users a run assigns to: the chosen user, or (no user set) every enabled System User with the role
-	— only those the task's owner may assign to (their companies, see org.py)."""
+	— only those the task's owner may assign to (their companies and, when restricted, department; see org.py)."""
 	owner = rec.owner if rec.owner and frappe.db.exists("User", rec.owner) else None
 	if rec.allocated_to:
-		return restrict([rec.allocated_to], owner)
+		return restrict_assignable([rec.allocated_to], owner)
 	if not rec.role:
 		return []
 	holders = frappe.get_all(
@@ -132,7 +132,7 @@ def _recurring_recipients(rec):
 		pluck="name",
 		order_by="full_name asc, name asc",
 	)
-	return restrict(users, owner)
+	return restrict_assignable(users, owner)
 
 
 def _create_from_recurring(rec):

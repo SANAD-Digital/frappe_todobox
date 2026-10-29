@@ -15,6 +15,8 @@ const pad = (n) => String(n).padStart(2, '0');
 const base = new Date();
 const dayISO = (o) => { const x = new Date(base); x.setDate(x.getDate() + o); return `${x.getFullYear()}-${pad(x.getMonth() + 1)}-${pad(x.getDate())}`; };
 export let TODAY = dayISO(0);
+/** may change the ToDoBox settings (System Manager), from get_active_users; null until known */
+export let IS_SETTINGS_ADMIN = null;
 
 const bridge = () => window.ToDoBoxBridge;
 const API = 'todobox.api.';
@@ -80,6 +82,7 @@ async function _syncUsers() {
     Object.assign(USERS, data.users);
     if (data.me) ME = data.me;
     if (data.today) TODAY = data.today;
+    if (data.is_settings_admin != null) IS_SETTINGS_ADMIN = !!data.is_settings_admin;
     _usersAt = Date.now();
   }
 }
@@ -349,6 +352,32 @@ export async function markAllNotifsRead() {
 /* ---------- 10. Today plan ---------- */
 /** Calendar: my tasks with a due date in [start, end] ('YYYY-MM-DD') */
 export async function getCalendar(start, end) { return (await srv('get_calendar', { start, end })) || []; }
+/** Settings screen (System Manager): who is hidden, department-only assignment, linkable doctypes; null on failure */
+export async function getSettings() { return srv('get_settings'); }
+export async function saveSettings(data) { return srv('save_settings', { data: JSON.stringify(data || {}) }); }
+/* every enabled system user (Frappe's own User search), unlike searchUsers which lists only the
+   people I may assign to: the settings must reach the users that are hidden from that list */
+/** names of users missing from USERS (hidden users are left out of get_active_users) → into USERS */
+export async function resolveUsers(ids) {
+  const missing = (ids || []).filter((id) => id && !USERS[id]);
+  if (!missing.length) return;
+  const rows = (await bridge().callOrNull('frappe.client.get_list', {
+    doctype: 'User', fields: JSON.stringify(['name', 'full_name', 'user_image']), filters: JSON.stringify({ name: ['in', missing] }), limit_page_length: 0,
+  })) || [];
+  rows.forEach((r) => { if (!USERS[r.name]) USERS[r.name] = { name: r.full_name || r.name, user_image: r.user_image || null }; });
+}
+export async function searchAllUsers(txt, exclude) {
+  const rows = (await bridge().callOrNull('frappe.desk.search.search_link', {
+    doctype: 'User', txt: txt || '', page_length: 20, filters: JSON.stringify({ enabled: 1, user_type: 'System User' }),
+  })) || [];
+  const ex = new Set(exclude || []);
+  return rows.filter((r) => r && r.value && r.value !== 'Guest' && !ex.has(r.value)).map((r) => {
+    const known = USERS[r.value];
+    const name = (known && known.name) || (r.label && r.label !== r.value ? r.label : '') || String(r.description || '').split(',')[0].trim() || r.value;
+    if (!known) USERS[r.value] = { name };
+    return { id: r.value, name, initials: (known && known.initials) || '', color: (known && known.color) || '', user_image: (known && known.user_image) || null };
+  });
+}
 export async function getDayPlan() { return (await safe(() => bridge().getDayPlan())) || []; }
 export async function reorderDay(name, dir) { return (await srv('reorder_day', { name, direction: dir })) || getDayPlan(); }
 export async function dropFromDay(name) { return (await srv('drop_from_day', { name })) || getDayPlan(); }

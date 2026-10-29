@@ -12,6 +12,7 @@ import frappe
 from frappe import _
 
 from todobox.services.common import is_system_manager
+from todobox.services.settings import department_peers
 
 COMPANY_MANAGER_ROLE = "ToDoBox Company Manager"
 
@@ -66,10 +67,35 @@ def restrict(users, user=None):
 	return list(users) if visible is None else [u for u in users if u in visible]
 
 
+def assignable_users(user=None):
+	"""The users this user may assign, CC, forward or delegate to: the people they can see, narrowed to
+	their department when ToDoBox Settings restricts it (see settings.department_peers). None: no limit."""
+	visible, peers = visible_users(user), department_peers(user)
+	if visible is None:
+		return peers
+	return visible if peers is None else visible & peers
+
+
+def can_assign(other, user=None):
+	allowed = assignable_users(user)
+	return allowed is None or other in allowed
+
+
+def restrict_assignable(users, user=None):
+	"""The given users this user may assign to, in order."""
+	allowed = assignable_users(user)
+	return list(users) if allowed is None else [u for u in users if u in allowed]
+
+
 def ensure_assignable(users, user=None):
-	"""Raises PermissionError when any of the users is outside this user's companies."""
-	if any(u and not can_see(u, user) for u in users):
+	"""Raises PermissionError when any of the users is outside this user's companies, or outside their
+	department when assignment is restricted to it."""
+	users = [u for u in users if u]
+	if any(not can_see(u, user) for u in users):
 		frappe.throw(_("You can only assign tasks to people in your company"), frappe.PermissionError)
+	peers = department_peers(user)
+	if peers is not None and any(u not in peers for u in users):
+		frappe.throw(_("You can only assign tasks to people in your department"), frappe.PermissionError)
 
 
 def company_members(user=None):

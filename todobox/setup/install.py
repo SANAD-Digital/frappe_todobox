@@ -208,8 +208,11 @@ def after_uninstall():
 
 # ------------------------------------------------------------------ custom fields
 def setup_custom_fields():
-	"""Creates the fields (or updates them to the definitions above)."""
-	fields = {dt: [{**df, "module": MODULE} for df in dfs] for dt, dfs in CUSTOM_FIELDS.items()}
+	"""Creates the fields (or updates them to the definitions above). They are hidden and read-only on
+	the Desk forms, which look as they did before ToDoBox; the app writes them server-side."""
+	fields = {
+		dt: [{**df, "hidden": 1, "read_only": 1, "module": MODULE} for df in dfs] for dt, dfs in CUSTOM_FIELDS.items()
+	}
 	create_custom_fields(fields, ignore_validate=True)
 
 

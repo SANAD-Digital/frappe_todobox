@@ -107,13 +107,14 @@
   const POPUPS = '.tm-msg, .tb-confirm-dlg, .tb-dlg, .tt-sv-editor, .tmc, [role="dialog"], [role="alertdialog"]';
   const shown = (el) => !!el && el.getClientRects().length > 0 && getComputedStyle(el).visibility !== 'hidden';
   const usable = (b) => shown(b) && !b.disabled && b.getAttribute('aria-disabled') !== 'true';
-  /** the innermost inline form or popup around the focus, else the popup on top */
+  /** the innermost inline form or popup around the focus, else the popup on top, else a form page
+      on screen (.tm-fx-scope: the Settings screen) */
   const scopeOf = (focus) => {
-    const near = focus && focus.closest && (focus.closest('.tm-fx-form') || focus.closest(POPUPS));
+    const near = focus && focus.closest && (focus.closest('.tm-fx-form') || focus.closest(POPUPS) || focus.closest('.tm-fx-scope'));
     if (near && shown(near)) return near;
     const all = [...document.querySelectorAll(POPUPS)].filter(shown);
     const z = (el) => { let n = el; while (n && n !== document.body) { const v = parseInt(getComputedStyle(n).zIndex, 10); if (!isNaN(v)) return v; n = n.parentElement; } return 0; };
-    return all.sort((a, b) => z(a) - z(b)).pop() || null;
+    return all.sort((a, b) => z(a) - z(b)).pop() || [...document.querySelectorAll('.tm-fx-scope')].find(shown) || null;
   };
   window.addEventListener('keydown', (e) => {
     if (!(e.ctrlKey || e.metaKey) || e.altKey || e.shiftKey || String(e.key).toLowerCase() !== 's') return;

@@ -425,8 +425,9 @@
           options: [{ value: 'Low', label: __('Low') }, { value: 'Medium', label: __('Medium') }, { value: 'High', label: __('High') }],
           onChange: (v) => this.tmcPatch({ priority: v || 'Medium' }) });
       case 'ref_type':
+        /* only the document types the settings allow (todobox.api.search_link_doctypes) */
         return new X.Link(el, { value: c.ref && c.ref.type, inputId: 'tmc-ref-type', label: __('Document type'),
-          doctype: 'DocType', filters: { istable: 0, issingle: 0 },
+          doctype: 'DocType', query: 'todobox.api.search_link_doctypes',
           onChange: (v) => this.tmcPatch({ ref: v ? { type: v, name: null } : null }, 'ref') });
       case 'ref_name':
         return new X.Link(el, { value: c.ref && c.ref.name, inputId: 'tmc-ref-name', label: __('Document'),

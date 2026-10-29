@@ -1,0 +1,33 @@
+{
+ "actions": [],
+ "creation": "2026-10-29 12:00:00.000000",
+ "description": "A user group whose members are hidden from ToDoBox pickers (ToDoBox Settings).",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "user_group"
+ ],
+ "fields": [
+  {
+   "fieldname": "user_group",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "User Group",
+   "options": "User Group",
+   "reqd": 1
+  }
+ ],
+ "istable": 1,
+ "links": [],
+ "modified": "2026-10-29 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "ToDoBox",
+ "name": "ToDoBox Hidden User Group",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 0
+}
