@@ -238,6 +238,7 @@ html[data-dark="1"] .tms-err button{background:#ededed;color:#171717}
 <div class="tt-app" dir="{{ uiDir }}" style="height:100vh;display:flex;flex-direction:column;background:var(--bg);color:var(--fg);font-family:var(--font);font-size:14px;overflow:hidden;">
 
   <svg width="0" height="0" style="position:absolute;width:0;height:0;overflow:hidden;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;" aria-hidden="true" focusable="false"><defs>
+    <symbol id="i-unread" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M13.4 5.4H5.2a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h13.6a2 2 0 0 0 2-2v-6.6"></path><path d="M3.6 7.8 12 13l3.6-2.2"></path><circle cx="18.6" cy="5.6" r="2.4"></circle></symbol>
     <symbol id="i-inbox" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13h4.5l1.6 2.6h5.8L16.5 13H21"></path><path d="M5.4 5h13.2l2.4 8v6H3v-6z"></path></symbol>
     <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.4"></circle><path d="M12 7.4V12l3.2 2"></path></symbol>
     <symbol id="i-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3.6" y="5" width="16.8" height="15" rx="2.4"></rect><path d="M3.6 10h16.8M8.5 3v4M15.5 3v4"></path></symbol>
@@ -733,7 +734,7 @@ html[data-dark="1"] .tms-err button{background:#ededed;color:#171717}
         </div>
       </sc-if>
 
-      <div style="flex:1;overflow-y:auto;overscroll-behavior:contain;padding:4px;display:flex;flex-direction:column;gap:var(--card-gap);" aria-live="polite">
+      <div data-list-scroll="" style="flex:1;overflow-y:auto;overscroll-behavior:contain;padding:4px;display:flex;flex-direction:column;gap:var(--card-gap);" aria-live="polite">
         <sc-if value="{{ loading }}" hint-placeholder-val="{{ true }}">
           <sc-for list="{{ skeletons }}" as="sk" hint-placeholder-count="6">
             <div class="tt-sk" aria-hidden="true"><i class="sk-box"></i><i class="sk-ava"></i><span class="sk-lines"><i class="sk-l1"></i><i class="sk-l2"></i></span><i class="sk-chip"></i></div>
@@ -768,13 +769,31 @@ html[data-dark="1"] .tms-err button{background:#ededed;color:#171717}
 
         <sc-if value="{{ densityNormal }}" hint-placeholder-val="{{ true }}">
         <sc-for list="{{ cards }}" as="c" hint-placeholder-count="8">
+          <sc-if value="{{ c.isWf }}" hint-placeholder-val="{{ false }}">
+          <div onClick="{{ c.wf.onOpen }}" class="tt-row list-row" data-wf-row="{{ c.name }}" title="{{ c.wf.tip }}" style="{{ c.wf.rowStyle }}">
+            <div style="{{ c.wf.bar }}"></div>
+            <div style="{{ c.wf.iconBox }}"><svg data-ic="" style="width:15px;height:15px;"><use href="{{ c.wf.iconRef }}"></use></svg></div>
+            <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;">
+              <div style="display:flex;align-items:center;gap:6px;min-width:0;">
+                <span style="min-width:0;font-size:12.5px;font-weight:700;color:var(--fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ c.wf.typeLabel }}</span>
+                <div style="flex:1;min-width:4px;"></div>
+                <span style="{{ c.wf.chip.style }}">{{ c.wf.chip.text }}</span>
+                <span style="font-size:11px;color:var(--fg3);font-family:var(--font);font-variant-numeric:tabular-nums;white-space:nowrap;flex:0 0 auto;">{{ c.wf.time }}</span>
+              </div>
+              <div style="min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:var(--row-lh);"><span style="font-size:13px;color:var(--fg);font-weight:600;">{{ c.wf.docName }}</span><span style="font-size:12px;color:var(--fg3);">{{ c.wf.title }}</span></div>
+            </div>
+          </div>
+          </sc-if>
+          <sc-if value="{{ c.isTask }}" hint-placeholder-val="{{ true }}">
           <div style="{{ c.wrapStyle }}">
             <div style="{{ c.swipeBg }}">{{ c.swipeLabel }}</div>
             <div onClick="{{ c.onOpen }}" onMouseEnter="{{ c.onEnter }}" onMouseLeave="{{ c.onLeave }}" onPointerDown="{{ c.onDown }}" onPointerMove="{{ c.onMove }}" onPointerUp="{{ c.onUp }}" onPointerCancel="{{ c.onCancel }}" class="tt-row list-row" data-row="{{ c.name }}" data-prio="{{ c.prio }}" data-unread="{{ c.unread }}" data-done="{{ c.doneFlag }}" data-checked="{{ c.checkedFlag }}" data-overdue="{{ c.overdueFlag }}" style="{{ c.rowStyle }}">
               <div style="{{ c.prioBar }}"></div>
+              <sc-if value="{{ c.showCheck }}" hint-placeholder-val="{{ true }}">
               <button class="tt-check list-row-checkbox" data-checked="{{ c.checkedFlag }}" onClick="{{ c.onCheck }}" aria-label="Select for bulk action" style="{{ c.box }}">
                 <svg data-ic="" style="{{ c.tick }}"><use href="#i-check"></use></svg>
               </button>
+              </sc-if>
               <div style="{{ c.avatar }}">{{ c.initials }}</div>
               <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;">
                 <div style="display:flex;align-items:center;gap:6px;min-width:0;">
@@ -804,17 +823,36 @@ html[data-dark="1"] .tms-err button{background:#ededed;color:#171717}
               </div>
             </div>
           </div>
+          </sc-if>
         </sc-for>
         </sc-if>
         <sc-if value="{{ densityComfy }}" hint-placeholder-val="{{ false }}">
         <sc-for list="{{ cards }}" as="c" hint-placeholder-count="6">
+          <sc-if value="{{ c.isWf }}" hint-placeholder-val="{{ false }}">
+          <div onClick="{{ c.wf.onOpen }}" class="tt-row list-row" data-wf-row="{{ c.name }}" title="{{ c.wf.tip }}" style="{{ c.wf.rowStyle }}">
+            <div style="{{ c.wf.bar }}"></div>
+            <div style="{{ c.wf.iconBox }}"><svg data-ic="" style="width:15px;height:15px;"><use href="{{ c.wf.iconRef }}"></use></svg></div>
+            <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;">
+              <div style="display:flex;align-items:center;gap:6px;min-width:0;">
+                <span style="min-width:0;font-size:12.5px;font-weight:700;color:var(--fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ c.wf.typeLabel }}</span>
+                <div style="flex:1;min-width:4px;"></div>
+                <span style="{{ c.wf.chip.style }}">{{ c.wf.chip.text }}</span>
+                <span style="font-size:11px;color:var(--fg3);font-family:var(--font);font-variant-numeric:tabular-nums;white-space:nowrap;flex:0 0 auto;">{{ c.wf.time }}</span>
+              </div>
+              <div style="min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:var(--row-lh);"><span style="font-size:13px;color:var(--fg);font-weight:600;">{{ c.wf.docName }}</span><span style="font-size:12px;color:var(--fg3);">{{ c.wf.title }}</span></div>
+            </div>
+          </div>
+          </sc-if>
+          <sc-if value="{{ c.isTask }}" hint-placeholder-val="{{ true }}">
           <div style="{{ c.wrapStyle }}">
             <div style="{{ c.swipeBg }}">{{ c.swipeLabel }}</div>
           <div onClick="{{ c.onOpen }}" onMouseEnter="{{ c.onEnter }}" onMouseLeave="{{ c.onLeave }}" onPointerDown="{{ c.onDown }}" onPointerMove="{{ c.onMove }}" onPointerUp="{{ c.onUp }}" onPointerCancel="{{ c.onCancel }}" class="tt-row list-row" data-row="{{ c.name }}" data-prio="{{ c.prio }}" data-unread="{{ c.unread }}" data-done="{{ c.doneFlag }}" data-checked="{{ c.checkedFlag }}" data-overdue="{{ c.overdueFlag }}" style="{{ c.cf.rowStyle }}">
             <div style="{{ c.cf.prioBar }}"></div>
+            <sc-if value="{{ c.showCheck }}" hint-placeholder-val="{{ true }}">
             <button class="tt-check list-row-checkbox" data-checked="{{ c.checkedFlag }}" onClick="{{ c.onCheck }}" aria-label="Select for bulk action" style="{{ c.box }}">
               <svg data-ic="" style="{{ c.tick }}"><use href="#i-check"></use></svg>
             </button>
+            </sc-if>
             <div style="{{ c.cf.avatar }}">{{ c.initials }}</div>
             <div style="{{ c.cf.headStyle }}">
               <span style="{{ c.cf.senderStyle }}">{{ c.sender }}</span>
@@ -842,7 +880,11 @@ html[data-dark="1"] .tms-err button{background:#ededed;color:#171717}
             <div style="{{ c.cf.dotStyle }}"></div>
           </div>
           </div>
+          </sc-if>
         </sc-for>
+        </sc-if>
+        <sc-if value="{{ loadingMore }}" hint-placeholder-val="{{ false }}">
+          <div role="status" style="flex:0 0 auto;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;font-size:12px;color:var(--fg3);"><span aria-hidden="true" style="width:7px;height:7px;flex:0 0 7px;border-radius:50%;background:var(--primary);animation:shimmer 1.2s ease-in-out infinite;"></span><span>Loading more…</span></div>
         </sc-if>
       </div>
 

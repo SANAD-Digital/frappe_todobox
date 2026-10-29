@@ -37,8 +37,8 @@
     const navCol = isDesktop && this.navCollapsedPref();
     const mine = s.tasks;
 
-    /* folders */
-    const folders = A.FOLDERS.map((f) => {
+    /* folders ("All tasks" sits in the top section, under Today's plan) */
+    const folders = A.FOLDERS.filter((f) => f.id !== 'all').map((f) => {
       const active = s.screen === 'mail' && s.folder === f.id && !s.label && !s.activeView;
       return {
         ...f, count: s.counts[f.id] || 0, iconRef: iref(f.icon), on: active ? '1' : '0',
@@ -127,6 +127,7 @@
         actionsStyle: 'display:' + (isDesktop ? 'flex' : 'none') + ';flex:0 0 auto;flex-direction:column;gap:4px;visibility:' + (hov && !this.isLocked(t) ? 'visible' : 'hidden') + ';',
       } : null;
       return {
+        isTask: true, isWf: false, ts: t.modified,
         name: t.name, initials: u.initials, sender: u.name, subject: t.subject,
         /* shell styling hooks (data-* attributes only — see todobox-shell.css) */
         prio: String(t.priority || 'Low').toLowerCase(), unread: t.read ? '0' : '1', doneFlag: t.status === 'Open' ? '0' : '1',
@@ -150,6 +151,7 @@
         timeStyle: 'font-size:11px;color:var(--fg3);font-family:var(--font);font-variant-numeric:tabular-nums;white-space:nowrap;flex:0 0 auto;visibility:' + (hov && isDesktop ? 'hidden' : 'visible') + ';',
         box: 'width:18px;height:18px;flex:0 0 18px;padding:0;box-sizing:border-box;appearance:none;-webkit-appearance:none;line-height:0;display:grid;place-items:center;border-radius:5px;cursor:pointer;border:1.5px solid ' +
           (s.checked.includes(t.name) ? 'var(--primary)' : 'var(--line2)') + ';background:' + (s.checked.includes(t.name) ? 'var(--primary)' : 'transparent') + ';color:var(--on-accent);',
+        showCheck: s.folder !== 'all', /* no bulk selection in All tasks */
         tick: 'width:11px;height:11px;opacity:' + (s.checked.includes(t.name) ? '1' : '0') + ';',
         onCheck: (ev) => {
           ev.stopPropagation();
@@ -188,6 +190,41 @@
         onCancel: () => { this.sw0 = null; if (s.swipe) this.setState({ swipe: null }); },
       };
     });
+
+    /* "All tasks": the documents awaiting my decision are rows of the list too (only without a filter
+       or search). Open items first (open tasks and decisions, newest change first), then the rest. */
+    const W = this.W;
+    const wfRows = s.loading || s.screen !== 'mail' || s.folder !== 'all' || s.search || s.label || s.quick !== 'all' || !W || !W.LOADED || !W.pendingForMe ? [] : W.pendingForMe().map((x) => {
+      const ts = W.tsOf(W.pendingHours(x));
+      const typeLabel = W.DOCTYPES[x.doctype].ar || x.doctype;
+      const title = x.party && !x.title_is_name ? x.party : '';
+      return {
+        isTask: false, isWf: true, name: x.name, ts,
+        wf: {
+          iconRef: '#' + (W.DOCTYPES[x.doctype].icon || 'i-copy'), typeLabel, docName: x.name, title: title ? ' — ' + title : '',
+          chip: this.chip(__('Awaiting my decision'), 'var(--amber)', 'var(--amber-soft)'),
+          time: this.fmtTime(ts),
+          tip: [typeLabel + ' ' + x.name, title, __('Awaiting my decision')].filter(Boolean).join('\n'),
+          bar: 'position:absolute;inset-block:calc(var(--row-py) + 2px);inset-inline-start:5px;width:3px;border-radius:3px;background:var(--amber);',
+          rowStyle: 'position:relative;flex:0 0 auto;display:flex;align-items:center;gap:10px;min-width:0;padding-block:var(--row-py);padding-inline:14px 10px;border-radius:8px;cursor:pointer;' +
+            (s.selDoc === x.name ? 'background:var(--sel);' : ''),
+          iconBox: 'width:' + (comfy ? 30 : 28) + 'px;height:' + (comfy ? 30 : 28) + 'px;flex:0 0 auto;display:grid;place-items:center;border-radius:8px;background:var(--amber-soft);color:var(--amber);',
+          /* opens beside the list, like a task (workflow-ui.js allOpenDoc) */
+          onOpen: () => this.allOpenDoc(x.name),
+        },
+      };
+    });
+    const listRows = !wfRows.length ? cards : (() => {
+      const isOpen = (c, i) => s.tasks[i] && s.tasks[i].status === 'Open';
+      const open = cards.filter(isOpen), rest = cards.filter((c, i) => !isOpen(c, i));
+      const head = s.sort === 'modified'
+        ? [...open, ...wfRows].sort((a, b) => (a.ts < b.ts ? 1 : a.ts > b.ts ? -1 : 0))
+        : [...wfRows, ...open];
+      return [...head, ...rest];
+    })();
+    /* the rows as shown: the next row after a decision, ↑/↓ (workflow-ui.js allNext, tasks.js onKey) */
+    this.allRows = s.folder === 'all' ? listRows.map((r) => ({ name: r.name, isWf: r.isWf })) : null;
+    const docOpen = this.inAllDoc(s);
 
     /* detail */
     let d = null;
@@ -418,14 +455,14 @@
       ...this.filePvVals(),
       loading: s.loading, skeletons: [1, 2, 3, 4, 5, 6],
       uiDir: window.TT_DIR || 'ltr', isDesktop, isMobile: !isDesktop,
-      folders, labels, quickFilters, cards, d, hasDetail: !!d, noDetail: !d && !s.loading,
+      folders, labels, quickFilters, cards: listRows, d, hasDetail: !!d, noDetail: !d && !s.loading,
       narrow: s.narrow,
       screenDay: s.screen === 'day', screenStats: s.screen === 'stats',
       ...this.calendarVals(),
       ...this.settingsVals(),
       ...this.templateVals(s, isDesktop),
       showList: s.screen === 'mail' && (!(s.narrow || !isDesktop) || s.pane === 'list'),
-      showDetail: s.screen === 'mail' && (!(s.narrow || !isDesktop) || s.pane === 'detail'),
+      showDetail: s.screen === 'mail' && !docOpen && (!(s.narrow || !isDesktop) || s.pane === 'detail'),
       /* unified details header (tasks and required actions) */
       detailHeadStyle: 'flex:0 0 auto;padding:' + (isDesktop ? '14px 20px 12px' : '10px 12px') + ';border-bottom:1px solid var(--line);min-width:0;',
       wfHeadBarStyle: 'flex:0 0 auto;padding:' + (isDesktop ? '13px 18px 12px' : '10px 12px') + ';border-bottom:1px solid var(--line);min-width:0;',
@@ -461,9 +498,11 @@
         if (t && t.closest && t.closest('button') && !t.closest('[data-keep-nav]')) this.setState({ navOpen: false });
       },
 
-      screens: (() => { const onScreen = (id) => s.screen === id && (id !== 'mail' || (s.folder === 'inbox' && !s.label && !s.activeView)); return [
-        { id: 'mail', label: __('Inbox'), icon: 'inbox', badge: s.counts.inboxUnread || '' },
+      screens: (() => { const onScreen = (id) => (id === 'all' ? s.screen === 'mail' && s.folder === 'all' && !s.label && !s.activeView
+        : s.screen === id && (id !== 'mail' || (s.folder === 'unread' && !s.label && !s.activeView))); return [
+        { id: 'mail', label: __('Not opened'), icon: 'unread', badge: s.counts.inboxUnread || '' },
         { id: 'day', label: __('Today\'s plan'), icon: 'sunrise', badge: dayRows.length || '' },
+        { id: 'all', label: __('All tasks'), icon: 'list', badge: s.counts.all || '' },
         { id: 'calendar', label: __('Calendar'), icon: 'calendar', badge: '' },
         { id: 'stats', label: __('Analytics'), icon: 'chart', badge: '' },
         { id: 'templates', label: __('Task templates'), icon: 'template', badge: '' },
@@ -473,8 +512,8 @@
         tip: navCol ? x.label + (x.badge ? ' (' + x.badge + ')' : '') : '',
         style: navBtn(onScreen(x.id)),
         badgeStyle: this.countPill(x.badge, x.id === 'mail' ? 'primary' : ''),
-        onPick: () => (x.id === 'mail'
-          ? this.setState({ screen: 'mail', folder: 'inbox', label: null, activeView: null, search: '', searchInput: '', loading: true, sel: null, pane: 'list', mobileScreen: 'list', notifsOpen: false }, () => this.load())
+        onPick: () => (x.id === 'mail' || x.id === 'all'
+          ? this.setState({ screen: 'mail', folder: x.id === 'all' ? 'all' : 'unread', label: null, activeView: null, search: '', searchInput: '', loading: true, sel: null, selDoc: null, pane: 'list', mobileScreen: 'list', notifsOpen: false }, () => this.load())
           : this.goScreen(x.id)),
       })); })(),
 
@@ -520,9 +559,9 @@
       headerHasQuery: s.screen === 'wf' ? !!s.wfSearch : !!s.searchInput,
       clearHeaderSearch: () => {
         if (s.screen === 'wf') { this.setState({ wfSearch: '' }); return; }
-        this.setState({ searchInput: '', search: '', activeView: null, folder: (s.folder === '__query' || s.folder === 'all') ? 'inbox' : s.folder, hintsOpen: false, loading: true }, () => this.load());
+        this.setState({ searchInput: '', search: '', activeView: null, folder: s.folder === '__query' ? 'inbox' : s.folder, hintsOpen: false, loading: true }, () => this.load());
       },
-      clearSearch: () => this.setState({ searchInput: '', search: '', activeView: null, folder: (s.folder === '__query' || s.folder === 'all') ? 'inbox' : s.folder, hintsOpen: false, loading: true }, () => this.load()),
+      clearSearch: () => this.setState({ searchInput: '', search: '', activeView: null, folder: s.folder === '__query' ? 'inbox' : s.folder, hintsOpen: false, loading: true }, () => this.load()),
       onSearchFocus: () => { if (s.screen === 'mail') this.setState({ hintsOpen: true }); },
       toggleHints: () => this.setState({ hintsOpen: !s.hintsOpen }),
       hintsBtnStyle: s.screen === 'wf' ? 'display:none;' : 'flex:0 0 auto;height:24px;padding:0 8px;display:flex;align-items:center;gap:4px;border-radius:99px;cursor:pointer;font-size:11px;font-family:inherit;'
@@ -687,12 +726,14 @@
         'min-width:0;display:flex;flex-direction:column;min-height:0;background:' + (isDesktop ? 'var(--panel2);border-inline-start:1px solid var(--line);' : 'var(--panel);') +
         (isDesktop && !s.narrow ? 'border-inline-end:1px solid var(--line2);' : ''),
       detailPaneStyle: 'flex:1;min-width:0;display:flex;flex-direction:column;background:var(--panel);',
-      listCount: __('{0} tasks', [s.tasks.length]), isEmpty: !s.loading && !s.tasks.length,
+      listCount: __('{0} tasks', [s.tasks.length]), isEmpty: !s.loading && !listRows.length,
+      loadingMore: !!s.loadingMore && !s.loading,
       emptyZero: !s.search && s.folder === 'inbox' && s.quick === 'all' ? '1' : '0',
-      emptyTitle: s.search ? __('No results for “{0}”', [s.search]) : s.folder === 'inbox' ? __('Inbox zero — nice work!') : __('No tasks here'),
+      emptyTitle: s.search ? __('No results for “{0}”', [s.search]) : s.folder === 'inbox' ? __('Inbox zero — nice work!') : s.folder === 'unread' && s.quick === 'all' ? __('No unread tasks') : __('No tasks here'),
       emptyBody: s.search
-        ? (s.folder === 'all' ? __('No task you take part in matches this search.') : __('Nothing matches in “{0}”.', [(A.FOLDERS.find((f) => f.id === s.folder) || {}).label || '']))
-        : s.folder === 'inbox' ? __('No open tasks are assigned to you right now. Enjoy the calm, or plan what comes next.') : __('Try another folder or clear the quick filter.'),
+        ? (s.folder === 'all' ? __('No task you take part in matches this search.') : __('Nothing matches in “{0}”.', [s.folder === 'unread' ? __('Not opened') : (A.FOLDERS.find((f) => f.id === s.folder) || {}).label || '']))
+        : s.folder === 'inbox' ? __('No open tasks are assigned to you right now. Enjoy the calm, or plan what comes next.')
+          : s.folder === 'unread' && s.quick === 'all' ? __('You have opened every task assigned to you.') : __('Try another folder or clear the quick filter.'),
       emptySearchAll: !!s.search && s.folder !== 'all',
       emptyNoSearchAll: !(s.search && s.folder !== 'all'),
       searchAllTasks: () => this.setState({ folder: 'all', activeView: null, label: null, loading: true }, () => this.load()),

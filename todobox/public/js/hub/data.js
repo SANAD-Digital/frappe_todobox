@@ -168,19 +168,27 @@ window.TodoboxColor = (() => {
     this.setState({ rules: r.rules, recurring: r.recurring, canManageRules: r.canManageRules, recRoles: r.roles || [] }, () => { if (this.syncRecRoles) this.syncRecRoles(); });
   };
   /** live: a background refresh (liveRefresh): the open task stays open even when it is not in
-      this list (opened from a notification or a document), and the events view stays as it is */
-  async load(keepSel, live) {
+      this list (opened from a notification or a document), and the events view stays as it is.
+      more: "load more" at the end of the list (live, without highlighting the rows it adds) */
+  async load(keepSel, live, more) {
     /* request token: a slower earlier response must not overwrite a newer folder/filter */
     const seq = this.loadSeq = (this.loadSeq || 0) + 1;
+    this.wireListScroll();
     const { folder, quick, search, label, sort } = this.state;
+    /* the list grows a page at a time (infinite scroll); another folder/tag/filter/search starts again at one page */
+    const listKey = [folder, quick, search, label, sort].join('\u0001');
+    const limit = listKey === this.listKey ? (this.state.listLimit || this.LIST_PAGE) : this.LIST_PAGE;
+    this.listKey = listKey;
     const [rows, cnt] = await Promise.all([
-      this.api.listTodos({ folder, quick, search, label, sort }),
+      this.api.listTodos({ folder, quick, search, label, sort, limit }),
       this.api.getCounts(),
+      /* "All tasks" mixes in the documents awaiting my decision: have them ready with the first page */
+      folder === 'all' ? this.wfReady() : null,
     ]);
     if (seq !== this.loadSeq) return;
     /* a failed request (server restarting, network blip): keep what is on screen and try again */
     if (!Array.isArray(rows) || !cnt) {
-      this.setState({ loading: false });
+      this.setState({ loading: false, loadingMore: false });
       clearTimeout(this.loadRetryTimer);
       const wait = this.loadRetryWait = Math.min((this.loadRetryWait || 1000) * 2, 30000);
       this.loadRetryTimer = setTimeout(() => { if (seq === this.loadSeq) this.load(keepSel, true); }, wait);
@@ -191,17 +199,57 @@ window.TodoboxColor = (() => {
     const counts = cnt;
     const prev = live ? new Map((this.state.tasks || []).map((t) => [t.name, t])) : null;
     const atBottom = live && this.threadAtBottom();
+    /* a full page: there may be more below */
+    const listMore = rows.length >= limit;
     let sel = (typeof keepSel === 'string' && keepSel) || this.state.sel;
-    if (live && sel && !tasks.find((t) => t.name === sel)) {
+    /* "All tasks": an open document awaiting my decision stays open (no task gets selected in its place);
+       an address that names a document of the workflow store (a reload) opens it */
+    const isDoc = folder === 'all' && sel && !tasks.find((t) => t.name === sel) && this.isWfDoc(sel);
+    const selDoc = folder === 'all' ? (isDoc ? sel : live ? this.state.selDoc : null) || null : null;
+    if (selDoc) sel = null;
+    /* the open task stays in the list where it was (in Unread too once it has been opened, so no
+       other task gets selected, and read, in its place) */
+    if ((live || folder === 'unread') && sel && !tasks.find((t) => t.name === sel)) {
       const t = await this.api.getTodo(sel);
       if (seq !== this.loadSeq) return;
-      if (t) tasks.unshift(t);
+      const at = (this.state.tasks || []).findIndex((x) => x.name === sel);
+      if (t) tasks.splice(at < 0 ? 0 : Math.min(at, tasks.length), 0, t);
     }
-    if (!tasks.find((t) => t.name === sel)) sel = tasks.length ? tasks[0].name : null;
-    this.setState(live ? { tasks, counts, sel, loading: false } : { tasks, counts, sel, loading: false, showEvents: false },
-      () => { if (prev && prev.size) this.flashChanges(prev, tasks, sel, atBottom); });
+    if (!selDoc && !tasks.find((t) => t.name === sel)) sel = tasks.length ? tasks[0].name : null;
+    const page = { tasks, counts, sel, selDoc, loading: false, listLimit: limit, listMore, loadingMore: false };
+    this.setState(live ? page : { ...page, showEvents: false },
+      () => { if (prev && prev.size && !more) this.flashChanges(prev, tasks, sel, atBottom); });
+    if (isDoc) this.allOpenDoc(selDoc);
     /* the first row is selected automatically; it only counts as opened when its detail is on screen */
-    if (sel && this.detailVisible()) this.markRead(sel);
+    if (sel && this.detailVisible()) { this.markRead(sel); this.setState((st) => this.readPatch(st, sel)); }
+  }
+
+  LIST_PAGE = 50;
+  /** the workflow store ("Required actions") is loaded; resolves either way */
+  wfReady() {
+    if (!this.W || !this.W.refresh) return Promise.resolve(false);
+    return Promise.resolve(this.W.refresh()).then(() => { if (this.W.hydrateChecks) this.W.hydrateChecks(); return true; }).catch(() => false);
+  }
+  /** infinite scroll: the next page of the list, loaded in place (no skeleton; the open task and the scroll position stay) */
+  loadMore = () => {
+    const s = this.state;
+    if (!s.listMore || s.loadingMore || s.loading || s.screen !== 'mail') return;
+    this.setState({ loadingMore: true, listLimit: (s.listLimit || this.LIST_PAGE) + this.LIST_PAGE }, () => this.load(this.state.sel, true, true));
+  };
+  /** near the end of the list (the scrolling box is marked data-list-scroll): load the next page.
+      Scroll events do not bubble, so one capturing listener on the document serves every render. */
+  wireListScroll() {
+    if (this.tmListScroll) return;
+    this.tmListScroll = (e) => {
+      const el = e.target;
+      if (!el || !el.hasAttribute || !el.hasAttribute('data-list-scroll')) return;
+      if (el.scrollTop + el.clientHeight >= el.scrollHeight - 240) this.loadMore();
+    };
+    document.addEventListener('scroll', this.tmListScroll, true);
+  }
+  componentWillUnmount() {
+    if (super.componentWillUnmount) super.componentWillUnmount();
+    if (this.tmListScroll) document.removeEventListener('scroll', this.tmListScroll, true);
   }
 
   /* ---------- screens ---------- */

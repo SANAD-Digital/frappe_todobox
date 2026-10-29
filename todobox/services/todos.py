@@ -96,6 +96,8 @@ def get_counts():
 	reports = get_direct_reports(me)
 	if reports:
 		values["reports"] = tuple(reports)
+	scope = []
+	my_scope(scope)
 
 	return {
 		"inbox": inbox_count,
@@ -112,6 +114,7 @@ def get_counts():
 		if reports
 		else 0,
 		"inboxUnread": unread_count,
+		"all": _count(scope, values),
 	}
 
 
@@ -122,6 +125,13 @@ def _folder_conditions(folder, conditions, values):
 		conditions.append("allocated_to = %(me)s AND status IN ('Open', 'Closed', 'Cancelled')")
 		if todo_has("snooze_until"):
 			conditions.append("(snooze_until IS NULL OR snooze_until <= %(now)s)")
+	elif folder == "unread":
+		# open tasks assigned to me (not snoozed) that I have not opened yet
+		conditions.append("allocated_to = %(me)s AND status = 'Open'")
+		if todo_has("snooze_until"):
+			conditions.append("(snooze_until IS NULL OR snooze_until <= %(now)s)")
+		if todo_has("read_by"):
+			conditions.append(UNREAD_SQL)
 	elif folder == "overdue":
 		conditions.append("allocated_to = %(me)s AND status = 'Open' AND date < %(today)s")
 	elif folder == "today":
@@ -349,8 +359,8 @@ def _fetch_todos(conditions, values, order_by="modified DESC", limit=100):
 
 
 @frappe.whitelist()
-def list_todos(folder="inbox", quick="all", search="", label=None, sort="modified"):
-	"""Lists ToDos by folder, quick filter, search query, label and sort (max 100)."""
+def list_todos(folder="inbox", quick="all", search="", label=None, sort="modified", limit=50):
+	"""Lists ToDos by folder, quick filter, search query, label and sort (limit: 50 by default, at most 500)."""
 	conditions, values = [], query_values()
 	_folder_conditions(folder, conditions, values)
 	_quick_conditions(quick, conditions)
@@ -365,7 +375,8 @@ def list_todos(folder="inbox", quick="all", search="", label=None, sort="modifie
 	# open tasks first, then completed (or forwarded) ones, each in the chosen order
 	order_by = "(status = 'Open') DESC, " + SORTS.get(sort, "modified DESC")
 
-	return _fetch_todos(conditions, values, order_by)
+	limit = min(max(cint(limit) or 50, 1), 500)
+	return _fetch_todos(conditions, values, order_by, limit=limit)
 
 
 @frappe.whitelist()

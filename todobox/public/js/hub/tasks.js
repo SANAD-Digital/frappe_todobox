@@ -152,6 +152,17 @@
     if (t && t.read) return;
     this.api.updateTodo(name, { read: true });
   }
+  /** state patch for an opened task: it shows as read, and the Unread badge follows at once
+      (the next load brings the server's count) */
+  readPatch(s, name) {
+    const was = s.tasks.find((t) => t.name === name);
+    if (!was || was.read) return {};
+    const mine = was.status === 'Open' && was.allocated_to === (this.api && this.api.ME) && s.counts.inboxUnread > 0;
+    return {
+      tasks: s.tasks.map((t) => (t.name === name ? { ...t, read: true } : t)),
+      ...(mine ? { counts: { ...s.counts, inboxUnread: s.counts.inboxUnread - 1 } } : {}),
+    };
+  }
   selected() { return this.state.tasks.find((t) => t.name === this.state.sel) || null; }
   toast(text) {
     this.setState({ toast: text });
@@ -196,8 +207,8 @@
     this.markRead(name);
     this.loadDocActions(name);
     this.setState((s) => ({
-      sel: name, mobileScreen: 'detail', pane: 'detail', draft: '', showEvents: false,
-      tasks: s.tasks.map((t) => (t.name === name ? { ...t, read: true } : t)),
+      sel: name, selDoc: null, mobileScreen: 'detail', pane: 'detail', draft: '', showEvents: false,
+      ...this.readPatch(s, name),
     }));
   };
 
@@ -336,6 +347,15 @@
     const idx = this.state.tasks.findIndex((t) => t.name === sel);
     const go = (n) => { const t = this.state.tasks[n]; if (t) this.open(t.name); };
     const k = e.key.toLowerCase();
+    /* "All tasks" with documents awaiting my decision among the rows: ↑/↓ walk the rows as shown */
+    const rows = this.state.screen === 'mail' && this.state.folder === 'all' ? (this.allRows || []) : [];
+    if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && rows.some((r) => r.isWf)) {
+      e.preventDefault();
+      const i = rows.findIndex((r) => r.name === (this.state.selDoc || sel));
+      const n = rows[e.key === 'ArrowDown' ? i + 1 : Math.max(0, i - 1)];
+      if (n) { if (n.isWf) this.allOpenDoc(n.name); else this.open(n.name); }
+      return;
+    }
     if (k === 'n') { e.preventDefault(); this.openCompose(); }
     else if (/^[esfr]$/.test(k) && sel && this.isLocked(this.taskByName(sel))) { e.preventDefault(); this.guardLocked(this.taskByName(sel)); }
     else if (k === 'e' && sel) { e.preventDefault(); this.complete(sel); }

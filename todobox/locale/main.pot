@@ -3960,3 +3960,18 @@ msgstr ""
 
 msgid "User Group"
 msgstr ""
+
+msgid "Not opened"
+msgstr ""
+
+msgid "All tasks"
+msgstr ""
+
+msgid "Loading more…"
+msgstr ""
+
+msgid "No unread tasks"
+msgstr ""
+
+msgid "You have opened every task assigned to you."
+msgstr ""

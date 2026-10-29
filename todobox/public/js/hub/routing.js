@@ -1,5 +1,6 @@
 /* ToDoBox: the address bar follows the screen, so a reload (or a shared link) lands on the same place.
      /todobox/inbox                 a folder            /todobox/inbox/<task>     …and the open task
+     /todobox/all/<task|document>   in "All tasks" the last part is a task, or a document awaiting my decision
      /todobox/tag/<tag>[/<task>]    a tag               /todobox/search[/<task>]?q=…&view=…&sort=…
      /todobox/day | calendar | analytics | templates | settings
      /todobox/actions/<pending|sent|log>[/<document>]
@@ -22,7 +23,7 @@
   routeState(r) {
     const [a, b, c] = r.path;
     const SCREENS = { day: 'day', calendar: 'calendar', analytics: 'stats', templates: 'templates', settings: 'settings' };
-    const FOLDERS = ['inbox', 'overdue', 'today', 'sent', 'fwd', 'cc', 'waiting', 'snoozed', 'done', 'team', 'all'];
+    const FOLDERS = ['inbox', 'unread', 'overdue', 'today', 'sent', 'fwd', 'cc', 'waiting', 'snoozed', 'done', 'team', 'all'];
     if (!a) return { patch: {}, task: null };
     if (SCREENS[a]) return { patch: { screen: SCREENS[a] }, task: null };
     if (a === 'actions') return { patch: { screen: 'wf', wfTab: ['pending', 'sent', 'log'].includes(b) ? b : 'pending' }, doc: c || null };
@@ -43,7 +44,8 @@
     if (SCREENS[s.screen]) return { url: '/' + SCREENS[s.screen], key: s.screen };
     if (s.screen === 'wf') return { url: '/actions/' + (s.wfTab || 'pending') + (s.wfSel ? '/' + enc(s.wfSel) : ''), key: 'wf:' + s.wfTab };
     if (s.screen !== 'mail') return null;
-    const task = s.sel ? '/' + enc(s.sel) : '';
+    const open = (s.folder === 'all' && s.selDoc) || s.sel;
+    const task = open ? '/' + enc(open) : '';
     if (s.folder === '__query' || (s.search && s.folder !== 'all')) {
       const q = new URLSearchParams();
       if (s.search) q.set('q', s.search);
@@ -64,7 +66,8 @@
       this.wfGo(r.patch.wfTab);
       if (r.doc && this.wfOpenDoc) this.wfOpenDoc(r.doc);
     }
-    if (r.task && this.state.sel !== r.task) await this.openTask(r.task);
+    if (r.task && this.state.selDoc === r.task) { /* a document of "All tasks": load() opened it */ }
+    else if (r.task && this.state.sel !== r.task) await this.openTask(r.task);
     else if (r.task && this.open) this.open(r.task);
     this._routeReady = true;
     this.routeSync(true);
@@ -80,10 +83,10 @@
     else if (r.patch.screen && r.patch.screen !== 'mail') this.goScreen(r.patch.screen);
     else {
       const sameList = ['folder', 'label', 'search', 'activeView'].every((k) => !(k in r.patch) || r.patch[k] === this.state[k]) && this.state.screen === 'mail';
-      if (sameList) { if (r.task) this.openTask(r.task); }
+      if (sameList) { if (r.task) { if (this.state.folder === 'all' && this.isWfDoc(r.task)) this.allOpenDoc(r.task); else this.openTask(r.task); } }
       else this.setState({ ...r.patch, sel: r.task || null, loading: true, pane: r.task ? 'detail' : 'list', mobileScreen: r.task ? 'detail' : 'list' }, async () => {
         await this.load(r.task || undefined);
-        if (r.task && this.state.sel !== r.task) this.openTask(r.task);
+        if (r.task && this.state.sel !== r.task && this.state.selDoc !== r.task) this.openTask(r.task);
       });
     }
     setTimeout(() => { this._routePopping = false; this.routeSync(true); }, 0);

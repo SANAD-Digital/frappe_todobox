@@ -59,15 +59,37 @@
     if (d) this.qlPrefetch(d.doctype, d.name);
     return this.setState({ wfSel: name, wfNote: '', wfCommentDraft: '', wfNoteError: false, wfConfirm: null, wfDetailTab: 'data', wfItemsOpen: false, wfPane: 'detail', mobileScreen: 'detail' }); };
 
+  /* "All tasks": a document awaiting my decision opens in the list's own detail pane (the same
+     preview and actions as Required actions, on the mail screen); selDoc is that document */
+  isWfDoc(name) { return !!(name && this.W && (this.W.DOCS || []).some((x) => x.name === name)); }
+  inAllDoc(s) { s = s || this.state; return s.screen === 'mail' && s.folder === 'all' && !!s.selDoc; }
+  allOpenDoc = (name) => {
+    if (this.W && this.W.loadDoc) this.W.loadDoc(name);
+    const d = this.W && (this.W.DOCS || []).find((x) => x.name === name);
+    if (d) this.qlPrefetch(d.doctype, d.name);
+    return this.setState({ selDoc: name, sel: null, wfSel: name, wfNote: '', wfCommentDraft: '', wfNoteError: false, wfConfirm: null, wfDetailTab: 'data', wfItemsOpen: false, wfMore: false, pane: 'detail', mobileScreen: 'detail' });
+  };
+  /** after a decision in "All tasks": the next row of the list opens (a task or another document), else nothing */
+  allNext(name) {
+    const rows = this.allRows || [];
+    const i = rows.findIndex((r) => r.name === name);
+    const pend = new Set(this.W.pendingForMe().map((x) => x.name));
+    const ok = (r) => r.name !== name && (!r.isWf || pend.has(r.name));
+    const next = rows.slice(i + 1).find(ok) || rows.slice(0, Math.max(i, 0)).reverse().find(ok);
+    if (next) return next.isWf ? this.allOpenDoc(next.name) : this.open(next.name);
+    return this.setState({ selDoc: null, sel: null, pane: 'list', mobileScreen: 'list' });
+  }
+
   wfApply = (name, action) => {
     const W = this.W, me = this.meWf();
     const d = W.DOCS.find((x) => x.name === name);
     if (!d) return;
+    const inAll = this.inAllDoc() && this.state.selDoc === name;
     const t = W.getTransitions(d, me).find((x) => x.action === action);
     if (!t) { this.toast(__('Document status changed — list refreshed')); this.forceUpdate(); return; }
     const note = (this.state.wfNote || '').trim();
     if (t.needsNote && !note) {
-      this.wfOpenDoc(name);
+      if (inAll) this.allOpenDoc(name); else this.wfOpenDoc(name);
       this.setState({ wfNoteError: true });
       this.toast(__('“{0}” requires a written reason', [action]));
       return;
@@ -89,12 +111,18 @@
       wfUndo: W.canUndo(name, res.prev) ? { name, prev: res.prev, text: __('{0} · {1} (moved to My decisions log)', [action, name]) } : null,
     }));
     this.timers.push(setTimeout(() => this.setState((st) => (st.wfUndo && st.wfUndo.name === name ? { wfUndo: null } : {})), 6000));
+    if (inAll) {
+      this.allNext(name);
+      /* the server may have updated the linked task too: refresh the list in place */
+      this.timers.push(setTimeout(() => { if (this.state.screen === 'mail' && this.state.folder === 'all') this.load(this.state.sel, true); }, 1500));
+    }
   };
 
   wfUndoDo = () => {
     const u = this.state.wfUndo; if (!u) return;
     const r = this.W.undoWorkflow(u.name, u.prev);
     this.setState({ wfUndo: null, wfSel: u.name });
+    if (this.state.screen === 'mail' && this.state.folder === 'all') this.allOpenDoc(u.name);
     this.toast(r && r.error ? r.error : __('Undoing — reverse transition to “{0}”', [u.prev]));
   };
 
@@ -160,6 +188,8 @@
     const pending = W.pendingForMe(me), sent = W.sentByMe(me), log = W.myDecisions(me);
     const late = pending.filter((d) => W.pendingHours(d) > 48).length;
     const onWf = s.screen === 'wf';
+    /* "All tasks" with a document open: only the preview is built (in the mail screen's detail place) */
+    const inAll = this.inAllDoc(s);
     const narrow = s.narrow || s.view !== 'desktop';
 
     /* ---- sidebar ---- */
@@ -187,7 +217,7 @@
     };
 
     /* performance: outside the actions screen, don't build cards or preview at all */
-    if (!onWf) return {
+    if (!onWf && !inAll) return {
       ...sideVals,
       wfGroups: [], wfTypeChips: [], wfStateChips: [], wfQuickChips: [], wfLogGroups: [], wfShowGroupSort: false, wfTabsDetail: [], wfMoreItems: [],
       showWfList: false, showWfPreview: false, hasWfDoc: false, noWfDoc: false, wfIsLog: false, wfEmpty: false,
@@ -343,7 +373,7 @@
 
     /* ---- preview ---- */
     /* on wide screens don't leave the last column empty/stale: if the selected document isn't in the list, select the first */
-    if (!narrow && s.wfTab !== 'log' && sorted.length && !sorted.some((d) => d.name === s.wfSel)) {
+    if (onWf && !narrow && s.wfTab !== 'log' && sorted.length && !sorted.some((d) => d.name === s.wfSel)) {
       const first = sorted[0].name;
       if (this._wfAuto !== first) {
         this._wfAuto = first;
@@ -354,7 +384,7 @@
         }, 0);
       }
     } else this._wfAuto = null;
-    const sel = W.DOCS.find((d) => d.name === s.wfSel) || null;
+    const sel = W.DOCS.find((d) => d.name === (inAll ? s.selDoc : s.wfSel)) || null;
     let wd = null;
     if (sel) {
       const stT = W.STATE_TONE[sel.state] || 'fg2';
@@ -439,7 +469,7 @@
 
       /* middle panel */
       showWfList: onWf && (!narrow || s.wfPane === 'list'),
-      showWfPreview: onWf && (!narrow ? s.wfTab !== 'log' : s.wfPane === 'detail'),
+      showWfPreview: onWf ? (!narrow ? s.wfTab !== 'log' : s.wfPane === 'detail') : inAll && (!narrow || s.pane === 'detail'),
       wfListPaneStyle: (narrow || s.wfTab === 'log' ? 'flex:1 1 auto;' : 'flex:0 0 470px;') +
         'min-width:0;display:flex;flex-direction:column;min-height:0;background:var(--panel2);border-inline-start:1px solid var(--line);' +
         (!narrow && s.wfTab !== 'log' ? 'border-inline-end:1px solid var(--line2);' : ''),
@@ -478,8 +508,8 @@
 
       /* preview */
       hasWfDoc: !!wd, noWfDoc: !wd,
-      wfNoDocText: s.wfTab === 'log' ? __('Your decisions log — pick another tab to make a new decision') : __('Select a transaction to view its workflow and data'),
-      wd, wfNarrow: narrow, wfBack: () => this.setState({ wfPane: 'list', mobileScreen: 'list' }),
+      wfNoDocText: s.wfTab === 'log' && !inAll ? __('Your decisions log — pick another tab to make a new decision') : __('Select a transaction to view its workflow and data'),
+      wd, wfNarrow: narrow, wfBack: () => this.setState(inAll ? { pane: 'list', mobileScreen: 'list' } : { wfPane: 'list', mobileScreen: 'list' }),
       wfNewCheck: s.wfNewCheck,
       onWfNewCheck: (e) => this.setState({ wfNewCheck: e.target.value }),
       onWfCheckKey: (e) => { if (e.key === 'Enter') { e.preventDefault(); this.wfAddCheck(); } },
@@ -508,7 +538,7 @@
       wfNotePlaceholder: __('Add a note with the decision… (required when rejecting or returning)'),
       wfNoteStyle: 'width:100%;height:36px;padding:0 12px;background:var(--sunk);border:1px solid ' + (s.wfNoteError ? 'var(--red)' : 'var(--line)') +
         ';border-radius:9px;outline:none;font-size:13px;',
-      wfBarHint: narrow ? '' : __('a approve · x return · j/k navigate'),
+      wfBarHint: narrow || inAll ? '' : __('a approve · x return · j/k navigate'),
       wfAddComment: this.wfComment,
       wfCommentDraft: s.wfCommentDraft || '',
       onWfCommentDraft: (e) => this.setState({ wfCommentDraft: e.target.value }),

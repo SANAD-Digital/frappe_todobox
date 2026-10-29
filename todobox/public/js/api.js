@@ -41,6 +41,7 @@ export const FOLDERS = [
   { id: 'snoozed', label: __('Snoozed'),        icon: 'moon' },
   { id: 'done',    label: __('Completed'),      icon: 'check-circle' },
   { id: 'team',    label: __('My team'),        icon: 'users' },
+  { id: 'all',     label: __('All tasks'),      icon: 'list' },
 ];
 
 /* last message (not event) in the thread */
@@ -87,10 +88,10 @@ async function _syncUsers() {
   }
 }
 
-export async function listTodos({ folder = 'inbox', quick = 'all', search = '', label = null, sort = 'modified' } = {}) {
+export async function listTodos({ folder = 'inbox', quick = 'all', search = '', label = null, sort = 'modified', limit = 50 } = {}) {
   return safe(async () => {
     await syncUsers();
-    return await bridge().listTodos({ folder, quick, search, label, sort });
+    return await bridge().listTodos({ folder, quick, search, label, sort, limit });
   }, []);
 }
 

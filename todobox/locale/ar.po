@@ -4202,3 +4202,18 @@ msgstr "نوع مستند قابل للربط في ToDoBox"
 
 msgid "User Group"
 msgstr "مجموعة المستخدمين"
+
+msgid "Not opened"
+msgstr "لم تُفتح بعد"
+
+msgid "All tasks"
+msgstr "كل المهام"
+
+msgid "Loading more…"
+msgstr "جارٍ تحميل المزيد…"
+
+msgid "No unread tasks"
+msgstr "لا توجد مهام لم تُفتح"
+
+msgid "You have opened every task assigned to you."
+msgstr "فتحت كل المهام المسندة إليك."
