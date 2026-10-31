@@ -118,6 +118,20 @@
     }
   };
 
+  /** "You have a linked task: close it?" on a document awaiting my decision */
+  wfCloseTodo = async (d) => {
+    const name = d.todo_name;
+    const r = await this.api.updateTodo(name, { status: 'Closed' });
+    if (!r) { this.toast(__('Could not complete the action')); return; }
+    await this.api.addComment(name, { kind: 'event', html: __('completed the task') });
+    d.todo = ''; d.todo_name = ''; d.todo_mine = 0;
+    this.toast(__('Task closed'));
+    this.forceUpdate();
+    const counts = await this.api.getCounts();
+    if (counts) this.setState({ counts });
+    if (this.state.screen === 'mail') this.load(this.state.sel, true);
+  };
+
   wfUndoDo = () => {
     const u = this.state.wfUndo; if (!u) return;
     const r = this.W.undoWorkflow(u.name, u.prev);
@@ -351,15 +365,24 @@
     /* ---- grouping ---- */
     const groupKey = (d) => s.wfGroup === 'state' ? d.state : s.wfGroup === 'sender' ? (U[d.owner] || {}).name || d.owner : W.DOCTYPES[d.doctype].ar;
     let wfGroups = [];
+    const collapsed = s.wfCollapsed || {};
     if (s.wfGroup === 'none') wfGroups = [{ label: '', count: '', showHeader: false, cards: sorted.map(card) }];
     else {
       const keys = [];
       sorted.forEach((d) => { const k = groupKey(d); if (!keys.includes(k)) keys.push(k); });
       wfGroups = keys.map((k) => {
         const items = sorted.filter((d) => groupKey(d) === k);
-        return { label: k, count: items.length, showHeader: true, cards: items.map(card) };
+        const id = s.wfGroup + ':' + k, open = !collapsed[id];
+        return {
+          id, label: k, count: items.length, showHeader: true, open: open ? 'true' : 'false', docs: open ? items : [], cards: open ? items.map(card) : [],
+          chevron: 'width:13px;height:13px;flex:0 0 auto;color:var(--fg3);transition:transform .18s var(--ease);transform:rotate(' + (open ? '0deg' : (window.TT_DIR === 'rtl' ? '90deg' : '-90deg')) + ');',
+          onToggle: () => this.setState((st) => ({ wfCollapsed: { ...(st.wfCollapsed || {}), [id]: open } })),
+        };
       });
+      /* j/k walk only the rows on screen */
+      this.wfVisible = wfGroups.flatMap((g) => g.docs);
     }
+    const wfAnyOpen = wfGroups.some((g) => g.open === 'true');
 
     /* ---- bulk approval ---- */
     const checkedDocs = s.wfChecked.map((n) => W.DOCS.find((d) => d.name === n)).filter(Boolean);
@@ -401,7 +424,11 @@
           ';background:color-mix(in oklab, ' + tone(stT) + ' 13%, transparent);',
         derailed: W.derailed(sel),
         derailText: W.derailed(sel) ? __('Workflow ended at “{0}” — {1}', [sel.state, sel.trail[sel.trail.length - 1][3] || __('No reason recorded')]) : '',
-        hasTodo: !!sel.todo, todoText: sel.todo ? __('Linked to task: {0}', [sel.todo]) : '',
+        hasTodo: !!sel.todo && !(sel.todo_mine && trs.length), todoText: sel.todo ? __('Linked to task: {0}', [sel.todo]) : '',
+        /* my own open task on a document awaiting my decision: offer to close it */
+        hasMyTodo: !!(sel.todo_mine && trs.length),
+        myTodoText: __('You have a task linked to this document: {0}. Do you want to close it?', [sel.todo || sel.todo_name]),
+        closeTodo: () => this.wfCloseTodo(sel),
         openTodo: (e) => {
           if (e && e.preventDefault) e.preventDefault();
           this.openTask(sel.todo_name);
@@ -488,6 +515,10 @@
       wfGroupLabel: { doctype: __('Document Type'), state: __('Status'), sender: __('Sender'), none: __('None') }[s.wfGroup],
       wfCycleGroup: () => { const o = ['doctype', 'state', 'sender', 'none']; this.setState({ wfGroup: o[(o.indexOf(s.wfGroup) + 1) % 4] }); },
       wfSortLabel: sortLabels[s.wfSort],
+      wfCanCollapse: s.wfGroup !== 'none' && wfGroups.length > 0,
+      wfCollapseLabel: wfAnyOpen ? __('Collapse all') : __('Expand all'),
+      wfCollapseIcon: wfAnyOpen ? '#i-collapse-all' : '#i-expand-all',
+      wfToggleAll: () => this.setState({ wfCollapsed: Object.fromEntries(wfGroups.map((g) => [g.id, wfAnyOpen])) }),
       wfCycleSort: () => { const o = ['oldest', 'newest']; this.setState({ wfSort: o[(o.indexOf(s.wfSort) + 1) % 2] }); },
       wfGroups: s.wfTab === 'log' ? [] : wfGroups,
       wfEmpty: s.wfTab !== 'log' && sorted.length === 0,

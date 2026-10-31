@@ -39,6 +39,7 @@ CUSTOM_FIELDS = {
 		},
 		{"fieldname": "cc_users", "label": "CC Users", "fieldtype": "Small Text", "insert_after": "allocated_to"},
 		{"fieldname": "read_by", "label": "Read By", "fieldtype": "Text", "insert_after": "cc_users"},
+		{"fieldname": "archived_by", "label": "Archived By", "fieldtype": "Text", "insert_after": "read_by"},
 		{
 			"fieldname": "snooze_until",
 			"label": "Snooze Until",

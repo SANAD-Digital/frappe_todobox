@@ -4,7 +4,7 @@ import frappe
 from frappe.utils import cint, get_datetime, now_datetime, today
 
 from todobox.services.checklist import get_checklists
-from todobox.services.common import derive_subject
+from todobox.services.common import derive_subject, split_csv
 
 PRIORITY_RANK = {"High": 0, "Medium": 1, "Low": 2}
 
@@ -20,7 +20,7 @@ def _dropped():
 def _plan_rows():
 	meta = frappe.get_meta("ToDo")
 	fields = ["name", "description", "priority", "date", "assigned_by", "reference_type", "reference_name"]
-	fields += [f for f in ("day_order", "snooze_until", "subject") if meta.has_field(f)]
+	fields += [f for f in ("day_order", "snooze_until", "subject", "archived_by") if meta.has_field(f)]
 	rows = frappe.get_all(
 		"ToDo",
 		filters={"allocated_to": frappe.session.user, "status": "Open", "date": ["<=", today()]},
@@ -30,7 +30,9 @@ def _plan_rows():
 	rows = [
 		r
 		for r in rows
-		if r.name not in dropped and not (r.get("snooze_until") and get_datetime(r.snooze_until) > now)
+		if r.name not in dropped
+		and not (r.get("snooze_until") and get_datetime(r.snooze_until) > now)
+		and frappe.session.user not in split_csv(r.get("archived_by"))
 	]
 	td = today()
 

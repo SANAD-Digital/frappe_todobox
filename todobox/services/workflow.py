@@ -12,7 +12,7 @@ from frappe import _
 from frappe.model.workflow import apply_workflow, get_transitions, get_workflow_name
 from frappe.utils import add_days, cint, flt, fmt_money, get_datetime, now_datetime
 
-from todobox.services.common import TRANSLATION_CONTEXT, can
+from todobox.services.common import TRANSLATION_CONTEXT, can, derive_subject, split_csv, todo_has
 from todobox.services.notifications import create_notification_log
 
 AVATAR_COLORS = [
@@ -384,26 +384,34 @@ def _files(doctype, names):
 
 
 def _linked_todo(doctype, names):
+	"""{document: its open task}; my own task when I have one (mine = 1: not one I archived)."""
 	out = {}
 	if not names:
 		return out
+	me = frappe.session.user
 	for r in frappe.get_all(
 		"ToDo",
 		filters={"reference_type": doctype, "reference_name": ("in", names), "status": "Open"},
-		fields=["name", "reference_name", "description"],
+		fields=[
+			"name",
+			"reference_name",
+			"description",
+			"allocated_to",
+			*[c for c in ("archived_by", "subject") if todo_has(c)],
+		],
 	):
-		out.setdefault(r.reference_name, {"name": r.name, "text": frappe.utils.strip_html(r.description or "")[:90]})
+		mine = r.allocated_to == me and me not in split_csv(r.get("archived_by"))
+		cur = out.get(r.reference_name)
+		if not cur or (mine and not cur["mine"]):
+			out[r.reference_name] = {
+				"name": r.name,
+				"text": derive_subject(r)[:90],
+				"mine": 1 if mine else 0,
+			}
 	return out
 
 
 PTYPE_FOR_DOCSTATUS = {0: "write", 1: "submit", 2: "cancel"}
-
-
-def _can_print(doctype):
-	cache = _req_cache("can_print")
-	if doctype not in cache:
-		cache[doctype] = can(doctype, "print")
-	return cache[doctype]
 
 
 def action_allowed(doc, next_state, wfp):
@@ -473,7 +481,7 @@ def _build_docs(doctype, names, workflows, pending_map, holders):
 			"amountText": fmt_money(doc.get("grand_total") or 0, currency=doc.get("currency"))
 			if meta.has_field("grand_total") else "",
 			"pending": 1 if pend else 0,
-			"can_print": 1 if _can_print(doctype) else 0,
+			"can_print": 1 if can(doctype, "print", doc=doc) else 0,
 			"actions": actions,
 			"holder": " · ".join(holders.get(pend or pending_map.get(name + "__holder"), [])),
 			"since": _hours_since(pending_map.get(name + "__creation") or doc.modified),
@@ -485,6 +493,7 @@ def _build_docs(doctype, names, workflows, pending_map, holders):
 			"checks": [],
 			"todo": (todos.get(name) or {}).get("text", ""),
 			"todo_name": (todos.get(name) or {}).get("name", ""),
+			"todo_mine": (todos.get(name) or {}).get("mine", 0),
 		})
 	return out
 

@@ -23,7 +23,7 @@
   routeState(r) {
     const [a, b, c] = r.path;
     const SCREENS = { day: 'day', calendar: 'calendar', analytics: 'stats', templates: 'templates', settings: 'settings' };
-    const FOLDERS = ['inbox', 'unread', 'overdue', 'today', 'sent', 'fwd', 'cc', 'waiting', 'snoozed', 'done', 'team', 'all'];
+    const FOLDERS = ['inbox', 'unread', 'overdue', 'today', 'sent', 'fwd', 'cc', 'waiting', 'snoozed', 'done', 'team', 'all', 'archived'];
     if (!a) return { patch: {}, task: null };
     if (SCREENS[a]) return { patch: { screen: SCREENS[a] }, task: null };
     if (a === 'actions') return { patch: { screen: 'wf', wfTab: ['pending', 'sent', 'log'].includes(b) ? b : 'pending' }, doc: c || null };

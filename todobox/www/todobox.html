@@ -246,6 +246,9 @@ html[data-dark="1"] .tms-err button{background:#ededed;color:#171717}
     <symbol id="i-forward" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 5l5.5 5.2L14 15.4"></path><path d="M19.5 10.2H8.6A4.6 4.6 0 0 0 4 14.8V19"></path></symbol>
     <symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="8.4" y="8.4" width="11.8" height="11.8" rx="2.2"></rect><path d="M15.6 5.6A2.2 2.2 0 0 0 13.4 3.4H6a2.2 2.2 0 0 0-2.2 2.2v7.4a2.2 2.2 0 0 0 2.2 2.2"></path></symbol>
     <symbol id="i-hourglass" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10M7 21h10"></path><path d="M8 3v3.4c0 2.3 4 3.6 4 5.6s-4 3.3-4 5.6V21M16 3v3.4c0 2.3-4 3.6-4 5.6s4 3.3 4 5.6V21"></path></symbol>
+    <symbol id="i-collapse-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4l5 5 5-5"></path><path d="M7 20l5-5 5 5"></path></symbol>
+    <symbol id="i-expand-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M7 9l5-5 5 5"></path><path d="M7 15l5 5 5-5"></path></symbol>
+    <symbol id="i-archive" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="5" rx="1.5"></rect><path d="M5 9v9a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9"></path><path d="M10 13h4"></path></symbol>
     <symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.6 8.6 0 0 1 9.5 4 8.6 8.6 0 1 0 20 14.5z"></path></symbol>
     <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.2"></circle><path d="M12 2.6v2.2M12 19.2v2.2M2.6 12h2.2M19.2 12h2.2M5.4 5.4l1.5 1.5M17.1 17.1l1.5 1.5M18.6 5.4l-1.5 1.5M6.9 17.1l-1.5 1.5"></path></symbol>
     <symbol id="i-palette" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.4a8.6 8.6 0 1 0 0 17.2c1.1 0 1.8-.8 1.8-1.8 0-.5-.2-.9-.5-1.2-.3-.3-.5-.8-.5-1.2 0-1 .8-1.8 1.8-1.8h2.1a4.3 4.3 0 0 0 4.3-4.3c0-3.8-4-6.9-9-6.9z"></path><circle cx="7.4" cy="11.6" r="1.1"></circle><circle cx="9.8" cy="7.6" r="1.1"></circle><circle cx="14.6" cy="7.6" r="1.1"></circle></symbol>
@@ -893,6 +896,7 @@ html[data-dark="1"] .tms-err button{background:#ededed;color:#171717}
           <span style="font-size:12px;">{{ checkedLabel }}</span>
           <div style="flex:1;"></div>
           <button onClick="{{ bulkDone }}" style="height:26px;padding:0 10px;background:transparent;border:1px solid currentColor;border-radius:7px;cursor:pointer;font-size:12px;opacity:.85;">Complete</button>
+          <button onClick="{{ bulkArchive }}" style="height:26px;padding:0 10px;background:transparent;border:1px solid currentColor;border-radius:7px;cursor:pointer;font-size:12px;opacity:.85;">{{ bulkArchiveLabel }}</button>
           <button onClick="{{ bulkSnooze }}" style="height:26px;padding:0 10px;background:transparent;border:1px solid currentColor;border-radius:7px;cursor:pointer;font-size:12px;opacity:.85;">Snooze</button>
           <button onClick="{{ clearChecked }}" style="background:transparent;border:0;cursor:pointer;font-size:14px;opacity:.7;">✕</button>
         </div>
@@ -988,6 +992,23 @@ html[data-dark="1"] .tms-err button{background:#ededed;color:#171717}
             </div>
           </sc-if>
         </div>
+
+        <!-- workflow actions on the linked document (doc-tabs.js) -->
+        <sc-if value="{{ d.hasDocActions }}" hint-placeholder-val="{{ false }}">
+          <div role="group" aria-label="Actions on the linked document" style="flex:0 0 auto;display:flex;flex-direction:column;gap:8px;margin:10px 20px 0;padding:11px 13px;background:var(--primary-soft);border:1px solid var(--primary-line);border-radius:10px;">
+            <div style="display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px;font-size:12px;">
+              <svg data-ic="" style="width:13px;height:13px;color:var(--primary);"><use href="#i-bolt"></use></svg>
+              <span style="font-weight:600;">Actions on the linked document</span>
+              <span style="color:var(--fg3);">{{ d.docActMeta }}</span>
+            </div>
+            <input value="{{ d.docActNote }}" onChange="{{ d.onDocActNote }}" placeholder="{{ d.docActNotePlaceholder }}" aria-label="Decision note" style="{{ d.docActNoteStyle }}">
+            <div style="display:flex;flex-wrap:wrap;gap:6px;">
+              <sc-for list="{{ d.docActions }}" as="da" hint-placeholder-count="2">
+                <button type="button" onClick="{{ da.onDo }}" style="{{ da.style }}">{{ da.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
 
         <!-- linked document tabs (doc-tabs.js): only when the task has a reference the user can read -->
         <sc-if value="{{ d.hasRefTabs }}" hint-placeholder-val="{{ false }}">
@@ -1432,12 +1453,17 @@ html[data-dark="1"] .tms-err button{background:#ededed;color:#171717}
     <sc-if value="{{ showWfList }}" hint-placeholder-val="{{ false }}">
     <section style="{{ wfListPaneStyle }}">
       <div style="flex:0 0 auto;padding:13px 14px 11px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:9px;">
-        <button onClick="{{ wfToggleHead }}" aria-expanded="{{ wfHeadOpen }}" style="display:flex;align-items:center;gap:9px;background:transparent;border:0;padding:0;cursor:pointer;text-align:start;color:var(--fg);">
+        <div style="display:flex;align-items:center;gap:8px;">
+        <button onClick="{{ wfToggleHead }}" aria-expanded="{{ wfHeadOpen }}" style="flex:1;min-width:0;display:flex;align-items:center;gap:9px;background:transparent;border:0;padding:0;cursor:pointer;text-align:start;color:var(--fg);">
           <svg data-ic="" style="width:16px;height:16px;color:var(--primary);"><use href="#i-bolt"></use></svg>
           <span style="font-size:15px;font-weight:700;flex:1;">{{ wfTitle }}</span>
           <span style="font-size:11px;color:var(--fg3);font-family:var(--font);font-variant-numeric:tabular-nums;">{{ wfCount }}</span>
           <svg data-ic="" style="{{ wfHeadChevron }}"><use href="#i-chev-down"></use></svg>
         </button>
+        <sc-if value="{{ wfCanCollapse }}" hint-placeholder-val="{{ true }}">
+          <button onClick="{{ wfToggleAll }}" title="{{ wfCollapseLabel }}" aria-label="{{ wfCollapseLabel }}" style="flex:0 0 auto;width:28px;height:28px;display:grid;place-items:center;padding:0;background:transparent;border:1px solid var(--line2);border-radius:8px;cursor:pointer;color:var(--fg2);"><svg data-ic="" style="width:15px;height:15px;"><use href="{{ wfCollapseIcon }}"></use></svg></button>
+        </sc-if>
+        </div>
         <sc-if value="{{ wfHeadOpen }}" hint-placeholder-val="{{ false }}">
           <div style="font-size:11px;color:var(--fg2);line-height:1.7;">{{ wfSubtitle }}</div>
         </sc-if>
@@ -1514,11 +1540,12 @@ html[data-dark="1"] .tms-err button{background:#ededed;color:#171717}
         <sc-for list="{{ wfGroups }}" as="g" hint-placeholder-count="2">
           <div style="display:flex;flex-direction:column;gap:5px;">
             <sc-if value="{{ g.showHeader }}" hint-placeholder-val="{{ true }}">
-              <div style="display:flex;align-items:center;gap:8px;padding:0 3px;">
+              <button type="button" onClick="{{ g.onToggle }}" aria-expanded="{{ g.open }}" style="display:flex;align-items:center;gap:8px;width:100%;padding:2px 3px;background:transparent;border:0;cursor:pointer;text-align:start;">
+                <svg data-ic="" style="{{ g.chevron }}"><use href="#i-chev-down"></use></svg>
                 <span style="font-size:11px;font-weight:700;color:var(--fg2);">{{ g.label }}</span>
                 <span style="font-family:var(--font);font-variant-numeric:tabular-nums;font-size:11px;color:var(--fg3);">{{ g.count }}</span>
                 <div style="flex:1;height:1px;background:var(--line);"></div>
-              </div>
+              </button>
             </sc-if>
             <sc-if value="{{ densityNormal }}" hint-placeholder-val="{{ true }}">
             <sc-for list="{{ g.cards }}" as="c" hint-placeholder-count="6">
@@ -1681,6 +1708,15 @@ html[data-dark="1"] .tms-err button{background:#ededed;color:#171717}
             <div style="display:flex;align-items:center;gap:10px;margin:14px 18px 0;padding:11px 14px;background:var(--red-soft);border:1px solid var(--red);border-radius:10px;color:var(--red);font-size:12px;">
               <svg data-ic="" style="width:15px;height:15px;flex:0 0 auto;"><use href="#i-alert"></use></svg>
               <span style="line-height:1.7;">{{ wd.derailText }}</span>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ wd.hasMyTodo }}" hint-placeholder-val="{{ false }}">
+            <div role="status" style="display:flex;align-items:center;flex-wrap:wrap;gap:9px;margin:14px 18px 0;padding:10px 13px;background:var(--primary-soft);border:1px solid var(--primary-line);border-radius:10px;">
+              <svg data-ic="" style="width:14px;height:14px;flex:0 0 auto;color:var(--primary);"><use href="#i-link"></use></svg>
+              <span style="flex:1 1 220px;min-width:0;font-size:12px;line-height:1.6;">{{ wd.myTodoText }}</span>
+              <button type="button" onClick="{{ wd.closeTodo }}" style="height:28px;padding:0 12px;white-space:nowrap;border-radius:7px;cursor:pointer;font-size:12px;font-weight:600;border:1px solid var(--primary);background:var(--primary);color:var(--on-accent);">Close task</button>
+              <a href="#" onClick="{{ wd.openTodo }}" style="font-size:12px;">Open task</a>
             </div>
           </sc-if>
 

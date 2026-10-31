@@ -729,11 +729,11 @@
       listCount: __('{0} tasks', [s.tasks.length]), isEmpty: !s.loading && !listRows.length,
       loadingMore: !!s.loadingMore && !s.loading,
       emptyZero: !s.search && s.folder === 'inbox' && s.quick === 'all' ? '1' : '0',
-      emptyTitle: s.search ? __('No results for “{0}”', [s.search]) : s.folder === 'inbox' ? __('Inbox zero — nice work!') : s.folder === 'unread' && s.quick === 'all' ? __('No unread tasks') : __('No tasks here'),
+      emptyTitle: s.search ? __('No results for “{0}”', [s.search]) : s.folder === 'inbox' ? __('Inbox zero — nice work!') : s.folder === 'unread' && s.quick === 'all' ? __('No unread tasks') : s.folder === 'archived' && s.quick === 'all' ? __('No archived tasks') : __('No tasks here'),
       emptyBody: s.search
         ? (s.folder === 'all' ? __('No task you take part in matches this search.') : __('Nothing matches in “{0}”.', [s.folder === 'unread' ? __('Not opened') : (A.FOLDERS.find((f) => f.id === s.folder) || {}).label || '']))
         : s.folder === 'inbox' ? __('No open tasks are assigned to you right now. Enjoy the calm, or plan what comes next.')
-          : s.folder === 'unread' && s.quick === 'all' ? __('You have opened every task assigned to you.') : __('Try another folder or clear the quick filter.'),
+          : s.folder === 'unread' && s.quick === 'all' ? __('You have opened every task assigned to you.') : s.folder === 'archived' && s.quick === 'all' ? __('Tasks you archive stay here, out of every other list.') : __('Try another folder or clear the quick filter.'),
       emptySearchAll: !!s.search && s.folder !== 'all',
       emptyNoSearchAll: !(s.search && s.folder !== 'all'),
       searchAllTasks: () => this.setState({ folder: 'all', activeView: null, label: null, loading: true }, () => this.load()),
@@ -796,7 +796,15 @@
             ...(t.status === 'Open' && this.canManage(t) ? [{ label: __('Cancel task'), iconRef: '#i-x', onDo: close(() => this.cancelTask(t.name)) }] : []),
           ];
         })()),
-        { label: __('Print'), iconRef: '#i-printer', onDo: () => { this.setState({ moreMenu: false }); this.printDoc('ToDo', s.sel); } },
+        ...((() => {
+          const t = s.sel ? s.tasks.find((x) => x.name === s.sel) : null;
+          return t ? [{ label: t.archived ? __('Unarchive') : __('Archive'), iconRef: '#i-archive', onDo: () => { this.setState({ moreMenu: false }); this.archive(t.name, !t.archived); } }] : [];
+        })()),
+        /* the server decides from the ToDo print permission */
+        ...((() => {
+          const t = s.sel ? s.tasks.find((x) => x.name === s.sel) : null;
+          return t && t.can_print === 0 ? [] : [{ label: __('Print'), iconRef: '#i-printer', onDo: () => { this.setState({ moreMenu: false }); this.printDoc('ToDo', s.sel); } }];
+        })()),
         { label: __('Copy task link'), iconRef: '#i-link', onDo: () => { this.setState({ moreMenu: false }); this.copyTaskLink(s.sel); } },
       ],
       expandEvents: () => this.setState({ showEvents: true }),
@@ -875,6 +883,8 @@
       clearChecked: () => this.setState({ checked: [] }),
       bulkDone: () => { s.checked.forEach((n) => this.complete(n)); this.setState({ checked: [] }); },
       bulkSnooze: () => { this.openSnooze(s.checked.slice()); this.setState({ checked: [] }); },
+      bulkArchive: () => { const on = s.folder !== 'archived'; s.checked.forEach((n) => this.archive(n, on)); this.setState({ checked: [] }); },
+      bulkArchiveLabel: s.folder === 'archived' ? __('Unarchive') : __('Archive'),
 
       /* "New task" drawer (compose.js tmcVals) */
       composeOpen: !!s.compose,

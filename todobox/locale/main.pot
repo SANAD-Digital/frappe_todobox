@@ -3975,3 +3975,59 @@ msgstr ""
 
 msgid "You have opened every task assigned to you."
 msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Archived"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Archive"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Unarchive"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Archived \"{0}…\""
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Moved \"{0}…\" out of Archived"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "No archived tasks"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Tasks you archive stay here, out of every other list."
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Collapse all"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Expand all"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Close task"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Task closed"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "You have a task linked to this document: {0}. Do you want to close it?"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Actions on the linked document"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "{0} — done"
+msgstr ""

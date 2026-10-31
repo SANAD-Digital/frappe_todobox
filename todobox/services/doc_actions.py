@@ -39,12 +39,14 @@ def _available(ref):
 	if wf_name:
 		wfp = workflow_payload(frappe.get_cached_doc("Workflow", wf_name))
 		state = ref.get(wfp["workflow_state_field"] or "workflow_state")
-		tones = {t["action"]: t["tone"] for t in wfp["transitions"] if t["state"] == state}
+		base = {t["action"]: t for t in wfp["transitions"] if t["state"] == state}
 		return [
 			{
 				"id": t.get("action"),
 				"label": _(t.get("action")),
-				"tone": tones.get(t.get("action"), "green"),
+				"tone": base.get(t.get("action"), {}).get("tone", "green"),
+				"needsNote": base.get(t.get("action"), {}).get("needsNote", 0),
+				"destructive": base.get(t.get("action"), {}).get("destructive", 0),
 				"next": _(t.get("next_state")),
 			}
 			for t in get_transitions(ref, raise_exception=False) or []

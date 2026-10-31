@@ -41,6 +41,7 @@ export const FOLDERS = [
   { id: 'snoozed', label: __('Snoozed'),        icon: 'moon' },
   { id: 'done',    label: __('Completed'),      icon: 'check-circle' },
   { id: 'team',    label: __('My team'),        icon: 'users' },
+  { id: 'archived', label: __('Archived'),      icon: 'archive' },
   { id: 'all',     label: __('All tasks'),      icon: 'list' },
 ];
 
@@ -206,6 +207,8 @@ export async function getDocActions(name) { return (await srv('get_doc_actions',
 /** Linked-document tabs of a task: { readable, fields, items, comments, files, trail, has_workflow, users, ... } */
 export async function getReferenceDetail(name) { return srv('get_reference_detail', { name }); }
 export async function addReferenceComment(name, text) { return srv('add_reference_comment', { name, text }); }
+/** A workflow action on the task's linked document (same endpoint as Required actions) */
+export async function applyDocAction(doctype, docname, action, note) { return bridge().callOrNull('todobox.workflow_api.apply_action', { doctype, docname, action, note: note || '' }); }
 
 /* ---------- 2. Smart snooze ---------- */
 /** until: 'YYYY-MM-DD HH:mm:ss' — the date & time the user chose (Frappe Datetime control) */
@@ -219,6 +222,7 @@ export async function remindTodo(name, text) { return srv('remind_todo', { name,
 /* lifecycle: cancel (creator), reopen (creator or assignee), take someone off CC */
 export async function cancelTodo(name, reason) { return srv('cancel_todo', { name, reason: reason || '' }); }
 export async function reopenTodo(name) { return srv('reopen_todo', { name }); }
+export async function archiveTodo(name, archived) { return srv('archive_todo', { name, archived: archived ? 1 : 0 }); }
 export async function removeCc(name, user) { return srv('remove_cc', { name, user }); }
 export async function addCc(name, users) { return srv('add_cc', { name, users: JSON.stringify(users || []) }); }
 export const STALE_DAYS = 3;

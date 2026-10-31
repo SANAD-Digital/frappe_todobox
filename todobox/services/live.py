@@ -78,6 +78,8 @@ def get_pulse():
 	my_scope(scope)
 	# read_by changes without touching modified (opening a task): its checksum shows them too
 	read_sum = "SUM(CRC32(IFNULL(read_by, '')))" if todo_has("read_by") else "0"
+	if todo_has("archived_by"):
+		read_sum += " + SUM(CRC32(IFNULL(archived_by, '')))"
 	tasks = frappe.db.sql(
 		f"SELECT COUNT(*), CONCAT(MAX(modified), '/', {read_sum}) FROM `tabToDo` WHERE {scope[0]}", values
 	)[0]

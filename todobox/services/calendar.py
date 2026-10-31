@@ -4,7 +4,7 @@ import frappe
 from frappe.utils import getdate
 
 from todobox.services.common import derive_subject, todo_has
-from todobox.services.query import my_scope, query_values
+from todobox.services.query import my_scope, not_archived, query_values
 
 MAX_ROWS = 1000
 
@@ -16,6 +16,7 @@ def get_calendar(start, end):
 	values = {**query_values(), "start": str(getdate(start)), "end": str(getdate(end))}
 	conditions = ["date BETWEEN %(start)s AND %(end)s", "status != 'Cancelled'"]
 	my_scope(conditions)
+	not_archived(conditions)
 	fields = "name, description, date, status, priority, allocated_to, assigned_by" + (", subject" if todo_has("subject") else "")
 	rows = frappe.db.sql(
 		f"SELECT {fields} FROM `tabToDo` WHERE {' AND '.join(conditions)} ORDER BY date, (status = 'Open') DESC, modified DESC LIMIT {MAX_ROWS}",

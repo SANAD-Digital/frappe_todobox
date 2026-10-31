@@ -187,9 +187,32 @@
     this.refreshAfterChange();
   };
   snooze = (name) => this.openSnooze(name);
+  /** Archive (or bring back) a task: it leaves the current list; only my own view changes */
+  archive = async (name, on) => {
+    const task = this.state.tasks.find((t) => t.name === name);
+    if (!task) return;
+    const tasks = this.state.tasks.filter((t) => t.name !== name);
+    const sel = this.state.sel === name ? (tasks[0] ? tasks[0].name : null) : this.state.sel;
+    const label = task.subject.slice(0, 28);
+    this.setState({ tasks, sel, undo: { kind: on ? 'archive' : 'unarchive', name, text: on ? __('Archived "{0}…"', [label]) : __('Moved "{0}…" out of Archived', [label]) } });
+    this.timers.push(setTimeout(() => this.setState((s) => (s.undo && s.undo.name === name ? { undo: null } : {})), 6000));
+    const r = await this.api.archiveTodo(name, on);
+    if (!r) { this.setState({ undo: null }); this.load(this.state.sel); return; }
+    const counts = await this.api.getCounts();
+    if (counts) this.setState({ counts });
+  };
   doUndo = async () => {
     const u = this.state.undo;
     if (!u) return;
+    if (u.kind === 'archive' || u.kind === 'unarchive') {
+      await this.api.archiveTodo(u.name, u.kind === 'unarchive');
+      this.setState({ undo: null });
+      this.toast(__('Undone'));
+      this.load(u.name);
+      const counts = await this.api.getCounts();
+      if (counts) this.setState({ counts });
+      return;
+    }
     await this.api.updateTodo(u.name, { status: 'Open' });
     this.setState({ undo: null });
     this.toast(__('Undone'));
@@ -207,7 +230,7 @@
     this.markRead(name);
     this.loadDocActions(name);
     this.setState((s) => ({
-      sel: name, selDoc: null, mobileScreen: 'detail', pane: 'detail', draft: '', showEvents: false,
+      sel: name, selDoc: null, mobileScreen: 'detail', pane: 'detail', draft: '', showEvents: false, docActNote: '', docActConfirm: null, docActNoteError: false,
       ...this.readPatch(s, name),
     }));
   };

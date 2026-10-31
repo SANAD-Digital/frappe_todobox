@@ -118,6 +118,58 @@
     this.loadRefDetail(sel.name, true);
   };
 
+  /** A workflow action on the linked document, from inside the task: same rules as Required actions */
+  docActApply = async (sel, a) => {
+    const note = (this.state.docActNote || '').trim();
+    if (a.needsNote && !note) {
+      this.setState({ docActNoteError: true });
+      this.toast(__('“{0}” requires a written reason', [a.label]));
+      return;
+    }
+    if (a.destructive && this.state.docActConfirm !== a.id) {
+      this.setState({ docActConfirm: a.id });
+      this.toast(__('Press again to confirm: {0}', [a.label]));
+      return;
+    }
+    if (this._docActBusy) return;
+    this._docActBusy = true;
+    let r = null;
+    try { r = await this.api.applyDocAction(sel.reference_type, sel.reference_name, a.id, note); } finally { this._docActBusy = false; }
+    this.setState({ docActConfirm: null });
+    this.loadDocActions(sel.name);
+    if (!r) return;
+    this.setState({ docActNote: '', docActNoteError: false });
+    this.toast(__('{0} — done', [a.label]));
+    this.wfReload();
+    if ((this.state.refDocs || {})[sel.name]) this.loadRefDetail(sel.name, true);
+    /* the document may have finished, which closes its open tasks on the server */
+    this.load(sel.name, true);
+  };
+
+  docActVals(sel, acts) {
+    const s = this.state;
+    const list = ((acts && acts.actions) || []).filter((a) => a.id !== '__submit');
+    if (!list.length) return { hasDocActions: false };
+    return {
+      hasDocActions: true,
+      docActMeta: __(sel.reference_type) + ' ' + sel.reference_name + (acts.ref_status ? ' · ' + acts.ref_status : ''),
+      docActNote: s.docActNote || '',
+      onDocActNote: (e) => this.setState({ docActNote: e.target.value, docActNoteError: false }),
+      docActNotePlaceholder: __('Add a note with the decision… (required when rejecting or returning)'),
+      docActNoteStyle: 'width:100%;height:34px;padding:0 12px;background:var(--panel);border:1px solid ' + (s.docActNoteError ? 'var(--red)' : 'var(--line)') + ';border-radius:8px;outline:none;font-size:12.5px;',
+      docActions: list.map((a) => {
+        const c = a.tone === 'green' ? 'var(--green)' : a.tone === 'amber' ? 'var(--amber)' : 'var(--red)';
+        const confirming = a.destructive && s.docActConfirm === a.id;
+        return {
+          label: a.label + (confirming ? ' — ' + __('Confirm?') : ''),
+          style: 'height:30px;padding:0 13px;white-space:nowrap;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;border:1px solid ' + c +
+            ';background:' + (a.tone === 'green' ? c : confirming ? 'var(--red-soft)' : 'transparent') + ';color:' + (a.tone === 'green' ? 'var(--on-accent)' : c) + ';',
+          onDo: () => this.docActApply(sel, a),
+        };
+      }),
+    };
+  }
+
   /** d.* values for the task detail pane (spread into d in render.js) */
   refTabVals(sel) {
     const s = this.state;
@@ -156,6 +208,7 @@
     }) : { fields: [], items: [], itemCount: '0', itemsCls: 'tm-it', comments: [], files: [], historyRows: [], hasItems: false, noComments: false, noFiles: false };
 
     return {
+      ...this.docActVals(sel, acts),
       hasRefTabs: true,
       refTabs: this.docTabItems(tabs, cur, (id) => this.refPickTab(sel, id), prefix),
       refOnTask: !onDoc,

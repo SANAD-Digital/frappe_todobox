@@ -4217,3 +4217,59 @@ msgstr "لا توجد مهام لم تُفتح"
 
 msgid "You have opened every task assigned to you."
 msgstr "فتحت كل المهام المسندة إليك."
+
+msgctxt "ToDoBox"
+msgid "Archived"
+msgstr "مؤرشفة"
+
+msgctxt "ToDoBox"
+msgid "Archive"
+msgstr "أرشفة"
+
+msgctxt "ToDoBox"
+msgid "Unarchive"
+msgstr "إلغاء الأرشفة"
+
+msgctxt "ToDoBox"
+msgid "Archived \"{0}…\""
+msgstr "تمت أرشفة «{0}…»"
+
+msgctxt "ToDoBox"
+msgid "Moved \"{0}…\" out of Archived"
+msgstr "أُخرجت «{0}…» من المؤرشفة"
+
+msgctxt "ToDoBox"
+msgid "No archived tasks"
+msgstr "لا توجد مهام مؤرشفة"
+
+msgctxt "ToDoBox"
+msgid "Tasks you archive stay here, out of every other list."
+msgstr "المهام التي تؤرشفها تبقى هنا، ولا تظهر في أي قائمة أخرى."
+
+msgctxt "ToDoBox"
+msgid "Collapse all"
+msgstr "طي الكل"
+
+msgctxt "ToDoBox"
+msgid "Expand all"
+msgstr "توسيع الكل"
+
+msgctxt "ToDoBox"
+msgid "Close task"
+msgstr "إغلاق المهمة"
+
+msgctxt "ToDoBox"
+msgid "Task closed"
+msgstr "أُغلقت المهمة"
+
+msgctxt "ToDoBox"
+msgid "You have a task linked to this document: {0}. Do you want to close it?"
+msgstr "لديك مهمة مرتبطة بهذه المعاملة: {0}. هل تريد إغلاقها؟"
+
+msgctxt "ToDoBox"
+msgid "Actions on the linked document"
+msgstr "إجراءات المعاملة المرتبطة"
+
+msgctxt "ToDoBox"
+msgid "{0} — done"
+msgstr "{0} — تم"

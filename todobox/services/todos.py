@@ -2,6 +2,7 @@
 
 import frappe
 from frappe import _
+from frappe.permissions import AUTOMATIC_ROLES
 from frappe.utils import cint, get_datetime, getdate, now_datetime, today
 
 from todobox.services.checklist import get_checklists, has_checklist_table, normalize_checklist, set_checklist
@@ -21,10 +22,10 @@ from todobox.services.common import (
 	split_csv,
 	todo_has,
 )
-from todobox.services.live import publish_task_update
+from todobox.services.live import _publish, publish_task_update
 from todobox.services.notifications import create_notification_log, reply_kind
 from todobox.services.org import can_assign, ensure_assignable
-from todobox.services.query import my_scope, query_conditions, query_values
+from todobox.services.query import my_scope, not_archived, query_conditions, query_values
 from todobox.services.settings import ensure_linkable
 
 # Optional ToDo columns (ToDoBox custom fields) returned when present
@@ -32,6 +33,7 @@ OPTIONAL_COLUMNS = (
 	"thread_id",
 	"cc_users",
 	"read_by",
+	"archived_by",
 	"snooze_until",
 	"snooze_rule",
 	"forwarded_from",
@@ -75,7 +77,17 @@ def is_read(todo, me):
 
 
 def _count(conditions, values):
+	conditions = list(conditions)
+	not_archived(conditions)
 	return frappe.db.sql("SELECT COUNT(*) FROM `tabToDo` WHERE " + " AND ".join(conditions), values)[0][0]
+
+
+def _archived_count(values):
+	if not todo_has("archived_by"):
+		return 0
+	scope = ["archived_by LIKE %(me_like)s"]
+	my_scope(scope)
+	return frappe.db.sql("SELECT COUNT(*) FROM `tabToDo` WHERE " + " AND ".join(scope), values)[0][0]
 
 
 @frappe.whitelist()
@@ -115,6 +127,7 @@ def get_counts():
 		else 0,
 		"inboxUnread": unread_count,
 		"all": _count(scope, values),
+		"archived": _archived_count(values),
 	}
 
 
@@ -150,6 +163,9 @@ def _folder_conditions(folder, conditions, values):
 		query_conditions("is:waiting", conditions, values)
 	elif folder in ("__query", "all"):
 		my_scope(conditions)
+	elif folder == "archived":
+		my_scope(conditions)
+		conditions.append("archived_by LIKE %(me_like)s" if todo_has("archived_by") else "1=0")
 	elif folder == "team":
 		reports = get_direct_reports(me)
 		if reports:
@@ -268,10 +284,20 @@ def _with_notes(files, thread):
 	return files
 
 
+def _todo_print_access():
+	"""(may print tasks at all, may print any task): the role permission on ToDo, then Frappe's ToDo
+	rule (todo.has_permission) that only a non-automatic role reaches tasks the user neither holds nor assigned."""
+	if not can("ToDo", "print"):
+		return False, False
+	roles = set(frappe.permissions.get_doctype_roles("ToDo", "print")) - set(AUTOMATIC_ROLES)
+	return True, bool(roles & set(frappe.get_roles()))
+
+
 def _fetch_todos(conditions, values, order_by="modified DESC", limit=100):
 	"""Runs the ToDo query and formats each row (with thread, checklist, attachments) for the UI."""
 	me = values["me"]
 	columns = set(frappe.db.get_table_columns("ToDo"))
+	print_any, print_all = _todo_print_access()
 	select = [
 		"name",
 		"description",
@@ -337,6 +363,8 @@ def _fetch_todos(conditions, values, order_by="modified DESC", limit=100):
 				"ref_amount": ref_amount,
 				"labels": split_csv(r.get("labels")),
 				"read": is_read(r, me),
+				"archived": 1 if me in split_csv(r.get("archived_by")) else 0,
+				"can_print": 1 if print_all or (print_any and me in (r.get("allocated_to"), r.get("assigned_by"))) else 0,
 				# the assignee opened it (for the one who sent it)
 				"seen": (r.get("allocated_to") or me) in split_csv(read_by),
 				"completed_on": str(r.completed_on) if r.get("completed_on") else None,
@@ -363,6 +391,8 @@ def list_todos(folder="inbox", quick="all", search="", label=None, sort="modifie
 	"""Lists ToDos by folder, quick filter, search query, label and sort (limit: 50 by default, at most 500)."""
 	conditions, values = [], query_values()
 	_folder_conditions(folder, conditions, values)
+	if folder != "archived":
+		not_archived(conditions)
 	_quick_conditions(quick, conditions)
 
 	if label and todo_has("labels"):
@@ -418,7 +448,7 @@ def get_todo_folders(names):
 	if not names:
 		return {}
 	fields = ["name", "allocated_to", "assigned_by", "status", "date"] + [
-		c for c in ("snooze_until", "cc_users", "forwarded_from") if todo_has(c)
+		c for c in ("snooze_until", "cc_users", "forwarded_from", "archived_by") if todo_has(c)
 	]
 	rows = frappe.get_all("ToDo", filters={"name": ["in", names]}, fields=fields)
 	me = frappe.session.user
@@ -427,6 +457,8 @@ def get_todo_folders(names):
 
 
 def _folder_of(todo, me, now, today_date):
+	if me in split_csv(todo.get("archived_by")):
+		return "archived"
 	if todo.allocated_to == me:
 		if todo.status == "Closed":
 			return "done"
@@ -1061,6 +1093,20 @@ def remove_cc(name, user):
 	todo.add_comment("Info", _("{0} removed from CC").format(frappe.utils.get_fullname(user)))
 	frappe.db.commit()
 	return get_todo(name) if user != me else {"removed": 1}
+
+
+@frappe.whitelist()
+def archive_todo(name, archived=1):
+	"""Moves a task in or out of my Archived folder. Personal: the other participants are not affected or told."""
+	todo = get_task(name)
+	me = frappe.session.user
+	users = [u for u in split_csv(todo.get("archived_by")) if u != me]
+	if cint(archived):
+		users.append(me)
+	frappe.db.set_value("ToDo", name, "archived_by", ",".join(users), update_modified=False)
+	_publish([me], [name], "archive")
+	frappe.db.commit()
+	return {"archived": 1 if cint(archived) else 0}
 
 
 @frappe.whitelist()

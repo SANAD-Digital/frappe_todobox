@@ -103,6 +103,12 @@ def query_conditions(search, conditions, values):
 			)
 
 
+def not_archived(conditions):
+	"""Leaves out the tasks the current user archived: they show only in the Archived folder."""
+	if todo_has("archived_by"):
+		conditions.append("(archived_by IS NULL OR archived_by NOT LIKE %(me_like)s)")
+
+
 def my_scope(conditions):
 	"""ToDos the current user takes part in (assignee, assigner or CC)."""
 	if todo_has("cc_users"):
@@ -118,6 +124,7 @@ def count_queries(queries):
 	for key, q in (loads(queries, {}) or {}).items():
 		conditions, values = [], query_values()
 		my_scope(conditions)
+		not_archived(conditions)
 		query_conditions(q, conditions, values)
 		out[key] = frappe.db.sql("SELECT COUNT(*) FROM `tabToDo` WHERE " + " AND ".join(conditions), values)[0][0]
 	return out
