@@ -4031,3 +4031,43 @@ msgstr ""
 msgctxt "ToDoBox"
 msgid "{0} — done"
 msgstr ""
+
+msgctxt "ToDoBox"
+msgid "View tasks of"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "View tasks of…"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Search employees…"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Back to my tasks"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Viewing the tasks of {0} — read only"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "This task is read-only"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Go back to your own tasks to create a task"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "You are not allowed to view this person's tasks"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Write a comment on this document… type @ to mention a colleague"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Add a note with the decision… (required when rejecting or returning) · @ to mention"
+msgstr ""

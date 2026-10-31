@@ -1,4 +1,4 @@
-/* ToDoBox: @mentions in the task composer (reply / comment)
+/* ToDoBox: @mentions in the task composer (reply / comment) and the document comment and decision note boxes (Required actions)
    - typing "@" (at the start or after a space) opens a user list under the textarea: the task's sender,
      assignee and CC first; letters after it search everyone
    - ↑/↓ move, Enter/Tab pick, Esc closes (without reaching the global shortcuts), click picks
@@ -6,6 +6,13 @@
      is still in the text go to the server, which notifies them (and adds them to CC so they can open the task) */
 (window.TTParts = window.TTParts || []).push((Base, React) => class extends Base {
   composerRef = (el) => { this.composerEl = el; };
+  wfCommentRef = (el) => { this.wfCommentEl = el; };
+  wfNoteRef = (el) => { this.wfNoteEl = el; };
+  /** The box the popup belongs to: the task composer, or the document comment box */
+  mentionBox() {
+    if (this.mentionCtx === 'note') return { el: this.wfNoteEl, key: 'wfNote', extra: { wfNoteError: false } };
+    return this.mentionCtx === 'wf' ? { el: this.wfCommentEl, key: 'wfCommentDraft', extra: {} } : { el: this.composerEl, key: 'draft', extra: { composerOpen: true } };
+  }
   mentionMap = {};
 
   /** Lowercase + Arabic folding (diacritics, tatweel, alef/yaa/taa-marbuta variants) for matching */
@@ -17,9 +24,19 @@
 
   /** The open task's sender, assignee and CC (not me): the list shown for a bare "@" */
   mentionParties() {
-    const U = this.api.USERS, me = this.api.ME, t = this.selTask && this.selTask();
-    if (!t) return [];
-    const ids = [t.assigned_by, t.allocated_to, ...(t.cc_users || [])];
+    const U = this.api.USERS, me = this.api.ME;
+    let ids;
+    if (this.mentionCtx === 'wf' || this.mentionCtx === 'note') {
+      /* the document's creator, those who moved it and those who commented on it */
+      const name = this.state.selDoc || this.state.wfSel;
+      const d = this.W && (this.W.DOCS || []).find((x) => x.name === name);
+      if (!d) return [];
+      ids = [d.owner, ...(d.trail || []).map((r) => r[1]), ...(d.comments || []).map((r) => r[0])];
+    } else {
+      const t = this.selTask && this.selTask();
+      if (!t) return [];
+      ids = [t.assigned_by, t.allocated_to, ...(t.cc_users || [])];
+    }
     return [...new Set(ids)].filter((id) => id && id !== me && id !== 'Guest')
       .map((id) => ({ id, name: (U[id] || {}).name || id, initials: (U[id] || {}).initials || '?' }));
   }
@@ -78,51 +95,72 @@
 
   onComposerInput = (e) => {
     const el = e.target;
+    this.mentionCtx = 'task';
     this.setState({ draft: el.value }, () => this.mentionDetect(el));
   };
 
-  onComposerKey = (e) => {
+  onComposerKey = (e) => { if (!this.mentionKey(e)) this.onComposerEnter(e); };
+
+  onWfCommentInput = (e) => {
+    const el = e.target;
+    this.mentionCtx = 'wf';
+    this.setState({ wfCommentDraft: el.value }, () => this.mentionDetect(el));
+  };
+  onWfNoteInput = (e) => {
+    const el = e.target;
+    this.mentionCtx = 'note';
+    this.setState({ wfNote: el.value, wfNoteError: false }, () => this.mentionDetect(el));
+  };
+  onWfNoteCaret = (e) => { this.mentionCtx = 'note'; this.mentionDetect(e.target); };
+  onWfCommentCaret = (e) => { this.mentionCtx = 'wf'; this.mentionDetect(e.target); };
+
+  /** The open popup takes the key: true when it did */
+  mentionKey(e) {
     const m = this.state.mention;
-    if (!m || !m.list.length) { this.onComposerEnter(e); return; }
+    if (!m || !m.list.length) return false;
     const stop = () => { e.preventDefault(); e.stopPropagation(); if (e.nativeEvent && e.nativeEvent.stopImmediatePropagation) e.nativeEvent.stopImmediatePropagation(); };
     if (e.key === 'ArrowDown') { stop(); this.setState({ mention: { ...m, idx: (m.idx + 1) % m.list.length } }); }
     else if (e.key === 'ArrowUp') { stop(); this.setState({ mention: { ...m, idx: (m.idx - 1 + m.list.length) % m.list.length } }); }
     else if ((e.key === 'Enter' && !e.shiftKey && !e.isComposing) || (e.key === 'Tab' && !e.shiftKey)) { stop(); this.mentionPick(m.list[m.idx].id); }
     else if (e.key === 'Escape') { stop(); this._mentionDismissed = m.start; this.setState({ mention: null }); }
-  };
+    else return false;
+    return true;
+  }
 
-  onComposerCaret = (e) => this.mentionDetect(e.target);
+  onComposerCaret = (e) => { this.mentionCtx = 'task'; this.mentionDetect(e.target); };
   onComposerBlur = () => { if (this.state.mention) this.setState({ mention: null }); };
 
   mentionPick = (id) => {
-    const m = this.state.mention, el = this.composerEl;
+    const m = this.state.mention, { el, key, extra } = this.mentionBox();
     const u = this.api.USERS[id];
     if (!m || !u) return;
     const label = u.name || id;
-    const v = this.state.draft || '';
+    const v = this.state[key] || '';
     const ins = '@' + label + ' ';
     const draft = v.slice(0, m.start) + ins + v.slice(m.end).replace(/^ /, '');
     this.mentionMap = { ...this.mentionMap, [label]: id };
     const pos = m.start + ins.length;
-    this.setState({ draft, mention: null, composerOpen: true }, () => {
+    this.setState({ [key]: draft, mention: null, ...extra }, () => {
       try { if (el) { el.focus(); el.setSelectionRange(pos, pos); } } catch (e) { /* */ }
     });
   };
 
   /** The @ button: insert "@" at the caret (with a leading space when needed) and focus the composer */
-  mentionStart = () => {
-    const el = this.composerEl, v = this.state.draft || '';
+  mentionStart = () => { this.mentionCtx = 'task'; this.mentionInsert(); };
+  mentionStartWf = () => { this.mentionCtx = 'wf'; this.mentionInsert(); };
+  mentionInsert() {
+    const { el, key, extra } = this.mentionBox(), v = this.state[key] || '';
     const a = el && el.selectionStart != null ? el.selectionStart : v.length;
     const b = el && el.selectionEnd != null ? el.selectionEnd : a;
     const lead = a > 0 && !/\s/.test(v[a - 1]) ? ' ' : '';
     const draft = v.slice(0, a) + lead + '@' + v.slice(b);
     const pos = a + lead.length + 1;
     this._mentionDismissed = null;
-    this.setState({ draft, composerOpen: true, mention: null }, () => {
+    this.setState({ [key]: draft, mention: null, ...extra }, () => {
       try { if (el) { el.focus(); el.setSelectionRange(pos, pos); } } catch (e) { /* */ }
       this.mentionDetect(el);
     });
-  };
+  }
 
   /** Emails of the picked mentions still present in the text (as "@Full Name") */
   mentionEmails(txt) {
@@ -143,7 +181,11 @@
       onDraft: this.onComposerInput, onComposerKey: this.onComposerKey,
       onComposerCaret: this.onComposerCaret, onComposerBlur: this.onComposerBlur,
       mention: this.mentionStart,
-      mentionOpen: open,
+      mentionOpen: open && this.mentionCtx !== 'wf' && this.mentionCtx !== 'note',
+      wfNoteMentionOpen: open && this.mentionCtx === 'note',
+      wfNoteRef: this.wfNoteRef, onWfNoteCaret: this.onWfNoteCaret,
+      wfMentionOpen: open && this.mentionCtx === 'wf',
+      wfCommentRef: this.wfCommentRef, onWfCommentCaret: this.onWfCommentCaret, wfMention: this.mentionStartWf,
       mentionExpanded: open ? 'true' : 'false',
       mentionActive: open ? optId(m.idx) : '',
       mentionLabel: __('Mention a colleague'),

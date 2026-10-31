@@ -24,6 +24,7 @@ from todobox.services.notifications import (
 	mark_all_notifs_read,
 	mark_notif_read,
 )
+from todobox.services.org import get_viewable_boxes
 from todobox.services.query import count_queries, delete_view, get_saved_views, save_view
 from todobox.services.settings import get_settings_api as get_settings
 from todobox.services.settings import save_settings, search_link_doctypes
@@ -67,6 +68,7 @@ __all__ = [
 	"get_active_users",
 	"get_analytics",
 	"get_counts",
+	"get_viewable_boxes",
 	"get_pulse",
 	"get_calendar",
 	"get_day_plan",

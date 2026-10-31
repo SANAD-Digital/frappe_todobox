@@ -49,9 +49,9 @@
 
 	window.ToDoBoxBridge = {
 		getUsers: function () { return message(API + "get_active_users"); },
-		getCounts: function () { return message(API + "get_counts"); },
+		getCounts: function (args) { return message(API + "get_counts", args || {}); },
 		listTodos: function (params) { return message(API + "list_todos", params || {}); },
-		getTodo: function (name) { return message(API + "get_todo", { name: name }); },
+		getTodo: function (name, args) { return message(API + "get_todo", Object.assign({ name: name }, args || {})); },
 		updateTodo: function (name, patch) { return message(API + "update_todo", { name: name, patch: patch }); },
 		addComment: function (name, kind, html, mentions, files) {
 			return message(API + "add_comment", { name: name, kind: kind, html: html, mentions: JSON.stringify(mentions || []), files: JSON.stringify(files || []) });

@@ -38,7 +38,7 @@
     const mine = s.tasks;
 
     /* folders ("All tasks" sits in the top section, under Today's plan) */
-    const folders = A.FOLDERS.filter((f) => f.id !== 'all').map((f) => {
+    const folders = A.FOLDERS.filter((f) => f.id !== 'all' && !(s.viewAs && f.id === 'archived')).map((f) => {
       const active = s.screen === 'mail' && s.folder === f.id && !s.label && !s.activeView;
       return {
         ...f, count: s.counts[f.id] || 0, iconRef: iref(f.icon), on: active ? '1' : '0',
@@ -104,7 +104,7 @@
       if (wd !== null) chips.push(this.chip(wd === 0 ? __('Awaiting reply') : __('No reply for {0} days', [wd]), wd >= A.STALE_DAYS ? 'var(--amber)' : 'var(--fg2)', wd >= A.STALE_DAYS ? 'var(--amber-soft)' : 'var(--sunk)'));
       if (t.rule_applied) chips.push(this.chip(__('Automation rule'), 'var(--fg2)', 'var(--sunk)'));
       const active = s.sel === t.name;
-      const hov = s.hovered === t.name;
+      const hov = !s.viewAs && s.hovered === t.name;
       const sw = s.swipe && s.swipe.name === t.name ? s.swipe.dx : 0;
       const tiny = (c) => ({ ...c, style: c.style.replace('height:20px;padding:0 7px;', 'height:18px;padding:0 6px;').replace('font-size:11px;', 'font-size:10.5px;') });
       const MAXC = isDesktop ? 2 : 3;
@@ -151,7 +151,7 @@
         timeStyle: 'font-size:11px;color:var(--fg3);font-family:var(--font);font-variant-numeric:tabular-nums;white-space:nowrap;flex:0 0 auto;visibility:' + (hov && isDesktop ? 'hidden' : 'visible') + ';',
         box: 'width:18px;height:18px;flex:0 0 18px;padding:0;box-sizing:border-box;appearance:none;-webkit-appearance:none;line-height:0;display:grid;place-items:center;border-radius:5px;cursor:pointer;border:1.5px solid ' +
           (s.checked.includes(t.name) ? 'var(--primary)' : 'var(--line2)') + ';background:' + (s.checked.includes(t.name) ? 'var(--primary)' : 'transparent') + ';color:var(--on-accent);',
-        showCheck: s.folder !== 'all', /* no bulk selection in All tasks */
+        showCheck: s.folder !== 'all' && !s.viewAs, /* no bulk selection in All tasks or in someone else's box */
         tick: 'width:11px;height:11px;opacity:' + (s.checked.includes(t.name) ? '1' : '0') + ';',
         onCheck: (ev) => {
           ev.stopPropagation();
@@ -194,7 +194,7 @@
     /* "All tasks": the documents awaiting my decision are rows of the list too (only without a filter
        or search). Open items first (open tasks and decisions, newest change first), then the rest. */
     const W = this.W;
-    const wfRows = s.loading || s.screen !== 'mail' || s.folder !== 'all' || s.search || s.label || s.quick !== 'all' || !W || !W.LOADED || !W.pendingForMe ? [] : W.pendingForMe().map((x) => {
+    const wfRows = s.viewAs || s.loading || s.screen !== 'mail' || s.folder !== 'all' || s.search || s.label || s.quick !== 'all' || !W || !W.LOADED || !W.pendingForMe ? [] : W.pendingForMe().map((x) => {
       const ts = W.tsOf(W.pendingHours(x));
       const typeLabel = W.DOCTYPES[x.doctype].ar || x.doctype;
       const title = x.party && !x.title_is_name ? x.party : '';
@@ -330,7 +330,7 @@
           return out;
         })(),
         hasFwdLinks: !!(sel.parent_todo || (sel.forwards || []).length),
-        isReadonly: !!sel.readonly,
+        isReadonly: !!sel.readonly && !s.viewAs,
         /* a completed or cancelled task: reopen it from the header (creator or assignee) */
         showReopen: !sel.readonly && sel.status !== 'Open' && (sel.allocated_to === ME || sel.assigned_by === ME || canManage),
         reopen: () => this.reopenTask(sel.name),
@@ -375,7 +375,7 @@
         attachCount: __('All attachments ({0})', [(sel.attachments || []).length]),
         openFilesDlg: () => this.setState({ filesDlg: sel.name }),
 
-        isWaiting: wdSel !== null,
+        isWaiting: wdSel !== null && !s.viewAs,
         waitStyle: 'display:flex;align-items:center;gap:12px;margin:14px 20px 0;padding:12px 15px;border-radius:10px;border:1px solid ' +
           (stale ? 'var(--amber)' : 'var(--line2)') + ';background:' + (stale ? 'var(--amber-soft)' : 'var(--panel2)') + ';color:' + (stale ? 'var(--amber)' : 'var(--fg2)') + ';',
         waitTitle: wdSel === null ? '' : wdSel === 0 ? __('Waiting for a reply from {0}', [((U[sel.allocated_to] || {}).name || '')]) : __('{0} days without a reply from {1}', [wdSel, ((U[sel.allocated_to] || {}).name || '')]),
@@ -507,7 +507,7 @@
         { id: 'stats', label: __('Analytics'), icon: 'chart', badge: '' },
         { id: 'templates', label: __('Task templates'), icon: 'template', badge: '' },
         ...(this.setIsAdmin() ? [{ id: 'settings', label: __('Settings'), icon: 'settings', badge: '' }] : []),
-      ].map((x) => ({
+      ].filter((x) => !s.viewAs || x.id === 'mail' || x.id === 'all').map((x) => ({
         label: x.label, iconRef: iref(x.icon), badge: x.badge, on: onScreen(x.id) ? '1' : '0',
         tip: navCol ? x.label + (x.badge ? ' (' + x.badge + ')' : '') : '',
         style: navBtn(onScreen(x.id)),
@@ -776,10 +776,10 @@
       /* detail interactions */
       ccOpen: s.ccOpen, toggleCC: () => this.setState({ ccOpen: !s.ccOpen }),
       moreMenuOpen: !!s.moreMenu,
-      moreBtnStyle: 'width:32px;height:32px;display:grid;place-items:center;background:' + (s.moreMenu ? 'var(--sunk)' : 'transparent') +
+      moreBtnStyle: (s.viewAs ? 'display:none;' : '') + 'width:32px;height:32px;display:grid;place-items:center;background:' + (s.moreMenu ? 'var(--sunk)' : 'transparent') +
         ';border:1px solid ' + (s.moreMenu ? 'var(--line)' : 'var(--line2)') + ';border-radius:8px;cursor:pointer;color:var(--fg2);',
       toggleMoreMenu: () => this.setState((st) => ({ moreMenu: !st.moreMenu })),
-      moreItems: [
+      moreItems: s.viewAs ? [] : [
         ...((() => {
           const t = s.sel ? s.tasks.find((x) => x.name === s.sel) : null;
           return t && t.reference_name

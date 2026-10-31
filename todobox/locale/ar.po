@@ -4273,3 +4273,43 @@ msgstr "إجراءات المعاملة المرتبطة"
 msgctxt "ToDoBox"
 msgid "{0} — done"
 msgstr "{0} — تم"
+
+msgctxt "ToDoBox"
+msgid "View tasks of"
+msgstr "عرض مهام"
+
+msgctxt "ToDoBox"
+msgid "View tasks of…"
+msgstr "عرض مهام…"
+
+msgctxt "ToDoBox"
+msgid "Search employees…"
+msgstr "ابحث عن موظف…"
+
+msgctxt "ToDoBox"
+msgid "Back to my tasks"
+msgstr "العودة إلى مهامي"
+
+msgctxt "ToDoBox"
+msgid "Viewing the tasks of {0} — read only"
+msgstr "تعرض مهام {0} — للقراءة فقط"
+
+msgctxt "ToDoBox"
+msgid "This task is read-only"
+msgstr "هذه المهمة للقراءة فقط"
+
+msgctxt "ToDoBox"
+msgid "Go back to your own tasks to create a task"
+msgstr "عُد إلى مهامك لإنشاء مهمة"
+
+msgctxt "ToDoBox"
+msgid "You are not allowed to view this person's tasks"
+msgstr "لا تملك صلاحية عرض مهام هذا الشخص"
+
+msgctxt "ToDoBox"
+msgid "Write a comment on this document… type @ to mention a colleague"
+msgstr "اكتب تعليقًا على هذه المعاملة… اكتب @ لذكر زميل"
+
+msgctxt "ToDoBox"
+msgid "Add a note with the decision… (required when rejecting or returning) · @ to mention"
+msgstr "أضف ملاحظة مع القرار… (مطلوبة عند الرفض أو الإرجاع) · @ لذكر زميل"

@@ -7,6 +7,7 @@ from frappe.utils import cint, get_datetime, getdate, now_datetime, today
 
 from todobox.services.checklist import get_checklists, has_checklist_table, normalize_checklist, set_checklist
 from todobox.services.common import (
+	share_with,
 	can,
 	can_manage,
 	CHECKLIST_FIELD,
@@ -91,9 +92,9 @@ def _archived_count(values):
 
 
 @frappe.whitelist()
-def get_counts():
+def get_counts(as_user=None):
 	"""Task counts for all folders plus the unread count."""
-	values = query_values()
+	values = query_values(as_user)
 	me = values["me"]
 
 	inbox = ["allocated_to = %(me)s", "status = 'Open'"]
@@ -127,7 +128,7 @@ def get_counts():
 		else 0,
 		"inboxUnread": unread_count,
 		"all": _count(scope, values),
-		"archived": _archived_count(values),
+		"archived": 0 if values["viewing"] else _archived_count(values),
 	}
 
 
@@ -164,8 +165,9 @@ def _folder_conditions(folder, conditions, values):
 	elif folder in ("__query", "all"):
 		my_scope(conditions)
 	elif folder == "archived":
+		# personal: never shown to someone viewing this box
 		my_scope(conditions)
-		conditions.append("archived_by LIKE %(me_like)s" if todo_has("archived_by") else "1=0")
+		conditions.append("archived_by LIKE %(me_like)s" if todo_has("archived_by") and not values["viewing"] else "1=0")
 	elif folder == "team":
 		reports = get_direct_reports(me)
 		if reports:
@@ -364,7 +366,9 @@ def _fetch_todos(conditions, values, order_by="modified DESC", limit=100):
 				"labels": split_csv(r.get("labels")),
 				"read": is_read(r, me),
 				"archived": 1 if me in split_csv(r.get("archived_by")) else 0,
-				"can_print": 1 if print_all or (print_any and me in (r.get("allocated_to"), r.get("assigned_by"))) else 0,
+				"can_print": 1 if not values.get("viewing") and (print_all or (print_any and me in (r.get("allocated_to"), r.get("assigned_by")))) else 0,
+				# someone else's box: read-only for the one viewing it
+				**({"readonly": 1} if values.get("viewing") else {}),
 				# the assignee opened it (for the one who sent it)
 				"seen": (r.get("allocated_to") or me) in split_csv(read_by),
 				"completed_on": str(r.completed_on) if r.get("completed_on") else None,
@@ -387,9 +391,9 @@ def _fetch_todos(conditions, values, order_by="modified DESC", limit=100):
 
 
 @frappe.whitelist()
-def list_todos(folder="inbox", quick="all", search="", label=None, sort="modified", limit=50):
+def list_todos(folder="inbox", quick="all", search="", label=None, sort="modified", limit=50, as_user=None):
 	"""Lists ToDos by folder, quick filter, search query, label and sort (limit: 50 by default, at most 500)."""
-	conditions, values = [], query_values()
+	conditions, values = [], query_values(as_user)
 	_folder_conditions(folder, conditions, values)
 	if folder != "archived":
 		not_archived(conditions)
@@ -410,12 +414,14 @@ def list_todos(folder="inbox", quick="all", search="", label=None, sort="modifie
 
 
 @frappe.whitelist()
-def get_todo(name):
+def get_todo(name, as_user=None):
 	"""A single ToDo formatted like list_todos (only when the current user takes part in it)."""
 	if not frappe.db.exists("ToDo", name):
 		return None
-	conditions, values = ["name = %(todo_name)s"], {**query_values(), "todo_name": name}
+	conditions, values = ["name = %(todo_name)s"], {**query_values(as_user), "todo_name": name}
 	my_scope(conditions)
+	if values["viewing"]:
+		not_archived(conditions)
 	rows = _fetch_todos(conditions, values, limit=1)
 	if rows:
 		return rows[0]
@@ -848,17 +854,6 @@ def _validate_forward(original, to, mode, me):
 		frappe.throw(_("This user already has an open forwarded copy of this task"))
 
 
-def _share_reference(ref_type, ref_name, user):
-	"""Like Frappe's assign-to: share the linked document with the recipient when they cannot read it."""
-	if not (ref_type and ref_name) or not frappe.db.exists(ref_type, ref_name):
-		return
-	if can(ref_type, "read", doc=ref_name, user=user):
-		return
-	if frappe.get_system_settings("disable_document_sharing"):
-		return
-	frappe.share.add(ref_type, ref_name, user, flags={"ignore_share_permission": True}, notify=0)
-
-
 @frappe.whitelist()
 def forward_todo(name, to, mode="full", reason="", keep_sender_cc=1, copy_cc=1, date=None):
 	"""full: my task is Cancelled and the recipient gets an open copy in the same thread.
@@ -917,7 +912,7 @@ def forward_todo(name, to, mode="full", reason="", keep_sender_cc=1, copy_cc=1, 
 
 	fwd_doc.flags.ignore_todo_rules = True
 	fwd_doc.insert(ignore_permissions=True)
-	_share_reference(original.reference_type, original.reference_name, to)
+	share_with(original.reference_type, original.reference_name, to)
 
 	to_name = frappe.utils.get_fullname(to)
 	mode_label = _("Full forward") if mode == "full" else _("Involve (Delegate)")

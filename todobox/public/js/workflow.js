@@ -182,7 +182,7 @@ export function currentHolder(d) {
 
 /* ----------------------------------------------------------------- action */
 /** POST frappe.model.workflow.apply_workflow: optimistic locally, then confirmed by the server */
-export function applyWorkflow(name, action, user, note) {
+export function applyWorkflow(name, action, user, note, mentions) {
   const d = DOCS.find((x) => x.name === name);
   if (!d) return null;
   const t = getTransitions(d).find((x) => x.action === action);
@@ -202,7 +202,7 @@ export function applyWorkflow(name, action, user, note) {
   }, ...ACTION_LOG];
   touch();
 
-  call('apply_action', { doctype: d.doctype, docname: d.name, action, note: note || '' })
+  call('apply_action', { doctype: d.doctype, docname: d.name, action, note: note || '', mentions: JSON.stringify(mentions || []) })
     .then(() => refresh(true))
     .catch(() => { Object.assign(d, snapshot); touch(); })
     .then(() => repaint());
@@ -230,11 +230,11 @@ export function undoWorkflow(name, prev) {
   return { ok: true };
 }
 
-export function addWfComment(name, user, text) {
+export function addWfComment(name, user, text, mentions) {
   const d = DOCS.find((x) => x.name === name);
   if (!d) return;
   d.comments = [...(d.comments || []), [ME, 0, text]];
-  call('add_comment', { doctype: d.doctype, docname: d.name, text }).then(() => repaint());
+  call('add_comment', { doctype: d.doctype, docname: d.name, text, mentions: JSON.stringify(mentions || []) }).then(() => repaint());
 }
 
 export function nudge(name) {

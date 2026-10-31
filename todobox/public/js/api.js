@@ -89,10 +89,16 @@ async function _syncUsers() {
   }
 }
 
+/* "View box of": an employee's box, read-only (null: my own); the server checks each request */
+let VIEW_AS = null;
+export function setViewAs(user) { VIEW_AS = user || null; }
+const viewArgs = () => (VIEW_AS ? { as_user: VIEW_AS } : {});
+export async function getViewableBoxes() { return (await srv('get_viewable_boxes')) || []; }
+
 export async function listTodos({ folder = 'inbox', quick = 'all', search = '', label = null, sort = 'modified', limit = 50 } = {}) {
   return safe(async () => {
     await syncUsers();
-    return await bridge().listTodos({ folder, quick, search, label, sort, limit });
+    return await bridge().listTodos({ folder, quick, search, label, sort, limit, ...viewArgs() });
   }, []);
 }
 
@@ -104,10 +110,10 @@ export const SORTS = [
 ];
 
 /* null when the request failed (the caller keeps what is on screen) */
-export async function getCounts() { return safe(() => bridge().getCounts()); }
+export async function getCounts() { return safe(() => bridge().getCounts(viewArgs())); }
 
 /* task with its thread and attachments */
-export async function getTodo(name) { return safe(() => bridge().getTodo(name)); }
+export async function getTodo(name) { return safe(() => bridge().getTodo(name, viewArgs())); }
 
 export async function updateTodo(name, patch) { return safe(() => bridge().updateTodo(name, patch)); }
 

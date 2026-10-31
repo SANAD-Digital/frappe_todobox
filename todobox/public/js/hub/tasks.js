@@ -148,6 +148,7 @@
     return s.screen === 'mail' && ((s.view === 'desktop' && !s.narrow) || s.pane === 'detail' || s.mobileScreen === 'detail');
   }
   markRead(name) {
+    if (this.state.viewAs) return;
     const t = (this.state.tasks || []).find((x) => x.name === name);
     if (t && t.read) return;
     this.api.updateTodo(name, { read: true });
@@ -155,6 +156,7 @@
   /** state patch for an opened task: it shows as read, and the Unread badge follows at once
       (the next load brings the server's count) */
   readPatch(s, name) {
+    if (s.viewAs) return {};
     const was = s.tasks.find((t) => t.name === name);
     if (!was || was.read) return {};
     const mine = was.status === 'Open' && was.allocated_to === (this.api && this.api.ME) && s.counts.inboxUnread > 0;
@@ -221,7 +223,7 @@
   /** Actions for the task's linked document (from the server) */
   loadDocActions = async (name) => {
     const t = (this.state.tasks || []).find((x) => x.name === name);
-    if (!t || !t.reference_name || !this.api.getDocActions) return;
+    if (!t || !t.reference_name || !this.api.getDocActions || this.state.viewAs) return;
     const r = await this.api.getDocActions(name);
     this.setState((st) => ({ docActs: { ...(st.docActs || {}), [name]: r || { actions: [] } } }));
   };
@@ -258,7 +260,11 @@
       this.wfGo(n.kind === 'wf_update' ? 'sent' : 'pending');
       const show = () => { this.wfOpenDoc(n.docname); this.flashRow(n.docname, true); };
       show();
-      if (this.W && this.W.refresh) this.W.refresh(true).then(() => { if (this.W.hydrateChecks) this.W.hydrateChecks(); show(); });
+      if (this.W && this.W.refresh) this.W.refresh(true).then(() => {
+        if (this.W.hydrateChecks) this.W.hydrateChecks();
+        /* someone mentioned me on a document that is not in my lists: it opens by itself */
+        if (this.isWfDoc(n.docname)) show(); else this.qlOpen(n.doctype, n.docname);
+      });
       return;
     }
     if (!n.todo) return;
@@ -432,7 +438,7 @@
   isLocked(t) { return !!(t && ((t.status && t.status !== 'Open') || t.readonly)); }
   guardLocked(t) {
     if (!this.isLocked(t)) return true;
-    this.toast(__('This task is completed — you can only add comments and attachments'));
+    this.toast(t.readonly ? __('This task is read-only') : __('This task is completed — you can only add comments and attachments'));
     return false;
   }
   taskByName(name) { return (this.state.tasks || []).find((x) => x.name === name); }

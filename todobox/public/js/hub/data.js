@@ -254,6 +254,7 @@ window.TodoboxColor = (() => {
 
   /* ---------- screens ---------- */
   goScreen = (id) => {
+    this.leaveBox();
     this.setState({ screen: id, notifsOpen: false, mobileScreen: 'list' });
     if (id === 'day') this.loadDay();
     if (id === 'stats') this.loadStats();

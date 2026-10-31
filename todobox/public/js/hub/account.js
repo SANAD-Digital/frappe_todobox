@@ -47,6 +47,68 @@
     (window.__tmcReady || Promise.resolve()).then(() => X.ready()).then(mount, (e) => console.error(e));
   };
 
+  /* "View box of": an employee's box, read-only; who appears comes from the server (get_list on Employee) */
+  loadBoxes = async () => {
+    if (this._boxesAsked || !this.api || !this.api.getViewableBoxes) return;
+    this._boxesAsked = true;
+    const boxes = await this.api.getViewableBoxes();
+    this.setState({ boxes });
+  };
+  viewBox = (box) => {
+    this.api.setViewAs(box ? box.user : null);
+    this.setState({ viewAs: box || null, screen: 'mail', folder: 'inbox', quick: 'all', label: null, activeView: null, search: '', searchInput: '', loading: true, sel: null, selDoc: null, pane: 'list', mobileScreen: 'list', checked: [], undo: null, userMenu: false }, () => this.load());
+  };
+  /** leave the view before going to one of my own screens */
+  leaveBox() {
+    if (!this.state.viewAs) return;
+    this.api.setViewAs(null);
+    this.setState({ viewAs: null, sel: null, loading: true }, () => this.load());
+  }
+  openBoxPicker = () => {
+    this.setState({ userMenu: false });
+    if (document.querySelector('.tt-box-dlg')) return;
+    const h = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
+    const backdrop = h('div', 'tm-msg-backdrop tt-box-dlg');
+    const box = h('div', 'tm-msg');
+    box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true'); box.setAttribute('dir', window.TT_DIR || 'ltr');
+    const head = h('div', 'tm-msg-head');
+    head.append(h('span', 'tm-msg-dot'), h('span', 'tm-msg-title', __('View tasks of')));
+    const x = h('button', 'tm-msg-x', '×'); x.type = 'button'; x.setAttribute('aria-label', __('Close'));
+    head.append(x);
+    const body = h('div', 'tm-msg-body');
+    const search = h('input'); search.type = 'text'; search.placeholder = __('Search employees…'); search.setAttribute('aria-label', __('Search employees…'));
+    search.style.cssText = 'width:100%;height:34px;padding:0 11px;margin-bottom:8px;background:var(--sunk);border:1px solid var(--line);border-radius:8px;outline:none;font-size:13px;color:var(--fg);';
+    const list = h('div'); list.setAttribute('role', 'list');
+    list.style.cssText = 'display:flex;flex-direction:column;gap:2px;max-height:320px;overflow-y:auto;';
+    body.append(search, list);
+    box.append(head, body); backdrop.append(box); document.body.append(backdrop);
+    const close = () => { backdrop.remove(); document.removeEventListener('keydown', onKey, true); };
+    const onKey = (e) => { if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); close(); } };
+    document.addEventListener('keydown', onKey, true);
+    backdrop.addEventListener('mousedown', (e) => { if (e.target === backdrop) close(); });
+    x.addEventListener('click', close);
+    const paint = () => {
+      const q = search.value.trim().toLowerCase();
+      list.textContent = '';
+      const rows = (this.state.boxes || []).filter((b) => !q || [b.name, b.user, b.designation, b.department].join(' ').toLowerCase().includes(q));
+      if (!rows.length) { const none = h('div', '', __('No results')); none.style.cssText = 'padding:12px;font-size:12px;color:var(--fg3);text-align:center;'; list.append(none); }
+      rows.forEach((b) => {
+        const row = h('button'); row.type = 'button';
+        row.style.cssText = 'display:flex;flex-direction:column;align-items:flex-start;gap:1px;width:100%;padding:7px 10px;background:transparent;border:0;border-radius:7px;cursor:pointer;text-align:start;color:var(--fg);';
+        row.addEventListener('mouseenter', () => { row.style.background = 'var(--hover)'; });
+        row.addEventListener('mouseleave', () => { row.style.background = 'transparent'; });
+        const name = h('span', '', b.name); name.style.cssText = 'font-size:13px;font-weight:600;';
+        const meta = h('span', '', [b.designation, b.department].filter(Boolean).join(' · ') || b.user); meta.style.cssText = 'font-size:11px;color:var(--fg3);';
+        row.append(name, meta);
+        row.addEventListener('click', () => { close(); this.viewBox(b); });
+        list.append(row);
+      });
+    };
+    search.addEventListener('input', paint);
+    paint();
+    setTimeout(() => search.focus(), 0);
+  };
+
   logout = async () => {
     this.setState({ userMenu: false });
     try {
@@ -66,6 +128,9 @@
     if (boot.is_desk_user) {
       items.push({ label: __('Back to Desk'), iconRef: '#i-desk', onDo: () => { this.setState({ userMenu: false }); window.location.href = '/desk'; } });
     }
+    this.loadBoxes();
+    if (this.state.viewAs) items.push({ label: __('Back to my tasks'), iconRef: '#i-inbox', onDo: () => this.viewBox(null) });
+    if ((this.state.boxes || []).length) items.push({ label: __('View tasks of…'), iconRef: '#i-users', onDo: this.openBoxPicker });
     items.push({ label: __('Change language'), iconRef: '#i-globe', onDo: this.openLangMenu });
     /* notification sounds on/off (localStorage via window.TodoboxSound, data.js); the menu stays open,
        and turning it on plays a preview (this click also unlocks audio) */
@@ -87,6 +152,9 @@
     const brandB = brand === 'ToDoBox' ? 'Box' : sp > 0 ? brand.slice(sp) : '';
     return {
       userMenuOpen: open,
+      viewingBox: !!this.state.viewAs, notViewingBox: !this.state.viewAs,
+      viewingBoxText: this.state.viewAs ? __('Viewing the tasks of {0} — read only', [this.state.viewAs.name]) : '',
+      backToMyBox: () => this.viewBox(null),
       toggleUserMenu: this.toggleUserMenu,
       userMenuItems: menuItems,
       brandA,

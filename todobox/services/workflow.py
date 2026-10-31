@@ -5,15 +5,18 @@ Returns workflow definitions, documents, trail and the user's decision log to th
 """
 
 import hashlib
+import html
 import json
+import re
 
 import frappe
 from frappe import _
 from frappe.model.workflow import apply_workflow, get_transitions, get_workflow_name
 from frappe.utils import add_days, cint, flt, fmt_money, get_datetime, now_datetime
 
-from todobox.services.common import TRANSLATION_CONTEXT, can, derive_subject, split_csv, todo_has
+from todobox.services.common import TRANSLATION_CONTEXT, can, derive_subject, loads, share_with, split_csv, todo_has
 from todobox.services.notifications import create_notification_log
+from todobox.services.org import can_assign
 
 AVATAR_COLORS = [
 	"#8a5a2b", "#3f4ea8", "#6a4fa6", "#2e7757", "#976420",
@@ -360,7 +363,7 @@ def _comments(doctype, names):
 	)
 	for r in rows:
 		out.setdefault(r.reference_name, []).append(
-			[r.owner, _hours_since(r.creation), frappe.utils.strip_html(r.content or "")[:400]]
+			[r.owner, _hours_since(r.creation), html.unescape(frappe.utils.strip_html(r.content or ""))[:400]]
 		)
 	return out
 
@@ -691,7 +694,7 @@ def _decision_log(me, wf_payload, limit=200):
 		for c in notes.get(key, []):
 			delta = (when - get_datetime(c.creation)).total_seconds()
 			if -5 <= delta <= 120:
-				note = frappe.utils.strip_html(c.content or "").strip()[:300]
+				note = html.unescape(frappe.utils.strip_html(c.content or "")).strip()[:300]
 				break
 		now_state = now_rows.get(key)
 		holder_action = open_actions.get(key)
@@ -727,8 +730,9 @@ def _primary_role(user):
 
 
 @frappe.whitelist()
-def apply_action(doctype, docname, action, note=None):
-	"""Apply a real workflow action and save the note as a comment on the document."""
+def apply_action(doctype, docname, action, note=None, mentions=None):
+	"""Apply a real workflow action and save the note as a comment on the document.
+	mentions (JSON list of users): as in add_comment."""
 	doc = frappe.get_doc(doctype, docname)
 	doc.check_permission("read")
 	prev = doc.get("workflow_state")
@@ -741,22 +745,59 @@ def apply_action(doctype, docname, action, note=None):
 		frappe.throw(_("You do not have permission to perform this action"), frappe.PermissionError)
 	note = (note or "").strip()
 	if note:
-		doc.add_comment("Comment", note)
+		content, mentioned = _with_mentions(note, mentions)
+		for user in mentioned:
+			share_with(doctype, docname, user)
+		doc.add_comment("Comment", content)
 	doc = apply_workflow(doc, action)
 	frappe.db.commit()
 	return {"ok": 1, "prev": prev, "next": doc.get("workflow_state"), "name": doc.name}
 
 
+def _with_mentions(text, mentions):
+	"""(comment html, mentioned users): each "@Full Name" of the given users, when I may assign to them,
+	becomes Frappe's mention markup, so Frappe notifies them and the Desk timeline shows it as a mention."""
+	me = frappe.session.user
+	try:
+		emails = loads(mentions, []) or []
+	except ValueError:
+		emails = []
+	emails = [e for e in dict.fromkeys(emails) if isinstance(e, str) and e not in (me, "Guest") and can_assign(e)][:20]
+	rows = frappe.get_all(
+		"User", filters={"name": ["in", emails], "enabled": 1}, fields=["name", "full_name"]
+	) if emails else []
+	esc = frappe.utils.escape_html
+	labels = {"@" + esc(r.full_name or r.name): r for r in rows}
+	labels = {k: r for k, r in labels.items() if k in esc(text)}
+	if not labels:
+		return text, []
+
+	def span(m):
+		r = labels[m.group(0)]
+		return (
+			f'<span class="mention" data-id="{esc(r.name)}" data-value="{esc(r.full_name or r.name)}" '
+			f'data-denotation-char="@">{m.group(0)}</span>'
+		)
+
+	pattern = "|".join(re.escape(k) for k in sorted(labels, key=len, reverse=True))
+	return re.sub(pattern, span, esc(text)).replace("\n", "<br>"), [r.name for r in labels.values()]
+
+
 @frappe.whitelist()
-def add_comment(doctype, docname, text):
+def add_comment(doctype, docname, text, mentions=None):
+	"""A comment on the document. mentions (JSON list of users): Frappe notifies them (Comment.after_insert);
+	like assign-to and forward, the document is shared with those who cannot read it, so they can open it."""
 	text = (text or "").strip()
 	if not text:
 		frappe.throw(_("Comment cannot be empty"))
 	doc = frappe.get_doc(doctype, docname)
 	doc.check_permission("read")
-	doc.add_comment("Comment", text)
+	content, mentioned = _with_mentions(text, mentions)
+	for user in mentioned:
+		share_with(doctype, docname, user)
+	doc.add_comment("Comment", content)
 	frappe.db.commit()
-	return {"ok": 1}
+	return {"ok": 1, "mentioned": mentioned}
 
 
 @frappe.whitelist()

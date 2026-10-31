@@ -236,6 +236,7 @@
   tmcClearDraft() { try { localStorage.removeItem(this.tmcDraftKey()); } catch (e) { /* */ } }
 
   openCompose = () => {
+    if (this.state.viewAs) { this.toast(__('Go back to your own tasks to create a task')); return; }
     if (this.state.compose) { this.tmcFocus('subject'); return; }
     this.setState({ compose: this.tmcBlank(), composeCCOpen: false, notifsOpen: false }, this.loadComposeSuggest);
   };

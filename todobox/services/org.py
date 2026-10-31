@@ -12,7 +12,7 @@ import frappe
 from frappe import _
 
 from todobox.services.common import is_system_manager
-from todobox.services.settings import department_peers
+from todobox.services.settings import department_peers, hidden_people
 
 COMPANY_MANAGER_ROLE = "ToDoBox Company Manager"
 
@@ -108,6 +108,50 @@ def company_members(user=None):
 	if visible is None:
 		return []
 	return sorted(visible - {user})
+
+
+def viewable_boxes(user=None):
+	"""{user_id: Employee row} of the people whose task box this user may view: whatever
+	frappe.get_list lets them read on Employee (roles, User Permissions and the permission hooks
+	decide), themselves and the people hidden in ToDoBox Settings left out. Cached for the request."""
+	user = user or frappe.session.user
+	cache = frappe.local.flags.setdefault("todobox_viewable_boxes", {})
+	if user not in cache:
+		rows = []
+		if enabled():
+			rows = frappe.get_list(
+				"Employee",
+				filters={"status": "Active", "user_id": ["is", "set"]},
+				fields=["user_id", "employee_name", "designation", "department"],
+				order_by="employee_name asc",
+				limit_page_length=0,
+				user=user,
+			)
+		ids = {r.user_id for r in rows} - {user} - hidden_people()
+		active = (
+			set(frappe.get_all("User", filters={"name": ["in", list(ids)], "enabled": 1}, pluck="name")) if ids else set()
+		)
+		cache[user] = {r.user_id: r for r in rows if r.user_id in active}
+	return cache[user]
+
+
+def box_owner(as_user=None):
+	"""Whose box a request reads: mine, or an employee's I may view (raises PermissionError otherwise)."""
+	me = frappe.session.user
+	if not as_user or as_user == me:
+		return me
+	if as_user not in viewable_boxes():
+		frappe.throw(_("You are not allowed to view this person's tasks"), frappe.PermissionError)
+	return as_user
+
+
+@frappe.whitelist()
+def get_viewable_boxes():
+	"""[{user, name, designation, department}] for the "View box of" picker."""
+	return [
+		{"user": u, "name": r.employee_name or u, "designation": r.designation or "", "department": r.department or ""}
+		for u, r in viewable_boxes().items()
+	]
 
 
 def setup_roles():

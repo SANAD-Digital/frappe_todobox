@@ -158,3 +158,14 @@ def can(doctype, ptype="read", doc=None, user=None):
 	finally:
 		if log is not None:
 			del log[size:]
+
+
+def share_with(ref_type, ref_name, user):
+	"""Like Frappe's assign-to: share the document with the user when they cannot read it."""
+	if not (ref_type and ref_name) or not frappe.db.exists(ref_type, ref_name):
+		return
+	if can(ref_type, "read", doc=ref_name, user=user):
+		return
+	if frappe.get_system_settings("disable_document_sharing"):
+		return
+	frappe.share.add(ref_type, ref_name, user, flags={"ignore_share_permission": True}, notify=0)

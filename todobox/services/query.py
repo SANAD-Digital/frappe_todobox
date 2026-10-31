@@ -11,6 +11,7 @@ from frappe import _
 from frappe.utils import add_days, cint, now_datetime, today
 
 from todobox.services.common import SAVED_VIEW_DOCTYPE, loads, todo_has
+from todobox.services.org import box_owner
 
 QUERY_KEYS = ("from", "to", "label", "ref", "due", "is", "prio")
 PRIORITIES = {"high": "High", "medium": "Medium", "low": "Low"}
@@ -33,9 +34,16 @@ def parse_query(q):
 	return out
 
 
-def query_values():
-	me = frappe.session.user
-	return {"me": me, "today": today(), "now": str(now_datetime()), "me_like": f"%{me}%"}
+def query_values(as_user=None):
+	"""Parameters of a task query. as_user: read an employee's box (see org.box_owner); viewing is then set."""
+	me = box_owner(as_user)
+	return {
+		"me": me,
+		"today": today(),
+		"now": str(now_datetime()),
+		"me_like": f"%{me}%",
+		"viewing": me != frappe.session.user,
+	}
 
 
 def query_conditions(search, conditions, values):

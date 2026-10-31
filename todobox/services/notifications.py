@@ -156,9 +156,9 @@ def get_notifications():
 				"comment": comments.get(log.name),
 				"doctype": None if is_todo else log.document_type,
 				"docname": None if is_todo else log.document_name,
-				"subject": log.subject or log.document_name,
+				"subject": frappe.utils.strip_html(log.subject or "") or log.document_name,
 				"user": log.from_user or "System",
-				"text": text or log.subject or _("New task notification"),
+				"text": text or frappe.utils.strip_html(log.subject or "") or _("New task notification"),
 				"ts": str(log.creation),
 				"read": bool(log.read),
 			}

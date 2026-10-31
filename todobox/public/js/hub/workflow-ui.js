@@ -7,7 +7,7 @@
   meWf() { return this.W ? this.W.ME : ''; }
   wfReload = () => { if (this.W && this.W.refresh) this.W.refresh().then(() => { this.W.hydrateChecks(); this.forceUpdate(); }); };
 
-  wfGo = (tab) => { this.wfReload(); return this.setState({ screen: 'wf', wfTab: tab || 'pending', notifsOpen: false, wfPane: 'list', mobileScreen: 'list', wfChecked: [] }); };
+  wfGo = (tab) => { this.leaveBox(); this.wfReload(); return this.setState({ screen: 'wf', wfTab: tab || 'pending', notifsOpen: false, wfPane: 'list', mobileScreen: 'list', wfChecked: [] }); };
 
   /** Current user avatar: user image, else initials (same logic as Frappe) */
   meAvatarVals(u) {
@@ -100,7 +100,7 @@
       return;
     }
     const fxCap = this.fxCloseCapture ? this.fxCloseCapture(name) : null; /* snapshot the row before it leaves the list */
-    const res = W.applyWorkflow(name, action, me, note);
+    const res = W.applyWorkflow(name, action, me, note, note ? this.mentionEmails(note) : []);
     if (!res || res.error) { this.toast((res && res.error) || __('Could not complete the action')); this.forceUpdate(); return; }
     const rest = W.pendingForMe(me).filter((x) => x.name !== name);
     if (fxCap && rest.length === W.pendingForMe(me).length) this.fxCloseFly(fxCap, false);
@@ -165,8 +165,9 @@
   wfComment = () => {
     const txt = (this.state.wfCommentDraft || '').trim();
     if (!txt || !this.state.wfSel) { this.toast(__('Write a comment first')); return; }
-    this.W.addWfComment(this.state.wfSel, this.meWf(), txt);
-    this.setState({ wfCommentDraft: '' });
+    this.W.addWfComment(this.state.wfSel, this.meWf(), txt, this.mentionEmails(txt));
+    this.mentionReset();
+    this.setState({ wfCommentDraft: '', mention: null });
     this.toast(__('Comment added to the document'));
   };
 
@@ -565,16 +566,17 @@
       wfToggleItems: () => this.setState({ wfItemsOpen: !s.wfItemsOpen }),
       wfAllFields: () => sel && this.qlOpen(sel.doctype, sel.name),
       wfNote: s.wfNote,
-      onWfNote: (e) => this.setState({ wfNote: e.target.value, wfNoteError: false }),
-      wfNotePlaceholder: __('Add a note with the decision… (required when rejecting or returning)'),
+      onWfNote: this.onWfNoteInput,
+      onWfNoteKey: (e) => { this.mentionKey(e); },
+      wfNotePlaceholder: __('Add a note with the decision… (required when rejecting or returning) · @ to mention'),
       wfNoteStyle: 'width:100%;height:36px;padding:0 12px;background:var(--sunk);border:1px solid ' + (s.wfNoteError ? 'var(--red)' : 'var(--line)') +
         ';border-radius:9px;outline:none;font-size:13px;',
       wfBarHint: narrow || inAll ? '' : __('a approve · x return · j/k navigate'),
       wfAddComment: this.wfComment,
       wfCommentDraft: s.wfCommentDraft || '',
-      onWfCommentDraft: (e) => this.setState({ wfCommentDraft: e.target.value }),
-      onWfCommentKey: (e) => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); this.wfComment(); } },
-      wfCommentPlaceholder: __('Write a comment on this document…'),
+      onWfCommentDraft: this.onWfCommentInput,
+      onWfCommentKey: (e) => { if (this.mentionKey(e)) return; if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); this.wfComment(); } },
+      wfCommentPlaceholder: __('Write a comment on this document… type @ to mention a colleague'),
       wfCommentBtnStyle: 'height:30px;padding:0 14px;border-radius:8px;font-size:12px;font-weight:600;border:1px solid var(--primary);cursor:pointer;' +
         ((s.wfCommentDraft || '').trim() ? 'background:var(--primary);color:var(--on-accent);' : 'background:transparent;color:var(--primary);opacity:.6;'),
       wfNudgeSel: () => s.wfSel && this.wfNudge(s.wfSel),
