@@ -1355,6 +1355,19 @@ html[data-dark="1"] .tms-err button{background:#ededed;color:#171717}
             </sc-if>
 
             <sc-if value="{{ d.refOnLog }}" hint-placeholder-val="{{ false }}">
+              <sc-if value="{{ d.rd.hasNextActions }}" hint-placeholder-val="{{ false }}">
+                <div style="padding:10px 12px;border:1px solid var(--line2);border-radius:10px;background:var(--panel2);display:flex;flex-direction:column;gap:6px;margin-bottom:12px;">
+                  <div style="font-size:11px;font-weight:700;color:var(--fg2);">Who can act now</div>
+                  <sc-for list="{{ d.rd.nextActions }}" as="na" hint-placeholder-count="2">
+                    <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:3px 8px;font-size:12px;">
+                      <span style="font-weight:600;">{{ na.action }}</span>
+                      <span style="font-size:11px;color:var(--fg3);">{{ na.target }}</span>
+                      <div style="flex:1;"></div>
+                      <span style="font-size:11px;color:var(--fg2);">{{ na.who }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-if>
               <sc-for list="{{ d.rd.historyRows }}" as="hr" hint-placeholder-count="3">
                 <div style="display:flex;gap:11px;align-items:flex-start;">
                   <span style="{{ hr.dot }}"></span>
@@ -1369,6 +1382,23 @@ html[data-dark="1"] .tms-err button{background:#ededed;color:#171717}
                   </div>
                 </div>
               </sc-for>
+              <sc-if value="{{ d.rd.hasTimeline }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;flex-direction:column;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line2);">
+                  <div style="font-size:11px;font-weight:700;color:var(--fg2);">Actions timeline</div>
+                  <sc-for list="{{ d.rd.timeline }}" as="ev" hint-placeholder-count="2">
+                    <div style="min-width:0;">
+                      <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:8px;">
+                        <span style="font-size:12px;font-weight:600;">{{ ev.event }}</span>
+                        <span style="font-size:11px;color:var(--fg2);">{{ ev.who }}</span>
+                        <div style="flex:1;"></div>
+                        <span style="font-size:11px;color:var(--fg3);font-variant-numeric:tabular-nums;">{{ ev.time }}</span>
+                      </div>
+                      <div style="font-size:11px;color:var(--fg2);line-height:1.7;margin-top:2px;">{{ ev.details }}</div>
+                      <div style="{{ ev.receivedStyle }}">{{ ev.received }}</div>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-if>
             </sc-if>
           </div>
          </sc-if>
@@ -1922,6 +1952,19 @@ html[data-dark="1"] .tms-err button{background:#ededed;color:#171717}
 
           <sc-if value="{{ wfTabLog }}" hint-placeholder-val="{{ false }}">
             <div style="padding:16px 18px 22px;display:flex;flex-direction:column;gap:12px;">
+              <sc-if value="{{ wd.hasNextActions }}" hint-placeholder-val="{{ false }}">
+                <div style="padding:10px 12px;border:1px solid var(--line2);border-radius:10px;background:var(--panel2);display:flex;flex-direction:column;gap:6px;margin-bottom:12px;">
+                  <div style="font-size:11px;font-weight:700;color:var(--fg2);">Who can act now</div>
+                  <sc-for list="{{ wd.nextActions }}" as="na" hint-placeholder-count="2">
+                    <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:3px 8px;font-size:12px;">
+                      <span style="font-weight:600;">{{ na.action }}</span>
+                      <span style="font-size:11px;color:var(--fg3);">{{ na.target }}</span>
+                      <div style="flex:1;"></div>
+                      <span style="font-size:11px;color:var(--fg2);">{{ na.who }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-if>
               <sc-for list="{{ wd.historyRows }}" as="hr" hint-placeholder-count="3">
                 <div style="display:flex;gap:11px;align-items:flex-start;">
                   <span style="{{ hr.dot }}"></span>
@@ -1936,6 +1979,23 @@ html[data-dark="1"] .tms-err button{background:#ededed;color:#171717}
                   </div>
                 </div>
               </sc-for>
+              <sc-if value="{{ wd.hasTimeline }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;flex-direction:column;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line2);">
+                  <div style="font-size:11px;font-weight:700;color:var(--fg2);">Actions timeline</div>
+                  <sc-for list="{{ wd.timeline }}" as="ev" hint-placeholder-count="2">
+                    <div style="min-width:0;">
+                      <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:8px;">
+                        <span style="font-size:12px;font-weight:600;">{{ ev.event }}</span>
+                        <span style="font-size:11px;color:var(--fg2);">{{ ev.who }}</span>
+                        <div style="flex:1;"></div>
+                        <span style="font-size:11px;color:var(--fg3);font-variant-numeric:tabular-nums;">{{ ev.time }}</span>
+                      </div>
+                      <div style="font-size:11px;color:var(--fg2);line-height:1.7;margin-top:2px;">{{ ev.details }}</div>
+                      <div style="{{ ev.receivedStyle }}">{{ ev.received }}</div>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-if>
             </div>
           </sc-if>
         </div>
@@ -2898,7 +2958,7 @@ class Component extends window.TTCompose(DCLogic, React) {
     /* required-actions module */
     wfTab: 'pending', wfDocType: 'all', wfState: 'all', wfQuick: null, wfGroup: 'doctype', wfSort: 'oldest',
     filePv: null, wfCommentDraft: '',
-    wfSel: null, wfDetailTab: 'data', wfNote: '', wfNoteError: false, wfConfirm: null,
+    wfSel: null, wfDetailTab: 'data', wfNote: '',
     wfChecked: [], wfItemsOpen: false, wfPane: 'list', wfUndo: null,
     wfNewCheck: '', wfForceCheck: null,
   };

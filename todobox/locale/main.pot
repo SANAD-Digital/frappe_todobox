@@ -97,9 +97,6 @@ msgstr ""
 msgid "Add Tag"
 msgstr ""
 
-msgid "Add a note with the decision… (required when rejecting or returning)"
-msgstr ""
-
 msgid "Add a recipient and a subject"
 msgstr ""
 
@@ -4069,5 +4066,329 @@ msgid "Write a comment on this document… type @ to mention a colleague"
 msgstr ""
 
 msgctxt "ToDoBox"
-msgid "Add a note with the decision… (required when rejecting or returning) · @ to mention"
+msgid "Workflow Progress"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Current"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Current State"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Not Started"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Loading workflow progress..."
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Workflow Action"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Workflow Actions"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Refresh"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "No actions available"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "No Workflow Actions"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "There are no open workflow actions for you."
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Unable to load workflow actions."
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Add User"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Option"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Doctype Count"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Show Open"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Today's Completed Transactions"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Total Open"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Total Open by Employee"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Avg Late"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Avg Late Date"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Max Late Duration"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Late"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Late Duration"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Late Days"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Reference Doctype"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Open in ToDoBox"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Total Open Transactions"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Transaction Type"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Transaction Number"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Completed Average Duration"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Open Average Duration"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Please set Document Type first."
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "{0} has no field linked to User."
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "This report needs the Employee doctype, which is not available on this site."
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "The {0} filter is not available on this site."
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Please set the From and To dates."
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "You do not have permission to read Employee records."
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Please choose an Option."
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Only a System Manager can use the All option."
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Only a System Manager or HR Manager can use the All option."
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "No Employee record is linked to your user, so {0} has no data."
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Workflow Trace is not available on this site."
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Workflow Trace is not available on this site, so Completed stays 0."
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Are you sure you want to {0}?"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Add a note with the decision (optional)… · @ to mention"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Add a note with the decision (optional)…"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "This document runs form scripts on workflow actions — opening it in Desk"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "{0} documents run form scripts on workflow actions — open them in Desk"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "{0} — queued for submission in the background"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "You are not allowed to move this document from {0} to {1}."
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Action: {0}"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Move to: {0}"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "From: {0}"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Status: {0}"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Duration: {0}"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Show Status Bar"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Show Progress Button"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Show Next Actions Button"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Has trace?"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Users By Doc Field"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Use and Condition"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Use and Condition Between Users"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Show in Status Bar"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Status No"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Status Bar Condition"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Hide In Report"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Reference Creation"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Reference Owner"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Next State"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Next Action"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Received On"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Permitted Users"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Permitted Users Count"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Workflow Trace"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Workflow State"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Max"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "d"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "m"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Who can act now"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Actions timeline"
+msgstr ""
+
+msgctxt "ToDoBox"
+msgid "Received: {0}"
 msgstr ""

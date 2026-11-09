@@ -50,6 +50,13 @@ from todobox.services.todos import (
 	update_todo,
 )
 from todobox.services.users import get_active_users
+from todobox.services.wf_engine import (
+	get_all_possible_next_actions,
+	get_document_workflow_timeline,
+	get_sidebar_workflow_actions,
+	mark_received,
+	valid_states,
+)
 
 __all__ = [
 	"add_checklist_item",
@@ -66,6 +73,11 @@ __all__ = [
 	"drop_from_day",
 	"forward_todo",
 	"get_active_users",
+	"get_all_possible_next_actions",
+	"get_document_workflow_timeline",
+	"get_sidebar_workflow_actions",
+	"mark_received",
+	"valid_states",
 	"get_analytics",
 	"get_counts",
 	"get_viewable_boxes",

@@ -2,16 +2,17 @@
 
 import frappe
 from frappe import _
-from frappe.model.workflow import get_transitions, get_workflow_name
+from frappe.model.workflow import get_workflow_name
 
-from todobox.services.common import can
+from todobox.services.common import can, is_participant
 
 from todobox.services.workflow import (
 	STYLE_TONE,
 	_initials,
 	_state_styles,
-	action_allowed,
+	allowed_transitions,
 	doc_detail,
+	state_field,
 	workflow_payload,
 )
 
@@ -21,7 +22,7 @@ SUBMIT_ID = "__submit"
 def _reference(name):
 	"""The task and its linked document, after checking read access on both."""
 	todo = frappe.get_doc("ToDo", name)
-	if not frappe.has_permission("ToDo", "read", doc=todo):
+	if not is_participant(todo):
 		frappe.throw(_("You do not have access to this task"), frappe.PermissionError)
 	if not (todo.reference_type and todo.reference_name):
 		return todo, None
@@ -33,11 +34,9 @@ def _reference(name):
 	return todo, ref
 
 
-def _available(ref):
+def _available(ref, wfp=None):
 	"""[{id, label, tone, next}]: allowed Workflow transitions, or Submit for a submittable doc without Workflow."""
-	wf_name = get_workflow_name(ref.doctype)
-	if wf_name:
-		wfp = workflow_payload(frappe.get_cached_doc("Workflow", wf_name))
+	if wfp:
 		state = ref.get(wfp["workflow_state_field"] or "workflow_state")
 		base = {t["action"]: t for t in wfp["transitions"] if t["state"] == state}
 		return [
@@ -45,12 +44,10 @@ def _available(ref):
 				"id": t.get("action"),
 				"label": _(t.get("action")),
 				"tone": base.get(t.get("action"), {}).get("tone", "green"),
-				"needsNote": base.get(t.get("action"), {}).get("needsNote", 0),
 				"destructive": base.get(t.get("action"), {}).get("destructive", 0),
 				"next": _(t.get("next_state")),
 			}
-			for t in get_transitions(ref, raise_exception=False) or []
-			if action_allowed(ref, t.get("next_state"), wfp)
+			for t in allowed_transitions(ref, wfp)
 		]
 	if (
 		frappe.get_meta(ref.doctype).is_submittable
@@ -62,7 +59,7 @@ def _available(ref):
 
 
 def _status_of(ref):
-	return ref.get("workflow_state") or ref.get("status") or (_("Submitted") if ref.docstatus == 1 else _("Draft"))
+	return ref.get(state_field(ref.doctype)) or ref.get("status") or (_("Submitted") if ref.docstatus == 1 else _("Draft"))
 
 
 @frappe.whitelist()
@@ -70,12 +67,16 @@ def get_doc_actions(name):
 	_todo, ref = _reference(name)
 	if not ref:
 		return {"actions": [], "ref_status": "", "readable": 0}
+	wf_name = get_workflow_name(ref.doctype)
+	wfp = workflow_payload(frappe.get_cached_doc("Workflow", wf_name)) if wf_name else None
 	return {
-		"actions": _available(ref),
+		"actions": _available(ref, wfp),
 		"ref_status": _(_status_of(ref)),
 		# the task's linked-document tabs are shown only when the user can read the document
 		"readable": 1,
-		"has_workflow": 1 if get_workflow_name(ref.doctype) else 0,
+		"has_workflow": 1 if wf_name else 0,
+		"confirm": wfp["enable_action_confirmation"] if wfp else 0,
+		"needs_form": wfp["needs_form"] if wfp else 0,
 	}
 
 

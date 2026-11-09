@@ -17,6 +17,7 @@ from todobox.services.common import (
 	ensure_can_manage,
 	get_direct_reports,
 	get_task,
+	is_participant,
 	is_system_manager,
 	loads,
 	short_subject,
@@ -504,7 +505,7 @@ def update_todo(name, patch):
 	patch = dict(loads(patch, {}) or {})
 	me = frappe.session.user
 	todo = frappe.get_doc("ToDo", name)
-	if not frappe.has_permission("ToDo", "read", doc=todo):
+	if not is_participant(todo):
 		frappe.throw(_("You do not have access to this task"), frappe.PermissionError)
 
 	if set(patch) == {"read"}:

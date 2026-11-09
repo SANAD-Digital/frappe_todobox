@@ -1,8 +1,8 @@
 /* =============================================================================
    workflow.js: the "Required actions" layer, wired to real Frappe Workflow
-   Source: todobox.workflow_api (same logic as the Workflow Action report)
-     · Workflow Action (Open): its user, else the transition's allowed role
-     · frappe.model.workflow.get_transitions / apply_workflow
+   Source: todobox.workflow_api
+     · pending: what the Desk form would offer me (frappe.model.workflow.get_transitions + permissions)
+     · frappe.model.workflow.apply_workflow, through apply_action
    The UI calls synchronous functions reading from memory; refresh() updates them from the server.
    ============================================================================= */
 
@@ -52,14 +52,28 @@ const replaceMap = (target, src) => {
   Object.assign(target, src || {});
 };
 
+/* a document is identified by doctype + name: the same name may exist in two doctypes */
+export const docKey = (d) => (d ? d.doctype + '\u0000' + d.name : '');
+/** The document by name; doctype (when known) tells apart the same name in two doctypes */
+export function findDoc(name, doctype) {
+  return (doctype && DOCS.find((x) => x.name === name && x.doctype === doctype)) || DOCS.find((x) => x.name === name) || null;
+}
+export function findByKey(key) { return DOCS.find((x) => docKey(x) === key) || null; }
+
+/* documents with an action on its way to the server (one at a time per document) */
+const _busy = new Set();
+
 /** GET all data: definitions + documents + log
-    (throttled: one call in flight, no repeat within 15 seconds unless force) */
+    (throttled: one call in flight, no repeat within 15 seconds unless force;
+     force during a call runs once more after it, since that call may have read older data) */
 let _lastAt = 0;
 let _inflight = null;
+let _again = false;
 export function refresh(force = false) {
-  if (_inflight) return _inflight;
+  if (_inflight) { if (force) _again = true; return _inflight; }
   if (!force && LOADED && Date.now() - _lastAt < 15000) return Promise.resolve(true);
-  _inflight = _refresh().finally(() => { _inflight = null; _lastAt = Date.now(); });
+  _inflight = _refresh().finally(() => { _inflight = null; _lastAt = Date.now(); })
+    .then((ok) => { if (!_again) return ok; _again = false; return refresh(true); });
   return _inflight;
 }
 async function _refresh() {
@@ -72,15 +86,20 @@ async function _refresh() {
   replaceMap(_doctypes, d.doctypes);
   replaceMap(_workflows, d.workflows);
   replaceMap(_tones, d.stateTones);
-  DOCS = (d.docs || []).map((x) => ({ comments: [], files: [], items: [], checks: [], trail: [], actions: [], ...x }));
+  DOCS = (d.docs || []).map((x) => {
+    const doc = { comments: [], files: [], items: [], checks: [], trail: [], actions: [], ...x };
+    /* its action is still on the way: this answer may predate it */
+    if (_busy.has(docKey(doc))) { doc.pending = 0; doc.actions = []; }
+    return doc;
+  });
   ACTION_LOG = d.log || [];
   LOADED = true;
   return true;
 }
 
 /** Document details on open: items/comments/attachments/refreshed trail */
-export async function loadDoc(name) {
-  const d = DOCS.find((x) => x.name === name);
+export async function loadDoc(name, doctype) {
+  const d = findDoc(name, doctype);
   if (!d || d._detailed) return;
   d._detailed = true;
   let r = null;
@@ -89,8 +108,26 @@ export async function loadDoc(name) {
   Object.assign(d, {
     items: r.items || [], comments: r.comments || [], files: r.files || [],
     trail: r.trail || d.trail, fields: r.fields || d.fields, state: r.state || d.state,
+    timeline: r.timeline || [], next_actions: r.next_actions || {},
   });
   repaint();
+}
+
+/** The user really opened the document (not a prefetch or an automatic selection): stamps "received" */
+const _received = new Set();
+export function markReceived(name, doctype) {
+  const key = doctype + '::' + name;
+  if (!name || !doctype || _received.has(key)) return;
+  _received.add(key);
+  window.frappe.call({
+    method: 'todobox.services.wf_engine.mark_received',
+    args: { doctype, name },
+    callback: (r) => {
+      const d = findDoc(name, doctype);
+      if (r && r.message && d && d._detailed) { d._detailed = false; loadDoc(name, doctype); }
+    },
+    error: () => {},
+  });
 }
 
 /* ------------------------------------------------------------------ engine */
@@ -101,12 +138,16 @@ export function getTransitions(d) {
   return d && d.pending ? (d.actions || []) : [];
 }
 
-/** Displayed path: non-optional workflow states + those already reached */
+/** Displayed path: the states marked show_in_statusbar in status_no order, when the workflow has
+    those (optional custom fields); otherwise the non-optional workflow states */
 export function path(d) {
   const w = wf(d.doctype);
   const done = {};
   (d.trail || []).forEach((tr) => { done[tr[0]] = tr; });
-  const list = (w.states || []).filter((st) => !st.is_optional_state);
+  const marked = (w.states || []).filter((st) => st.show_in_statusbar);
+  const list = marked.length
+    ? marked.sort((a, b) => (a.status_no || 0) - (b.status_no || 0))
+    : (w.states || []).filter((st) => !st.is_optional_state);
   const currentPos = list.findIndex((st) => st.state === d.state);
   return list.map((st, i) => {
     const tr = done[st.state];
@@ -181,64 +222,75 @@ export function currentHolder(d) {
 }
 
 /* ----------------------------------------------------------------- action */
-/** POST frappe.model.workflow.apply_workflow: optimistic locally, then confirmed by the server */
-export function applyWorkflow(name, action, user, note, mentions) {
-  const d = DOCS.find((x) => x.name === name);
+/** POST apply_action (Frappe's apply_workflow): optimistic locally, then confirmed by the server.
+    res.done resolves to the server's answer ({undo_action, queued, ...}), or null when it failed
+    (the local change is then restored; Frappe's own error is shown by frappe.call). */
+export function applyWorkflow(name, action, user, note, mentions, doctype) {
+  const d = findDoc(name, doctype);
   if (!d) return null;
+  const key = docKey(d);
+  if (_busy.has(key)) return { busy: true };
   const t = getTransitions(d).find((x) => x.action === action);
   if (!t) return { error: __('This action is no longer available — the document status has changed') };
 
   const prev = d.state;
-  const snapshot = { state: d.state, actions: d.actions, pending: d.pending, trail: (d.trail || []).slice() };
+  const snapshot = { state: d.state, actions: d.actions, pending: d.pending, trail: (d.trail || []).slice(), comments: (d.comments || []).slice() };
   d.state = t.next_state;
   d.actions = [];
   d.pending = 0;
   d.trail = [...(d.trail || []), [t.next_state, ME, 0, note || '']];
   if (note) d.comments = [...(d.comments || []), [ME, 0, note]];
-  ACTION_LOG = [{
+  const logRow = {
     doc: d.name, doctype: d.doctype, title: d.title_is_name ? '' : (d.party || ''), action, tone: t.tone || 'green', kind: 'decision',
     from: prev, to: t.next_state, hours: 0, ts: new Date().toISOString().replace('T', ' ').slice(0, 19),
     waited: typeof pendingHours === 'function' ? pendingHours(d) : null, note: note || '', exists: true, now: t.next_state, moved_on: false, final: false, holder: '', by: ME,
-  }, ...ACTION_LOG];
+  };
+  ACTION_LOG = [logRow, ...ACTION_LOG];
   touch();
+  _busy.add(key);
 
-  call('apply_action', { doctype: d.doctype, docname: d.name, action, note: note || '', mentions: JSON.stringify(mentions || []) })
-    .then(() => refresh(true))
-    .catch(() => { Object.assign(d, snapshot); touch(); })
-    .then(() => repaint());
+  const done = call('apply_action', { doctype: d.doctype, docname: d.name, action, note: note || '', mentions: JSON.stringify(mentions || []) })
+    .then((r) => r || { ok: 1 }, () => {
+      /* only this document's row: other documents may have decisions in flight */
+      Object.assign(d, snapshot);
+      ACTION_LOG = ACTION_LOG.filter((x) => x !== logRow);
+      touch();
+      repaint();
+      return null;
+    })
+    .then((r) => { _busy.delete(key); refresh(true).then(() => repaint()); return r; });
 
-  return { ok: true, prev, next: t.next_state, doc: d };
+  return { ok: true, prev, next: t.next_state, doc: d, done };
 }
 
-/** Can we go back to the previous state? (reverse transition defined in the workflow) */
-export function canUndo(name, prev) {
-  const d = DOCS.find((x) => x.name === name);
-  if (!d) return false;
-  return (wf(d.doctype).transitions || []).some((t) => t.state === d.state && t.next_state === prev);
+/** Undo = the real reverse action the server named (undo_action), not deleting from the log */
+export function undoWorkflow(name, action, prev, doctype) {
+  const d = doctype ? DOCS.find((x) => x.name === name && x.doctype === doctype) : findDoc(name);
+  const dt = doctype || (d && d.doctype);
+  if (!dt || !action) return { error: __('Document not found') };
+  const key = docKey({ doctype: dt, name });
+  if (_busy.has(key)) return { busy: true };
+  const snapshot = d ? { state: d.state, actions: d.actions, pending: d.pending } : null;
+  if (d) { d.state = prev; d.actions = []; d.pending = 0; touch(); }
+  _busy.add(key);
+  const done = call('apply_action', { doctype: dt, docname: name, action, note: __('Decision reverted') })
+    .then((r) => r || { ok: 1 }, () => {
+      if (d) { Object.assign(d, snapshot); touch(); repaint(); }
+      return null;
+    })
+    .then((r) => { _busy.delete(key); refresh(true).then(() => repaint()); return r; });
+  return { ok: true, done };
 }
 
-/** Undo = a real reverse transition (not deleting from the log) */
-export function undoWorkflow(name, prev) {
-  const d = DOCS.find((x) => x.name === name);
-  if (!d) return { error: __('Document not found') };
-  const back = (wf(d.doctype).transitions || []).find((t) => t.state === d.state && t.next_state === prev);
-  if (!back) return { error: __('No reverse transition is defined in the Workflow') };
-  call('apply_action', { doctype: d.doctype, docname: d.name, action: back.action, note: __('Decision reverted') })
-    .then(() => refresh(true)).then(() => repaint());
-  d.state = prev;
-  touch();
-  return { ok: true };
-}
-
-export function addWfComment(name, user, text, mentions) {
-  const d = DOCS.find((x) => x.name === name);
+export function addWfComment(name, user, text, mentions, doctype) {
+  const d = findDoc(name, doctype);
   if (!d) return;
   d.comments = [...(d.comments || []), [ME, 0, text]];
   call('add_comment', { doctype: d.doctype, docname: d.name, text, mentions: JSON.stringify(mentions || []) }).then(() => repaint());
 }
 
-export function nudge(name) {
-  const d = DOCS.find((x) => x.name === name);
+export function nudge(name, doctype) {
+  const d = findDoc(name, doctype);
   if (!d) return '';
   call('nudge', { doctype: d.doctype, docname: d.name }).then(() => repaint());
   return currentHolder(d);
@@ -251,17 +303,18 @@ const writeChecks = (o) => { try { localStorage.setItem(CK_KEY, JSON.stringify(o
 
 export function hydrateChecks() {
   const store = readChecks();
-  DOCS.forEach((d) => { if (store[d.name]) d.checks = store[d.name]; });
+  /* d.name alone: what older versions stored */
+  DOCS.forEach((d) => { const c = store[docKey(d)] || store[d.name]; if (c) d.checks = c; });
 }
-export function toggleWfCheck(name, id) {
-  const d = DOCS.find((x) => x.name === name);
+export function toggleWfCheck(name, id, doctype) {
+  const d = findDoc(name, doctype);
   if (!d) return;
   d.checks = (d.checks || []).map((c) => (c.id === id ? { ...c, done: !c.done } : c));
-  const store = readChecks(); store[name] = d.checks; writeChecks(store);
+  const store = readChecks(); store[docKey(d)] = d.checks; writeChecks(store);
 }
-export function addWfCheck(name, label) {
-  const d = DOCS.find((x) => x.name === name);
+export function addWfCheck(name, label, doctype) {
+  const d = findDoc(name, doctype);
   if (!d) return;
   d.checks = [...(d.checks || []), { id: 'ck' + Math.random().toString(36).slice(2, 7), label, done: false }];
-  const store = readChecks(); store[name] = d.checks; writeChecks(store);
+  const store = readChecks(); store[docKey(d)] = d.checks; writeChecks(store);
 }

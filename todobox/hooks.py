@@ -26,12 +26,27 @@ after_install = "todobox.setup.install.after_install"
 after_migrate = "todobox.setup.install.after_migrate"
 before_uninstall = "todobox.setup.install.before_uninstall"
 after_uninstall = "todobox.setup.install.after_uninstall"
+# keeps the shared workflow tables when another app that also ships them is removed
 
 # Desk: remember the Desk's typeface (incl. a theme's) so /todobox renders with the same font
-app_include_js = ["/assets/todobox/js/desk_font.js"]
+app_include_js = [
+	"/assets/todobox/js/desk_font.js",
+	"/assets/todobox/js/desk/wf_progress.js",
+	"/assets/todobox/js/desk/wf_sidebar.js",
+]
+app_include_css = ["/assets/todobox/css/desk_wf.css"]
 
 # ToDo desk form: fill the checklist from a ToDoBox Task Template
-doctype_js = {"ToDo": "public/js/todo.js"}
+doctype_js = {
+	"ToDo": "public/js/todo.js",
+	"Workflow": "public/js/desk/workflow_form.js",
+}
+
+# Workflow: per-user transition rules, trace fields, Workflow Action details (services/wf_engine.py, wf_rules.py)
+override_doctype_class = {"Workflow": "todobox.overrides.workflow.CustomWorkflow"}
+override_whitelisted_methods = {
+	"frappe.model.workflow.get_transitions": "todobox.services.wf_rules.get_transitions",
+}
 
 # Multi-company privacy (ERPNext): task templates belong to their creator's company (services/org.py)
 permission_query_conditions = {
@@ -59,9 +74,22 @@ doc_events = {
 		"after_insert": "todobox.services.live.on_comment_insert",
 	},
 	"*": {
-		"on_update": "todobox.services.workflow_notify.on_workflow_change",
-		"on_update_after_submit": "todobox.services.workflow_notify.on_workflow_change",
-		"on_cancel": "todobox.services.workflow_notify.on_workflow_change",
+		"onload": "todobox.services.wf_engine.enqueue_workflow_receipt",
+		"validate": "todobox.services.wf_engine.before_transition",
+		"before_update_after_submit": "todobox.services.wf_engine.before_transition",
+		"before_cancel": "todobox.services.wf_engine.before_transition",
+		"on_update": [
+			"todobox.services.wf_engine.after_transition",
+			"todobox.services.workflow_notify.on_workflow_change",
+		],
+		"on_update_after_submit": [
+			"todobox.services.wf_engine.after_transition",
+			"todobox.services.workflow_notify.on_workflow_change",
+		],
+		"on_cancel": [
+			"todobox.services.wf_engine.after_transition",
+			"todobox.services.workflow_notify.on_workflow_change",
+		],
 	},
 }
 

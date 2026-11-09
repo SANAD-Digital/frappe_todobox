@@ -232,7 +232,7 @@
     this.markRead(name);
     this.loadDocActions(name);
     this.setState((s) => ({
-      sel: name, selDoc: null, mobileScreen: 'detail', pane: 'detail', draft: '', showEvents: false, docActNote: '', docActConfirm: null, docActNoteError: false,
+      sel: name, selDoc: null, mobileScreen: 'detail', pane: 'detail', draft: '', showEvents: false, docActNote: '',
       ...this.readPatch(s, name),
     }));
   };
@@ -360,7 +360,7 @@
       if (st.automation && (st.ruleForm || st.recForm)) { this.setState({ ruleForm: null, recForm: null }); return; }
       if (!typing && st.screen === 'templates' && (st.tplSel || st.tplDraft) && !st.compose && !st.forward && !st.cmdk && !st.shortcuts) { this.setState({ tplSel: null, tplDraft: null, tplConfirmDel: false }); return; }
     }
-    if (e.key === 'Escape') { this.setState({ dateEdit: null, cmdk: false, shortcuts: false, compose: null, forward: null, checked: [], notifsOpen: false, snoozeFor: null, automation: null, wfConfirm: null, userMenu: false, themeMenu: false }); return; }
+    if (e.key === 'Escape') { this.setState({ dateEdit: null, cmdk: false, shortcuts: false, compose: null, forward: null, checked: [], notifsOpen: false, snoozeFor: null, automation: null, userMenu: false, themeMenu: false }); return; }
     if (typing) return;
     /* two-key "g then x" sequences: resolved against the palette command list (single source of truth) */
     if (!e.metaKey && !e.ctrlKey && !e.altKey) {

@@ -327,7 +327,9 @@
 		if (!doc || !meta) { sub.textContent = ""; badge.innerHTML = ""; return; }
 		const tf = meta.title_field;
 		sub.textContent = tf && doc[tf] && doc[tf] !== doc.name ? String(doc[tf]) : "";
-		const status = doc.workflow_state || doc.status || (meta.is_submittable ? ["Draft", "Submitted", "Cancelled"][doc.docstatus || 0] : "");
+		/* the state field comes with the meta from the server (__workflow_docs, as in Desk) */
+		const wf = (meta.__workflow_docs || []).find((d) => d.doctype === "Workflow");
+		const status = (wf && doc[wf.workflow_state_field]) || doc.workflow_state || doc.status || (meta.is_submittable ? ["Draft", "Submitted", "Cancelled"][doc.docstatus || 0] : "");
 		badge.innerHTML = status ? `<span class="tm-ql-badge indicator-pill ${indicator(status, doc.docstatus)}" data-docstatus="${esc(doc.docstatus || 0)}">${esc(__(status))}</span>` : "";
 	}
 

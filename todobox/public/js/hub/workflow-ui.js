@@ -53,21 +53,21 @@
 
   /** Open the document in Desk (new tab) */
   openRef = (doctype, name) => { window.frappe.set_route('Form', doctype, name); };
-  wfOpenDoc = (name) => {
-    if (this.W && this.W.loadDoc) this.W.loadDoc(name);
-    const d = this.W && (this.W.DOCS || []).find((x) => x.name === name);
-    if (d) this.qlPrefetch(d.doctype, d.name);
-    return this.setState({ wfSel: name, wfNote: '', wfCommentDraft: '', wfNoteError: false, wfConfirm: null, wfDetailTab: 'data', wfItemsOpen: false, wfPane: 'detail', mobileScreen: 'detail' }); };
+  wfOpenDoc = (name, doctype) => {
+    if (this.W && this.W.loadDoc) this.W.loadDoc(name, doctype);
+    const d = this.W && this.W.findDoc(name, doctype);
+    if (d) { this.qlPrefetch(d.doctype, d.name); if (this.W.markReceived) this.W.markReceived(d.name, d.doctype); }
+    return this.setState({ wfSel: name, wfSelDt: d ? d.doctype : null, wfNote: '', wfCommentDraft: '', wfDetailTab: 'data', wfItemsOpen: false, wfPane: 'detail', mobileScreen: 'detail' }); };
 
   /* "All tasks": a document awaiting my decision opens in the list's own detail pane (the same
      preview and actions as Required actions, on the mail screen); selDoc is that document */
   isWfDoc(name) { return !!(name && this.W && (this.W.DOCS || []).some((x) => x.name === name)); }
   inAllDoc(s) { s = s || this.state; return s.screen === 'mail' && s.folder === 'all' && !!s.selDoc; }
-  allOpenDoc = (name) => {
-    if (this.W && this.W.loadDoc) this.W.loadDoc(name);
-    const d = this.W && (this.W.DOCS || []).find((x) => x.name === name);
-    if (d) this.qlPrefetch(d.doctype, d.name);
-    return this.setState({ selDoc: name, sel: null, wfSel: name, wfNote: '', wfCommentDraft: '', wfNoteError: false, wfConfirm: null, wfDetailTab: 'data', wfItemsOpen: false, wfMore: false, pane: 'detail', mobileScreen: 'detail' });
+  allOpenDoc = (name, doctype) => {
+    if (this.W && this.W.loadDoc) this.W.loadDoc(name, doctype);
+    const d = this.W && this.W.findDoc(name, doctype);
+    if (d) { this.qlPrefetch(d.doctype, d.name); if (this.W.markReceived) this.W.markReceived(d.name, d.doctype); }
+    return this.setState({ selDoc: name, sel: null, wfSel: name, wfSelDt: d ? d.doctype : null, wfNote: '', wfCommentDraft: '', wfDetailTab: 'data', wfItemsOpen: false, wfMore: false, pane: 'detail', mobileScreen: 'detail' });
   };
   /** after a decision in "All tasks": the next row of the list opens (a task or another document), else nothing */
   allNext(name) {
@@ -80,43 +80,71 @@
     return this.setState({ selDoc: null, sel: null, pane: 'list', mobileScreen: 'list' });
   }
 
-  wfApply = (name, action) => {
-    const W = this.W, me = this.meWf();
-    const d = W.DOCS.find((x) => x.name === name);
+  /** Yes/No before an action, when the workflow enables it (Workflow.enable_action_confirmation) */
+  wfAsk(action) {
+    this._wfAsking = true;
+    return this.tbConfirm(__('Are you sure you want to {0}?', [action]), { primary: __('Yes'), secondary: __('No') })
+      .then((yes) => { this._wfAsking = false; return yes; });
+  }
+
+  /** opts.noConfirm: already confirmed (bulk); opts.note: the note to save instead of the note field */
+  wfApply = (name, action, doctype, opts) => {
+    if (this._wfAsking) return;
+    const o = opts || {}, W = this.W, me = this.meWf();
+    const d = W.findDoc(name, doctype);
     if (!d) return;
-    const inAll = this.inAllDoc() && this.state.selDoc === name;
     const t = W.getTransitions(d, me).find((x) => x.action === action);
     if (!t) { this.toast(__('Document status changed — list refreshed')); this.forceUpdate(); return; }
-    const note = (this.state.wfNote || '').trim();
-    if (t.needsNote && !note) {
-      if (inAll) this.allOpenDoc(name); else this.wfOpenDoc(name);
-      this.setState({ wfNoteError: true });
-      this.toast(__('“{0}” requires a written reason', [action]));
+    const w = W.wf(d.doctype);
+    if (w.needs_form) {
+      this.toast(__('This document runs form scripts on workflow actions — opening it in Desk'));
+      this.openRef(d.doctype, d.name);
       return;
     }
-    if (t.destructive && this.state.wfConfirm !== action + name) {
-      this.setState({ wfConfirm: action + name });
-      this.toast(__('Press again to confirm: {0}', [action]));
+    if (!o.noConfirm && w.enable_action_confirmation) {
+      this.wfAsk(action).then((yes) => { if (yes) this.wfDo(d, action, o); });
       return;
     }
+    this.wfDo(d, action, o);
+  };
+
+  wfDo(d, action, o) {
+    const W = this.W, me = this.meWf(), name = d.name, key = W.docKey(d);
+    const inAll = this.inAllDoc() && this.state.selDoc === name;
+    const note = o.note !== undefined ? o.note : (this.state.wfNote || '').trim();
     const fxCap = this.fxCloseCapture ? this.fxCloseCapture(name) : null; /* snapshot the row before it leaves the list */
-    const res = W.applyWorkflow(name, action, me, note, note ? this.mentionEmails(note) : []);
+    const res = W.applyWorkflow(name, action, me, note, note ? this.mentionEmails(note) : [], d.doctype);
+    if (res && res.busy) return;
     if (!res || res.error) { this.toast((res && res.error) || __('Could not complete the action')); this.forceUpdate(); return; }
-    const rest = W.pendingForMe(me).filter((x) => x.name !== name);
+    const rest = W.pendingForMe(me).filter((x) => W.docKey(x) !== key);
     if (fxCap && rest.length === W.pendingForMe(me).length) this.fxCloseFly(fxCap, false);
-    this.setState((st) => ({
-      wfNote: '', wfNoteError: false, wfConfirm: null,
-      wfChecked: st.wfChecked.filter((n) => n !== name),
-      wfSel: st.wfSel === name ? (rest.length ? rest[0].name : null) : st.wfSel,
-      wfUndo: W.canUndo(name, res.prev) ? { name, prev: res.prev, text: __('{0} · {1} (moved to My decisions log)', [action, name]) } : null,
-    }));
-    this.timers.push(setTimeout(() => this.setState((st) => (st.wfUndo && st.wfUndo.name === name ? { wfUndo: null } : {})), 6000));
+    this.setState((st) => {
+      const wasSel = st.wfSel === name && (!st.wfSelDt || st.wfSelDt === d.doctype);
+      return {
+        wfNote: '', wfUndo: null,
+        wfChecked: st.wfChecked.filter((n) => n !== key),
+        wfSel: wasSel ? (rest.length ? rest[0].name : null) : st.wfSel,
+        wfSelDt: wasSel ? (rest.length ? rest[0].doctype : null) : st.wfSelDt,
+      };
+    });
+    res.done.then((r) => {
+      this.wfSettled(r, { name, doctype: d.doctype, prev: res.prev, text: __('{0} · {1} (moved to My decisions log)', [action, name]) }, action);
+    });
     if (inAll) {
       this.allNext(name);
       /* the server may have updated the linked task too: refresh the list in place */
       this.timers.push(setTimeout(() => { if (this.state.screen === 'mail' && this.state.folder === 'all') this.load(this.state.sel, true); }, 1500));
     }
-  };
+  }
+
+  /** The server answered an action: failed (r null) → no selection, no undo; else offer the undo it named */
+  wfSettled(r, undo, action) {
+    if (!r) { this.setState({ wfChecked: [], wfUndo: null }); return; }
+    if (r.queued) this.toast(__('{0} — queued for submission in the background', [action]));
+    if (!r.undo_action) return;
+    this.setState({ wfUndo: { ...undo, action: r.undo_action } });
+    this.timers.push(setTimeout(() => this.setState((st) => (st.wfUndo && st.wfUndo.name === undo.name && st.wfUndo.doctype === undo.doctype ? { wfUndo: null } : {})), 6000));
+  }
 
   /** "You have a linked task: close it?" on a document awaiting my decision */
   wfCloseTodo = async (d) => {
@@ -132,62 +160,75 @@
     if (this.state.screen === 'mail') this.load(this.state.sel, true);
   };
 
-  wfUndoDo = () => {
+  wfUndoDo = async () => {
+    if (this._wfAsking) return;
     const u = this.state.wfUndo; if (!u) return;
-    const r = this.W.undoWorkflow(u.name, u.prev);
-    this.setState({ wfUndo: null, wfSel: u.name });
-    if (this.state.screen === 'mail' && this.state.folder === 'all') this.allOpenDoc(u.name);
+    if (this.W.wf(u.doctype).enable_action_confirmation && !(await this.wfAsk(u.action))) return;
+    const r = this.W.undoWorkflow(u.name, u.action, u.prev, u.doctype);
+    if (r && r.busy) return;
+    this.setState({ wfUndo: null, wfSel: u.name, wfSelDt: u.doctype });
+    if (this.state.screen === 'mail' && this.state.folder === 'all') this.allOpenDoc(u.name, u.doctype);
     this.toast(r && r.error ? r.error : __('Undoing — reverse transition to “{0}”', [u.prev]));
+    if (r && r.done) r.done.then((res) => { if (!res) this.setState({ wfChecked: [], wfUndo: null }); });
   };
 
-  wfBulk = (action) => {
-    const list = this.state.wfChecked.slice();
-    list.forEach((n) => this.wfApply(n, action));
+  /** One confirmation up front, then no more prompts. Documents with form scripts are left to Desk. */
+  wfBulk = async (action) => {
+    if (this._wfAsking) return;
+    const W = this.W;
+    const docs = this.state.wfChecked.map((k) => W.findByKey(k)).filter(Boolean);
+    const inline = docs.filter((d) => !W.wf(d.doctype).needs_form);
+    if (inline.some((d) => W.wf(d.doctype).enable_action_confirmation) && !(await this.wfAsk(action))) return;
+    const note = (this.state.wfNote || '').trim();
+    inline.forEach((d) => this.wfApply(d.name, action, d.doctype, { noConfirm: true, note }));
+    if (docs.length > inline.length) this.toast(__('{0} documents run form scripts on workflow actions — open them in Desk', [docs.length - inline.length]));
     this.setState({ wfChecked: [] });
   };
 
   /** Key fields, from the server per doctype Meta */
   govFields(d) { return this.W ? this.W.govFields(d) : []; }
 
-  wfToggleCheck = (id) => { this.W.toggleWfCheck(this.state.wfSel, id); this.forceUpdate(); };
+  wfToggleCheck = (id) => { this.W.toggleWfCheck(this.state.wfSel, id, this.state.wfSelDt); this.forceUpdate(); };
   wfAddCheck = () => {
     const txt = (this.state.wfNewCheck || '').trim();
     if (!txt || !this.state.wfSel) return;
-    this.W.addWfCheck(this.state.wfSel, txt);
+    this.W.addWfCheck(this.state.wfSel, txt, this.state.wfSelDt);
     this.setState({ wfNewCheck: '' });
   };
 
-  wfNudge = (name) => {
-    const role = this.W.nudge(name);
+  wfNudge = (name, doctype) => {
+    const role = this.W.nudge(name, doctype);
     this.toast(__('Reminder sent to {0}', [role || __('the approver')]));
   };
 
   wfComment = () => {
     const txt = (this.state.wfCommentDraft || '').trim();
     if (!txt || !this.state.wfSel) { this.toast(__('Write a comment first')); return; }
-    this.W.addWfComment(this.state.wfSel, this.meWf(), txt, this.mentionEmails(txt));
+    this.W.addWfComment(this.state.wfSel, this.meWf(), txt, this.mentionEmails(txt), this.state.wfSelDt);
     this.mentionReset();
     this.setState({ wfCommentDraft: '', mention: null });
     this.toast(__('Comment added to the document'));
   };
 
   wfKey = (e) => {
+    if (this._wfAsking) return true;
     const W = this.W; if (!W) return false;
     const me = this.meWf();
     const list = this.wfVisible || [];
-    const i = list.findIndex((d) => d.name === this.state.wfSel);
+    const isSel = (d) => d.name === this.state.wfSel && (!this.state.wfSelDt || d.doctype === this.state.wfSelDt);
+    const i = list.findIndex(isSel);
     const k = e.key.toLowerCase();
     const cur = list[i];
-    if (k === 'j') { const n = list[Math.min(list.length - 1, i + 1)]; if (n) this.wfOpenDoc(n.name); return true; }
-    if (k === 'k') { const n = list[Math.max(0, i - 1)]; if (n) this.wfOpenDoc(n.name); return true; }
-    if (k === 'o' && cur) { this.wfOpenDoc(cur.name); return true; }
+    if (k === 'j') { const n = list[Math.min(list.length - 1, i + 1)]; if (n) this.wfOpenDoc(n.name, n.doctype); return true; }
+    if (k === 'k') { const n = list[Math.max(0, i - 1)]; if (n) this.wfOpenDoc(n.name, n.doctype); return true; }
+    if (k === 'o' && cur) { this.wfOpenDoc(cur.name, cur.doctype); return true; }
     if (!cur) return false;
     const tr = W.getTransitions(cur, me);
     const pos = tr.find((t) => t.tone === 'green');
     const back = tr.find((t) => t.tone === 'amber' || t.destructive);
-    if (k === 'a' && pos) { this.wfApply(cur.name, pos.action); return true; }
-    if (k === 'x' && back) { this.wfApply(cur.name, back.action); return true; }
-    if (e.key === 'Enter' && pos) { this.wfApply(cur.name, pos.action); return true; }
+    if (k === 'a' && pos) { this.wfApply(cur.name, pos.action, cur.doctype); return true; }
+    if (k === 'x' && back) { this.wfApply(cur.name, back.action, cur.doctype); return true; }
+    if (e.key === 'Enter' && pos) { this.wfApply(cur.name, pos.action, cur.doctype); return true; }
     return false;
   };
 
@@ -289,6 +330,7 @@
       } else { bd = c; bg = t.tone === 'green' ? c : 'transparent'; fg = t.tone === 'green' ? 'var(--on-accent)' : c; }
       return size + 'display:inline-flex;align-items:center;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis;border-radius:7px;cursor:pointer;font-weight:600;border:1px solid ' + bd + ';background:' + bg + ';color:' + fg + ';';
     };
+    const isSelDoc = (d) => s.wfSel === d.name && (!s.wfSelDt || s.wfSelDt === d.doctype);
     const card = (d) => {
       const h = W.pendingHours(d), aging = W.agingTone(h);
       const st = W.STATE_TONE[d.state] || 'fg2';
@@ -296,8 +338,9 @@
       const order = { green: 0, amber: 1, red: 2 };
       trs.sort((a, b) => order[a.tone] - order[b.tone]);
       const owner = U[d.owner] || {};
-      const checked = s.wfChecked.includes(d.name);
-      const active = s.wfSel === d.name;
+      const dKey = W.docKey(d);
+      const checked = s.wfChecked.includes(dKey);
+      const active = isSelDoc(d);
       return {
         name: d.name, typeAr: W.DOCTYPES[d.doctype].ar, iconRef: '#' + W.DOCTYPES[d.doctype].icon,
         party: W.headlineParty(d),
@@ -324,12 +367,12 @@
         box: 'width:17px;height:17px;flex:0 0 17px;padding:0;box-sizing:border-box;appearance:none;-webkit-appearance:none;line-height:0;display:grid;place-items:center;border-radius:5px;cursor:pointer;border:1.5px solid ' +
           (checked ? 'var(--primary)' : 'var(--line2)') + ';background:' + (checked ? 'var(--primary)' : 'transparent') + ';color:var(--on-accent);',
         tick: 'width:11px;height:11px;opacity:' + (checked ? '1' : '0') + ';',
-        onCheck: (ev) => { ev.stopPropagation(); this.setState((stt) => ({ wfChecked: checked ? stt.wfChecked.filter((n) => n !== d.name) : [...stt.wfChecked, d.name] })); },
+        onCheck: (ev) => { ev.stopPropagation(); this.setState((stt) => ({ wfChecked: checked ? stt.wfChecked.filter((n) => n !== dKey) : [...stt.wfChecked, dKey] })); },
         actions: s.wfTab === 'sent'
           ? [{
             label: __('Send reminder'),
             style: 'height:26px;padding:0 10px;display:inline-flex;align-items:center;white-space:nowrap;border-radius:7px;cursor:pointer;font-size:11.5px;font-weight:600;border:1px solid var(--line2);background:transparent;color:var(--fg2);',
-            onDo: (ev) => { ev.stopPropagation(); this.wfNudge(d.name); },
+            onDo: (ev) => { ev.stopPropagation(); this.wfNudge(d.name, d.doctype); },
           }]
           : (() => {
             const opt = trs.map((t) => W.isOptionalTarget ? W.isOptionalTarget(d, t) : false);
@@ -337,7 +380,7 @@
             return trs.map((t, i) => ({
               label: __(t.action),
               style: actionStyle(t, mixed, opt[i], true),
-              onDo: (ev) => { ev.stopPropagation(); this.wfApply(d.name, t.action); },
+              onDo: (ev) => { ev.stopPropagation(); this.wfApply(d.name, t.action, d.doctype); },
             }));
           })(),
         /* "comfortable" density: the previous design, unchanged */
@@ -357,7 +400,7 @@
         } : null,
         /* buttons on the second line; the line wraps only with more than two actions */
         line2Style: 'display:flex;align-items:center;gap:5px 7px;min-width:0;flex-wrap:' + (narrow || trs.length > 2 ? 'wrap' : 'nowrap') + ';',
-        onOpen: () => this.wfOpenDoc(d.name),
+        onOpen: () => this.wfOpenDoc(d.name, d.doctype),
         onPreview: (e) => { if (e && e.stopPropagation) e.stopPropagation(); this.qlOpen(d.doctype, d.name); },
         onPreviewHover: () => this.qlPrefetch(d.doctype, d.name),
       };
@@ -386,7 +429,7 @@
     const wfAnyOpen = wfGroups.some((g) => g.open === 'true');
 
     /* ---- bulk approval ---- */
-    const checkedDocs = s.wfChecked.map((n) => W.DOCS.find((d) => d.name === n)).filter(Boolean);
+    const checkedDocs = s.wfChecked.map((k) => W.findByKey(k)).filter(Boolean);
     let commonAction = null;
     if (checkedDocs.length > 1) {
       const sets = checkedDocs.map((d) => W.getTransitions(d, me).filter((t) => t.tone === 'green').map((t) => t.action));
@@ -397,18 +440,18 @@
 
     /* ---- preview ---- */
     /* on wide screens don't leave the last column empty/stale: if the selected document isn't in the list, select the first */
-    if (onWf && !narrow && s.wfTab !== 'log' && sorted.length && !sorted.some((d) => d.name === s.wfSel)) {
-      const first = sorted[0].name;
-      if (this._wfAuto !== first) {
-        this._wfAuto = first;
+    if (onWf && !narrow && s.wfTab !== 'log' && sorted.length && !sorted.some(isSelDoc)) {
+      const first = sorted[0].name, firstDt = sorted[0].doctype;
+      if (this._wfAuto !== W.docKey(sorted[0])) {
+        this._wfAuto = W.docKey(sorted[0]);
         setTimeout(() => {
           if (this.state.screen !== 'wf') return;
-          if (W.loadDoc) W.loadDoc(first);
-          this.setState({ wfSel: first, wfNote: '', wfCommentDraft: '', wfNoteError: false, wfConfirm: null, wfDetailTab: 'data', wfItemsOpen: false });
+          if (W.loadDoc) W.loadDoc(first, firstDt);
+          this.setState({ wfSel: first, wfSelDt: firstDt, wfNote: '', wfCommentDraft: '', wfDetailTab: 'data', wfItemsOpen: false });
         }, 0);
       }
     } else this._wfAuto = null;
-    const sel = W.DOCS.find((d) => d.name === (inAll ? s.selDoc : s.wfSel)) || null;
+    const sel = W.findDoc(inAll ? s.selDoc : s.wfSel, s.wfSelDt);
     let wd = null;
     if (sel) {
       const stT = W.STATE_TONE[sel.state] || 'fg2';
@@ -475,12 +518,12 @@
         meAvatar: 'width:28px;height:28px;flex:0 0 28px;border-radius:50%;display:grid;place-items:center;font-size:10px;font-weight:600;' + this.avaBg(me),
         meInitials: (U[me] || {}).initials || '?',
         transitions: trs.map((t) => ({
-          label: __(t.action) + (t.destructive && s.wfConfirm === t.action + sel.name ? ' — ' + __('Confirm?') : ''),
+          label: __(t.action),
           style: 'height:34px;padding:0 16px;white-space:nowrap;border-radius:9px;cursor:pointer;font-size:13px;font-weight:600;border:1px solid ' +
             (t.tone === 'green' ? 'var(--green)' : t.tone === 'amber' ? 'var(--amber)' : 'var(--red)') +
-            ';background:' + (t.tone === 'green' ? 'var(--green)' : s.wfConfirm === t.action + sel.name ? 'var(--red-soft)' : 'transparent') +
+            ';background:' + (t.tone === 'green' ? 'var(--green)' : 'transparent') +
             ';color:' + (t.tone === 'green' ? 'var(--on-accent)' : t.tone === 'amber' ? 'var(--amber)' : 'var(--red)') + ';',
-          onDo: () => this.wfApply(sel.name, t.action),
+          onDo: () => this.wfApply(sel.name, t.action, sel.doctype),
         })),
         noTransitions: trs.length === 0,
         watchText: sel.owner === me ? __('You created this — the document is now with {0}', [W.currentHolder(sel)]) : __('No action available for your role at this stage'),
@@ -568,9 +611,8 @@
       wfNote: s.wfNote,
       onWfNote: this.onWfNoteInput,
       onWfNoteKey: (e) => { this.mentionKey(e); },
-      wfNotePlaceholder: __('Add a note with the decision… (required when rejecting or returning) · @ to mention'),
-      wfNoteStyle: 'width:100%;height:36px;padding:0 12px;background:var(--sunk);border:1px solid ' + (s.wfNoteError ? 'var(--red)' : 'var(--line)') +
-        ';border-radius:9px;outline:none;font-size:13px;',
+      wfNotePlaceholder: __('Add a note with the decision (optional)… · @ to mention'),
+      wfNoteStyle: 'width:100%;height:36px;padding:0 12px;background:var(--sunk);border:1px solid var(--line);border-radius:9px;outline:none;font-size:13px;',
       wfBarHint: narrow || inAll ? '' : __('a approve · x return · j/k navigate'),
       wfAddComment: this.wfComment,
       wfCommentDraft: s.wfCommentDraft || '',
@@ -579,7 +621,7 @@
       wfCommentPlaceholder: __('Write a comment on this document… type @ to mention a colleague'),
       wfCommentBtnStyle: 'height:30px;padding:0 14px;border-radius:8px;font-size:12px;font-weight:600;border:1px solid var(--primary);cursor:pointer;' +
         ((s.wfCommentDraft || '').trim() ? 'background:var(--primary);color:var(--on-accent);' : 'background:transparent;color:var(--primary);opacity:.6;'),
-      wfNudgeSel: () => s.wfSel && this.wfNudge(s.wfSel),
+      wfNudgeSel: () => s.wfSel && this.wfNudge(s.wfSel, s.wfSelDt),
 
       /* undo */
       wfHasUndo: !!s.wfUndo, wfUndoText: s.wfUndo ? s.wfUndo.text : '', wfUndoDo: this.wfUndoDo,

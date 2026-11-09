@@ -11,7 +11,7 @@ their whole company.
 import frappe
 from frappe import _
 
-from todobox.services.common import is_system_manager
+from todobox.services.common import can, is_system_manager
 from todobox.services.settings import department_peers, hidden_people
 
 COMPANY_MANAGER_ROLE = "ToDoBox Company Manager"
@@ -118,7 +118,8 @@ def viewable_boxes(user=None):
 	cache = frappe.local.flags.setdefault("todobox_viewable_boxes", {})
 	if user not in cache:
 		rows = []
-		if enabled():
+		# get_list raises without read access: such a user simply has no boxes to view
+		if enabled() and can("Employee", "read", user=user):
 			rows = frappe.get_list(
 				"Employee",
 				filters={"status": "Active", "user_id": ["is", "set"]},

@@ -46,6 +46,16 @@
       if (!isFinite(n)) return v == null ? '' : String(v);
       try { return n.toLocaleString((window.TT_LANG || 'en') + '-u-nu-latn', digits == null ? { maximumFractionDigits: 3 } : { minimumFractionDigits: digits, maximumFractionDigits: digits }); } catch (e) { return String(n); }
     };
+    const nextActions = Object.entries(doc.next_actions || {}).map(([action, x]) => ({
+      action: __(action),
+      target: __('To: {0}', [__(x.next_state)]),
+      who: [...(x.users || []), ...(x.roles || []).map((r) => __(r))].join('، ') || '—',
+    }));
+    const timeline = (doc.timeline || []).slice().reverse().map((t) => ({
+      event: t.event, who: t.user_name === '-' ? '' : t.user_name, time: t.date_text, details: t.details,
+      received: t.received_text ? __('Received: {0}', [t.received_text]) : '',
+      receivedStyle: t.received_text ? 'font-size:11px;color:var(--fg3);margin-top:2px;' : 'display:none;',
+    }));
     return {
       /* key / value "spec sheet" (.tm-kv in todobox.css): every field looks alike, each value can be copied */
       fields: (doc.fields || []).map((f) => ({
@@ -74,6 +84,10 @@
         };
       }),
       noFiles: files.length === 0,
+      hasNextActions: nextActions.length > 0,
+      nextActions,
+      hasTimeline: timeline.length > 0,
+      timeline,
       historyRows: trail.map((tr) => {
         const u = userOf(tr[1]) || {};
         return {
@@ -105,7 +119,9 @@
 
   refPickTab = (sel, id) => {
     this.setState({ refTab: { task: sel.name, id } });
-    if (id !== 'task') this.loadRefDetail(sel.name);
+    if (id === 'task') return;
+    this.loadRefDetail(sel.name);
+    if (this.W && this.W.markReceived) this.W.markReceived(sel.reference_name, sel.reference_type);
   };
 
   refComment = async (sel) => {
@@ -119,27 +135,27 @@
   };
 
   /** A workflow action on the linked document, from inside the task: same rules as Required actions */
-  docActApply = async (sel, a) => {
+  docActApply = async (sel, a, acts) => {
+    if (this._wfAsking || this._docActBusy) return;
+    if (acts && acts.needs_form) {
+      this.toast(__('This document runs form scripts on workflow actions — opening it in Desk'));
+      this.openRef(sel.reference_type, sel.reference_name);
+      return;
+    }
+    if (acts && acts.confirm) {
+      this._wfAsking = true;
+      const yes = await this.tbConfirm(__('Are you sure you want to {0}?', [a.id]), { primary: __('Yes'), secondary: __('No') });
+      this._wfAsking = false;
+      if (!yes) return;
+    }
     const note = (this.state.docActNote || '').trim();
-    if (a.needsNote && !note) {
-      this.setState({ docActNoteError: true });
-      this.toast(__('“{0}” requires a written reason', [a.label]));
-      return;
-    }
-    if (a.destructive && this.state.docActConfirm !== a.id) {
-      this.setState({ docActConfirm: a.id });
-      this.toast(__('Press again to confirm: {0}', [a.label]));
-      return;
-    }
-    if (this._docActBusy) return;
     this._docActBusy = true;
     let r = null;
     try { r = await this.api.applyDocAction(sel.reference_type, sel.reference_name, a.id, note); } finally { this._docActBusy = false; }
-    this.setState({ docActConfirm: null });
     this.loadDocActions(sel.name);
     if (!r) return;
-    this.setState({ docActNote: '', docActNoteError: false });
-    this.toast(__('{0} — done', [a.label]));
+    this.setState({ docActNote: '' });
+    this.toast(r.queued ? __('{0} — queued for submission in the background', [a.label]) : __('{0} — done', [a.label]));
     this.wfReload();
     if ((this.state.refDocs || {})[sel.name]) this.loadRefDetail(sel.name, true);
     /* the document may have finished, which closes its open tasks on the server */
@@ -154,17 +170,16 @@
       hasDocActions: true,
       docActMeta: __(sel.reference_type) + ' ' + sel.reference_name + (acts.ref_status ? ' · ' + acts.ref_status : ''),
       docActNote: s.docActNote || '',
-      onDocActNote: (e) => this.setState({ docActNote: e.target.value, docActNoteError: false }),
-      docActNotePlaceholder: __('Add a note with the decision… (required when rejecting or returning)'),
-      docActNoteStyle: 'width:100%;height:34px;padding:0 12px;background:var(--panel);border:1px solid ' + (s.docActNoteError ? 'var(--red)' : 'var(--line)') + ';border-radius:8px;outline:none;font-size:12.5px;',
+      onDocActNote: (e) => this.setState({ docActNote: e.target.value }),
+      docActNotePlaceholder: __('Add a note with the decision (optional)…'),
+      docActNoteStyle: 'width:100%;height:34px;padding:0 12px;background:var(--panel);border:1px solid var(--line);border-radius:8px;outline:none;font-size:12.5px;',
       docActions: list.map((a) => {
         const c = a.tone === 'green' ? 'var(--green)' : a.tone === 'amber' ? 'var(--amber)' : 'var(--red)';
-        const confirming = a.destructive && s.docActConfirm === a.id;
         return {
-          label: a.label + (confirming ? ' — ' + __('Confirm?') : ''),
+          label: a.label,
           style: 'height:30px;padding:0 13px;white-space:nowrap;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;border:1px solid ' + c +
-            ';background:' + (a.tone === 'green' ? c : confirming ? 'var(--red-soft)' : 'transparent') + ';color:' + (a.tone === 'green' ? 'var(--on-accent)' : c) + ';',
-          onDo: () => this.docActApply(sel, a),
+            ';background:' + (a.tone === 'green' ? c : 'transparent') + ';color:' + (a.tone === 'green' ? 'var(--on-accent)' : c) + ';',
+          onDo: () => this.docActApply(sel, a, acts),
         };
       }),
     };
@@ -205,7 +220,7 @@
       userOf: (u) => users[u] || U[u] || {},
       toneOf: (st) => (rd.state_tones || {})[st],
       stateLabel: (st) => (rd.state_labels || {})[st] || st,
-    }) : { fields: [], items: [], itemCount: '0', itemsCls: 'tm-it', comments: [], files: [], historyRows: [], hasItems: false, noComments: false, noFiles: false };
+    }) : { fields: [], items: [], itemCount: '0', itemsCls: 'tm-it', comments: [], files: [], historyRows: [], nextActions: [], timeline: [], hasItems: false, noComments: false, noFiles: false };
 
     return {
       ...this.docActVals(sel, acts),

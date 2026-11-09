@@ -102,9 +102,6 @@ msgstr "إضافة"
 msgid "Add Tag"
 msgstr "أضف وسمًا"
 
-msgid "Add a note with the decision… (required when rejecting or returning)"
-msgstr "أضف ملاحظة مع القرار… (إلزامية مع الرفض أو الإعادة)"
-
 msgid "Add a recipient and a subject"
 msgstr "أضف مستلمًا وموضوعًا"
 
@@ -4311,5 +4308,333 @@ msgid "Write a comment on this document… type @ to mention a colleague"
 msgstr "اكتب تعليقًا على هذه المعاملة… اكتب @ لذكر زميل"
 
 msgctxt "ToDoBox"
-msgid "Add a note with the decision… (required when rejecting or returning) · @ to mention"
-msgstr "أضف ملاحظة مع القرار… (مطلوبة عند الرفض أو الإرجاع) · @ لذكر زميل"
+msgid "Workflow Progress"
+msgstr "تقدم سير العمل"
+
+msgctxt "ToDoBox"
+msgid "Current"
+msgstr "الحالي"
+
+msgctxt "ToDoBox"
+msgid "Current State"
+msgstr "الوضع الحالي"
+
+msgctxt "ToDoBox"
+msgid "Not Started"
+msgstr "لم يبدأ"
+
+msgctxt "ToDoBox"
+msgid "Loading workflow progress..."
+msgstr "جارٍ تحميل تقدم سير العمل..."
+
+msgctxt "ToDoBox"
+msgid "Workflow Action"
+msgstr "إجراء سير العمل"
+
+msgctxt "ToDoBox"
+msgid "Workflow Actions"
+msgstr "إجراءات سير العمل"
+
+msgctxt "ToDoBox"
+msgid "Refresh"
+msgstr "تحديث"
+
+msgctxt "ToDoBox"
+msgid "No actions available"
+msgstr "لا توجد إجراءات متاحة"
+
+msgctxt "ToDoBox"
+msgid "No Workflow Actions"
+msgstr "لا توجد إجراءات سير عمل"
+
+msgctxt "ToDoBox"
+msgid "There are no open workflow actions for you."
+msgstr "لا توجد لديك إجراءات سير عمل مفتوحة."
+
+msgctxt "ToDoBox"
+msgid "Unable to load workflow actions."
+msgstr "تعذر تحميل إجراءات سير العمل."
+
+msgctxt "ToDoBox"
+msgid "Add User"
+msgstr "إضافة مستخدم"
+
+msgctxt "ToDoBox"
+msgid "Me"
+msgstr "أنا"
+
+msgctxt "ToDoBox"
+msgid "Option"
+msgstr "الخيار"
+
+msgctxt "ToDoBox"
+msgid "Doctype Count"
+msgstr "عدد أنواع المستندات"
+
+msgctxt "ToDoBox"
+msgid "Show Open"
+msgstr "إظهار المفتوح"
+
+msgctxt "ToDoBox"
+msgid "Today's Completed Transactions"
+msgstr "معاملات اليوم المكتملة"
+
+msgctxt "ToDoBox"
+msgid "Total Open"
+msgstr "إجمالي المفتوح"
+
+msgctxt "ToDoBox"
+msgid "Total Open by Employee"
+msgstr "إجمالي المفتوح حسب الموظف"
+
+msgctxt "ToDoBox"
+msgid "Avg Late"
+msgstr "متوسط التأخير"
+
+msgctxt "ToDoBox"
+msgid "Avg Late Date"
+msgstr "متوسط التأخير"
+
+msgctxt "ToDoBox"
+msgid "Max Late Duration"
+msgstr "أقصى مدة تأخير"
+
+msgctxt "ToDoBox"
+msgid "Late"
+msgstr "التأخير"
+
+msgctxt "ToDoBox"
+msgid "Late Duration"
+msgstr "مدة التأخير"
+
+msgctxt "ToDoBox"
+msgid "Late Days"
+msgstr "أيام التأخير"
+
+msgctxt "ToDoBox"
+msgid "Reference Doctype"
+msgstr "نوع المستند المرجعي"
+
+msgctxt "ToDoBox"
+msgid "Open in ToDoBox"
+msgstr "فتح في ToDoBox"
+
+msgctxt "ToDoBox"
+msgid "Total Open Transactions"
+msgstr "إجمالي المعاملات المفتوحة"
+
+msgctxt "ToDoBox"
+msgid "Transaction Type"
+msgstr "نوع المعاملة"
+
+msgctxt "ToDoBox"
+msgid "Transaction Number"
+msgstr "رقم المعاملة"
+
+msgctxt "ToDoBox"
+msgid "Completed Average Duration"
+msgstr "متوسط مدة المكتمل"
+
+msgctxt "ToDoBox"
+msgid "Open Average Duration"
+msgstr "متوسط مدة المفتوح"
+
+msgctxt "ToDoBox"
+msgid "Please set Document Type first."
+msgstr "يرجى تحديد نوع المستند أولاً."
+
+msgctxt "ToDoBox"
+msgid "{0} has no field linked to User."
+msgstr "لا يحتوي {0} على حقل مرتبط بالمستخدم."
+
+msgctxt "ToDoBox"
+msgid "This report needs the Employee doctype, which is not available on this site."
+msgstr "يتطلب هذا التقرير نوع المستند «الموظف»، وهو غير متاح في هذا الموقع."
+
+msgctxt "ToDoBox"
+msgid "The {0} filter is not available on this site."
+msgstr "عامل التصفية {0} غير متاح في هذا الموقع."
+
+msgctxt "ToDoBox"
+msgid "Please set the From and To dates."
+msgstr "يرجى تحديد تاريخي البداية والنهاية."
+
+msgctxt "ToDoBox"
+msgid "You do not have permission to read Employee records."
+msgstr "ليس لديك صلاحية قراءة سجلات الموظفين."
+
+msgctxt "ToDoBox"
+msgid "Please choose an Option."
+msgstr "يرجى اختيار خيار."
+
+msgctxt "ToDoBox"
+msgid "Only a System Manager can use the All option."
+msgstr "يقتصر خيار «الكل» على مدير النظام."
+
+msgctxt "ToDoBox"
+msgid "Only a System Manager or HR Manager can use the All option."
+msgstr "يقتصر خيار «الكل» على مدير النظام أو مدير الموارد البشرية."
+
+msgctxt "ToDoBox"
+msgid "No Employee record is linked to your user, so {0} has no data."
+msgstr "لا يوجد سجل موظف مرتبط بمستخدمك، لذا لا توجد بيانات لـ {0}."
+
+msgctxt "ToDoBox"
+msgid "Workflow Trace is not available on this site."
+msgstr "تتبع سير العمل غير متاح في هذا الموقع."
+
+msgctxt "ToDoBox"
+msgid "Workflow Trace is not available on this site, so Completed stays 0."
+msgstr "تتبع سير العمل غير متاح في هذا الموقع، لذا يبقى المكتمل 0."
+
+msgctxt "ToDoBox"
+msgid "Are you sure you want to {0}?"
+msgstr "هل أنت متأكد أنك تريد {0}؟"
+
+msgctxt "ToDoBox"
+msgid "Add a note with the decision (optional)… · @ to mention"
+msgstr "أضف ملاحظة مع القرار (اختياري)… · @ للإشارة إلى زميل"
+
+msgctxt "ToDoBox"
+msgid "Add a note with the decision (optional)…"
+msgstr "أضف ملاحظة مع القرار (اختياري)…"
+
+msgctxt "ToDoBox"
+msgid "This document runs form scripts on workflow actions — opening it in Desk"
+msgstr "لهذا المستند نصوص نموذج تعمل عند إجراءات سير العمل — جارٍ فتحه في Desk"
+
+msgctxt "ToDoBox"
+msgid "{0} documents run form scripts on workflow actions — open them in Desk"
+msgstr "{0} مستندات لها نصوص نموذج تعمل عند إجراءات سير العمل — افتحها في Desk"
+
+msgctxt "ToDoBox"
+msgid "{0} — queued for submission in the background"
+msgstr "{0} — أُضيف إلى قائمة الاعتماد في الخلفية"
+
+msgctxt "ToDoBox"
+msgid "You are not allowed to move this document from {0} to {1}."
+msgstr "غير مسموح لك بنقل هذا المستند من {0} إلى {1}."
+
+msgctxt "ToDoBox"
+msgid "Action: {0}"
+msgstr "الإجراء: {0}"
+
+msgctxt "ToDoBox"
+msgid "Move to: {0}"
+msgstr "نقل إلى: {0}"
+
+msgctxt "ToDoBox"
+msgid "From: {0}"
+msgstr "من: {0}"
+
+msgctxt "ToDoBox"
+msgid "Status: {0}"
+msgstr "الحالة: {0}"
+
+msgctxt "ToDoBox"
+msgid "Duration: {0}"
+msgstr "المدة: {0}"
+
+msgctxt "ToDoBox"
+msgid "Show Status Bar"
+msgstr "إظهار شريط الحالة"
+
+msgctxt "ToDoBox"
+msgid "Show Progress Button"
+msgstr "إظهار زر التقدم"
+
+msgctxt "ToDoBox"
+msgid "Show Next Actions Button"
+msgstr "إظهار زر الإجراءات التالية"
+
+msgctxt "ToDoBox"
+msgid "Has trace?"
+msgstr "يحتوي على تتبع؟"
+
+msgctxt "ToDoBox"
+msgid "Users By Doc Field"
+msgstr "المستخدمون حسب حقل المستند"
+
+msgctxt "ToDoBox"
+msgid "Use and Condition"
+msgstr "استخدام شرط \"و\""
+
+msgctxt "ToDoBox"
+msgid "Use and Condition Between Users"
+msgstr "استخدام شرط \"و\" بين المستخدمين"
+
+msgctxt "ToDoBox"
+msgid "Show in Status Bar"
+msgstr "إظهار في شريط الحالة"
+
+msgctxt "ToDoBox"
+msgid "Status No"
+msgstr "رقم الحالة"
+
+msgctxt "ToDoBox"
+msgid "Status Bar Condition"
+msgstr "شرط شريط الحالة"
+
+msgctxt "ToDoBox"
+msgid "Hide In Report"
+msgstr "إخفاء في التقرير"
+
+msgctxt "ToDoBox"
+msgid "Reference Creation"
+msgstr "تاريخ إنشاء المرجع"
+
+msgctxt "ToDoBox"
+msgid "Reference Owner"
+msgstr "مالك المرجع"
+
+msgctxt "ToDoBox"
+msgid "Next State"
+msgstr "الحالة التالية"
+
+msgctxt "ToDoBox"
+msgid "Next Action"
+msgstr "الإجراء التالي"
+
+msgctxt "ToDoBox"
+msgid "Received On"
+msgstr "تاريخ الاستلام"
+
+msgctxt "ToDoBox"
+msgid "Permitted Users"
+msgstr "المستخدمون المصرح لهم"
+
+msgctxt "ToDoBox"
+msgid "Permitted Users Count"
+msgstr "عدد المستخدمين المصرح لهم"
+
+msgctxt "ToDoBox"
+msgid "Workflow Trace"
+msgstr "تتبع سير العمل"
+
+msgctxt "ToDoBox"
+msgid "Workflow State"
+msgstr "حالة سير العمل"
+
+msgctxt "ToDoBox"
+msgid "Max"
+msgstr "الأقصى"
+
+msgctxt "ToDoBox"
+msgid "d"
+msgstr "ي"
+
+msgctxt "ToDoBox"
+msgid "m"
+msgstr "د"
+
+msgctxt "ToDoBox"
+msgid "Who can act now"
+msgstr "من يستطيع التصرف الآن"
+
+msgctxt "ToDoBox"
+msgid "Actions timeline"
+msgstr "السجل الزمني للإجراءات"
+
+msgctxt "ToDoBox"
+msgid "Received: {0}"
+msgstr "استُلم في: {0}"

@@ -10,7 +10,7 @@
   wfNoteRef = (el) => { this.wfNoteEl = el; };
   /** The box the popup belongs to: the task composer, or the document comment box */
   mentionBox() {
-    if (this.mentionCtx === 'note') return { el: this.wfNoteEl, key: 'wfNote', extra: { wfNoteError: false } };
+    if (this.mentionCtx === 'note') return { el: this.wfNoteEl, key: 'wfNote', extra: {} };
     return this.mentionCtx === 'wf' ? { el: this.wfCommentEl, key: 'wfCommentDraft', extra: {} } : { el: this.composerEl, key: 'draft', extra: { composerOpen: true } };
   }
   mentionMap = {};
@@ -109,7 +109,7 @@
   onWfNoteInput = (e) => {
     const el = e.target;
     this.mentionCtx = 'note';
-    this.setState({ wfNote: el.value, wfNoteError: false }, () => this.mentionDetect(el));
+    this.setState({ wfNote: el.value }, () => this.mentionDetect(el));
   };
   onWfNoteCaret = (e) => { this.mentionCtx = 'note'; this.mentionDetect(e.target); };
   onWfCommentCaret = (e) => { this.mentionCtx = 'wf'; this.mentionDetect(e.target); };

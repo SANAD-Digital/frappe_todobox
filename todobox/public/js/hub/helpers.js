@@ -2,7 +2,8 @@
 (window.TTParts = window.TTParts || []).push((Base, React) => class extends Base {
   /* ---------- helpers ---------- */
   /** Confirmation dialog in the app's own dialog style (Frappe's frappe.confirm needs Desk's modal CSS,
-      which this page doesn't load). Resolves true on confirm; Esc, the backdrop and Cancel resolve false. */
+      which this page doesn't load). Resolves true on confirm; Esc, the backdrop and Cancel resolve false.
+      opts: title, primary and secondary (button labels), danger. Modal: while open, keys don't reach the page. */
   tbConfirm(message, opts) {
     const o = opts || {};
     return new Promise((resolve) => {
@@ -17,18 +18,22 @@
         resolve(ok);
       };
       const onKey = (e) => {
-        if (e.key === 'Escape') { e.preventDefault(); e.stopImmediatePropagation(); finish(false); }
-        else if (e.key === 'Enter') { e.preventDefault(); e.stopImmediatePropagation(); finish(true); }
+        if (e.key === 'Tab') return;
+        e.stopImmediatePropagation();
+        if (e.key === 'Escape') { e.preventDefault(); finish(false); }
+        /* e.repeat: the Enter that opened this dialog, still held down, is not an answer */
+        else if (e.key === 'Enter') { e.preventDefault(); if (!e.repeat) finish(document.activeElement !== no); }
       };
       const prevFocus = document.activeElement;
       const ok = h('button', { type: 'button', class: 'tb-btn ' + (o.danger ? 'tb-btn-danger' : 'tb-btn-primary'), onclick: () => finish(true) }, o.primary || __('Yes'));
+      const no = h('button', { type: 'button', class: 'tb-btn tb-btn-default', onclick: () => finish(false) }, o.secondary || __('Cancel'));
       const root = h('div', { class: 'tb-confirm' },
         h('div', { class: 'tb-dlg-backdrop tb-confirm-backdrop', onclick: () => finish(false) }),
         h('div', { class: 'tb-dlg tb-dlg-sm tb-confirm-dlg', role: 'alertdialog', 'aria-modal': 'true', 'aria-label': o.title || __('Confirm') },
           h('div', { class: 'tb-dlg-head' }, h('span', { class: 'tb-dlg-title' }, o.title || __('Confirm'))),
           h('div', { class: 'tb-dlg-body' }, h('p', { class: 'tb-confirm-msg', text: message })),
           h('div', { class: 'tb-dlg-foot' },
-            h('button', { type: 'button', class: 'tb-btn tb-btn-default', onclick: () => finish(false) }, __('Cancel')),
+            no,
             ok)));
       window.addEventListener('keydown', onKey, true);
       document.body.appendChild(root);

@@ -5,13 +5,16 @@ Everything here is idempotent and safe to re-run.
 """
 
 import json
+import os
 
 import frappe
 from frappe import _, _lt
 from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
+from frappe.modules import scrub
 
 from todobox.services.common import CHECKLIST_ITEM_DOCTYPE, TEMPLATE_DOCTYPE
 from todobox.services.org import remove_roles, setup_roles
+from todobox.setup.legacy import migrate_legacy_workflow
 
 MODULE = "ToDoBox"
 
@@ -100,6 +103,61 @@ CUSTOM_FIELDS = {
 	],
 }
 
+# Workflow: shown on the Workflow forms, unlike the fields above. Only those with a runtime effect
+CUSTOM_FIELDS.update(
+	{
+		"Workflow": [
+			{"fieldname": "show_status_bar", "label": "Show Status Bar", "fieldtype": "Check", "default": "1", "insert_after": "workflow_state_field"},
+			{"fieldname": "todobox_has_wf_trace", "label": "Has trace?", "fieldtype": "Check", "insert_after": "show_status_bar"},
+		],
+		"Workflow Transition": [
+			{"fieldname": "todobox_add_user", "label": "Add User", "fieldtype": "Button", "insert_after": "allow_self_approval"},
+			{"fieldname": "todobox_users_by_doc_field", "label": "Users By Doc Field", "fieldtype": "Data", "insert_after": "todobox_add_user"},
+			{"fieldname": "todobox_use_and_condition", "label": "Use and Condition", "fieldtype": "Check", "depends_on": "todobox_users_by_doc_field", "insert_after": "todobox_users_by_doc_field"},
+			{"fieldname": "todobox_use_and_condition_between_users", "label": "Use and Condition Between Users", "fieldtype": "Check", "insert_after": "todobox_use_and_condition"},
+		],
+		"Workflow Document State": [
+			{"fieldname": "show_in_statusbar", "label": "Show in Status Bar", "fieldtype": "Check", "default": "1", "insert_after": "style"},
+			{"fieldname": "status_no", "label": "Status No", "fieldtype": "Int", "insert_after": "show_in_statusbar"},
+			{"fieldname": "todobox_statusbar_condition", "label": "Status Bar Condition", "fieldtype": "Small Text", "insert_after": "status_no"},
+		],
+		"Workflow State": [
+			{"fieldname": "todobox_hide_in_report", "label": "Hide In Report", "fieldtype": "Check", "insert_after": "style"},
+		],
+		"Workflow Action": [
+			{"fieldname": "next_state", "label": "Next State", "fieldtype": "Link", "options": "Workflow State", "insert_after": "workflow_state", "read_only": 1},
+			{"fieldname": "next_action", "label": "Next Action", "fieldtype": "Link", "options": "Workflow Action Master", "insert_after": "next_state", "read_only": 1},
+			{"fieldname": "received_on", "label": "Received On", "fieldtype": "Datetime", "insert_after": "completed_by", "read_only": 1},
+			{"fieldname": "completed_on", "label": "Completed On", "fieldtype": "Datetime", "insert_after": "received_on", "read_only": 1},
+			{"fieldname": "duration", "label": "Duration", "fieldtype": "Duration", "insert_after": "completed_on", "read_only": 1},
+			{"fieldname": "todobox_permitted_users", "label": "Permitted Users", "fieldtype": "Table MultiSelect", "options": "Workflow Action Permitted User", "insert_after": "permitted_roles", "read_only": 1},
+			{"fieldname": "todobox_permitted_users_count", "label": "Permitted Users Count", "fieldtype": "Int", "insert_after": "todobox_permitted_users", "hidden": 1, "read_only": 1},
+		],
+	}
+)
+
+# Workflow data ToDoBox owns on a site
+SHARED_DOCTYPES = ("Workflow Trace", "Workflow Action Permitted User")
+SHARED_REPORTS = (
+	"Employee wise Workflow Action",
+	"Leader For Wise",
+	"Workflow Action Report",
+	"Workflow Trace Report",
+	"Workflow Trace Summary",
+)
+SHARED_FIELDS = {
+	"Workflow": ("show_status_bar", "todobox_has_wf_trace"),
+	"Workflow Transition": (
+		"todobox_add_user", "todobox_users_by_doc_field", "todobox_use_and_condition",
+		"todobox_use_and_condition_between_users",
+	),
+	"Workflow Document State": ("show_in_statusbar", "status_no", "todobox_statusbar_condition"),
+	"Workflow State": ("todobox_hide_in_report",),
+	"Workflow Action": (
+		"next_state", "next_action", "received_on", "completed_on", "duration", "todobox_permitted_users",
+		"todobox_permitted_users_count",
+	),
+}
 # Default task templates, seeded once in the site's default language (see seed_task_templates)
 DEFAULT_TASK_TEMPLATES = [
 	{
@@ -180,7 +238,10 @@ def _safe(step, fn, *args):
 
 # ------------------------------------------------------------------ hooks
 def after_install():
+	# before the fields are created: it moves older data to these names
+	migrate_legacy_workflow()
 	setup_custom_fields()
+	claim_workflow_ownership()
 	frappe.db.commit()
 	_safe("indexes", setup_indexes)
 	_safe("roles", setup_roles)
@@ -189,7 +250,10 @@ def after_install():
 
 
 def after_migrate():
+	# before the fields are created: it moves older data to these names
+	migrate_legacy_workflow()
 	setup_custom_fields()
+	claim_workflow_ownership()
 	frappe.db.commit()
 	_safe("indexes", setup_indexes)
 	_safe("roles", setup_roles)
@@ -197,6 +261,9 @@ def after_migrate():
 
 
 def before_uninstall():
+	# not _safe: if this fails the uninstall must stop, or Frappe would drop the Workflow Trace table
+	release_workflow_ownership()
+	frappe.db.commit()
 	_safe("release custom fields", release_custom_fields)
 
 
@@ -207,12 +274,97 @@ def after_uninstall():
 	frappe.clear_cache()
 
 
+# ------------------------------------------------------------------ shared workflow data
+def _per_doctype_trace_fields():
+	"""The trace fields a Workflow with "Has trace?" added to its document type."""
+	fields = frappe.get_all(
+		"Custom Field",
+		filters={"fieldname": ("in", ("todobox_wf_trace", "section_workflow_trace"))},
+		fields=["name", "module"],
+	)
+	with_trace = frappe.get_all("Custom Field", filters={"fieldname": "todobox_wf_trace"}, pluck="dt")
+	if with_trace:
+		fields += frappe.get_all(
+			"Custom Field",
+			filters={
+				"fieldname": "main_data",
+				"insert_after": "todobox_wf_trace",
+				"fieldtype": "Section Break",
+				"dt": ("in", with_trace),
+			},
+			fields=["name", "module"],
+		)
+	return fields
+
+
+def _shared_fields():
+	fields = []
+	for dt, fieldnames in SHARED_FIELDS.items():
+		fields += frappe.get_all(
+			"Custom Field", filters={"dt": dt, "fieldname": ("in", fieldnames)}, fields=["name", "module"]
+		)
+	return fields
+
+
+def _report_code_shipped(report) -> bool:
+	"""A standard report runs from <module>/report/<name>/, so it cannot move before its code is here."""
+	folder = scrub(report)
+	return os.path.exists(frappe.get_app_path(APP_NAME, scrub(MODULE), "report", folder, f"{folder}.py"))
+
+
+def claim_workflow_ownership():
+	"""Idempotent. A field another app or the site owns stays as it is."""
+	for doctype in SHARED_DOCTYPES:
+		current = frappe.db.get_value("DocType", doctype, ["module", "custom"], as_dict=True)
+		if current and (current.module != MODULE or current.custom):
+			frappe.db.set_value("DocType", doctype, {"module": MODULE, "custom": 0}, update_modified=False)
+			frappe.clear_cache(doctype=doctype)
+
+	for report in SHARED_REPORTS:
+		module = frappe.db.get_value("Report", report, "module")
+		if module and module != MODULE:
+			if _report_code_shipped(report):
+				frappe.db.set_value("Report", report, "module", MODULE, update_modified=False)
+			else:
+				_logger().warning(f"ToDoBox: report {report} stays in {module}: its code is not in ToDoBox")
+
+	for field in _shared_fields() + _per_doctype_trace_fields():
+		if not field.module:
+			frappe.db.set_value("Custom Field", field.name, "module", MODULE, update_modified=False)
+
+
+def release_workflow_ownership():
+	"""ToDoBox is being uninstalled and Frappe drops the tables of the doctypes in its module.
+
+	The two doctypes stay on the site as custom doctypes (a reinstall claims them back) and the trace fields
+	stay on their documents, so the trace rows are kept and remain visible. The other field definitions are
+	removed by the uninstall; their columns stay."""
+	for doctype in SHARED_DOCTYPES:
+		if frappe.db.get_value("DocType", doctype, "module") == MODULE:
+			frappe.db.set_value("DocType", doctype, {"module": "Custom", "custom": 1}, update_modified=False)
+			frappe.clear_cache(doctype=doctype)
+
+	for field in _per_doctype_trace_fields():
+		if field.module == MODULE:
+			frappe.db.set_value("Custom Field", field.name, "module", None, update_modified=False)
+
+
 # ------------------------------------------------------------------ custom fields
 def setup_custom_fields():
-	"""Creates the fields (or updates them to the definitions above). They are hidden and read-only on
-	the Desk forms, which look as they did before ToDoBox; the app writes them server-side."""
+	"""Creates the fields (or updates them to the definitions above). Unless a definition says otherwise
+	they are hidden and read-only on the Desk forms, which look as they did before ToDoBox; the app writes
+	them server-side."""
 	fields = {
-		dt: [{**df, "hidden": 1, "read_only": 1, "module": MODULE} for df in dfs] for dt, dfs in CUSTOM_FIELDS.items()
+		dt: [
+			{
+				"hidden": 0 if dt in SHARED_FIELDS else 1,
+				"read_only": 0 if dt in SHARED_FIELDS else 1,
+				**df,
+				"module": MODULE,
+			}
+			for df in dfs
+		]
+		for dt, dfs in CUSTOM_FIELDS.items()
 	}
 	create_custom_fields(fields, ignore_validate=True)
 
