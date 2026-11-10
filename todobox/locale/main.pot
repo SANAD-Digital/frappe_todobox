@@ -4392,3 +4392,30 @@ msgstr ""
 msgctxt "ToDoBox"
 msgid "Received: {0}"
 msgstr ""
+
+msgid "Overdue"
+msgstr ""
+
+msgid "Assigned by {0}"
+msgstr ""
+
+msgid "Due {0}"
+msgstr ""
+
+msgid "Completed {0}"
+msgstr ""
+
+msgid "Private task"
+msgstr ""
+
+msgid "Tasks of {0}"
+msgstr ""
+
+msgid "Overdue by {0} days"
+msgstr ""
+
+msgid "Open in ToDoBox"
+msgstr ""
+
+msgid "{0} of {1} completed"
+msgstr ""

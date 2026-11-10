@@ -1,0 +1,364 @@
+/* ToDoBox Desk: "Tasks" dialog of a document (public/js/linked_todos.bundle.js).
+   Progress and status navigation on the side, the tasks as a list on the right. Frappe CSS vars only, so dark
+   mode and RTL follow the Desk. */
+
+.tbx-lt {
+	--tbx-lt-red: var(--red-500, #e03636);
+	--tbx-lt-orange: var(--orange-500, #e86c13);
+	--tbx-lt-green: var(--green-500, #278f5e);
+	--tbx-lt-gray: var(--gray-500, #7c7c7c);
+}
+
+.tbx-lt .modal-dialog.modal-xl {
+	max-width: min(1080px, calc(100vw - 32px));
+}
+
+.tbx-lt .modal-body {
+	padding: 0;
+}
+
+.tbx-lt .tbx-lt-page {
+	display: grid;
+	grid-template-columns: 230px minmax(0, 1fr);
+	height: min(68vh, 680px);
+}
+
+/* ------------------------------------------------------------------ side */
+.tbx-lt .tbx-lt-side {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	padding: 12px var(--padding-sm, 8px);
+	overflow-y: auto;
+	border-inline-end: 1px solid var(--border-color);
+	background: var(--subtle-fg);
+}
+
+/* the same white surface as the active tab below it (card-bg, so dark mode follows) */
+.tbx-lt .tbx-lt-summary {
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 10px;
+	padding: 10px 12px;
+	border-radius: var(--border-radius-md, 8px);
+	background: var(--card-bg, #fff);
+	box-shadow: var(--shadow-sm);
+}
+
+.tbx-lt .tbx-lt-ring {
+	width: 38px;
+	height: 38px;
+	flex: none;
+	transform: rotate(-90deg);
+}
+
+.tbx-lt .tbx-lt-ring circle {
+	fill: none;
+	stroke-width: 3.5;
+}
+
+.tbx-lt .tbx-lt-ring-track {
+	stroke: var(--border-color);
+}
+
+.tbx-lt .tbx-lt-ring-fill {
+	stroke: var(--tbx-lt-green);
+	stroke-linecap: round;
+	transition: stroke-dashoffset 0.4s ease;
+}
+
+.tbx-lt .tbx-lt-ring text {
+	transform: rotate(90deg);
+	transform-origin: 21px 21px;
+	fill: var(--text-color);
+	font-size: 10px;
+	font-weight: 600;
+	font-variant-numeric: tabular-nums;
+}
+
+.tbx-lt .tbx-lt-summary-text {
+	min-width: 0;
+	line-height: 1.35;
+}
+
+.tbx-lt .tbx-lt-summary-title {
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--text-color);
+}
+
+.tbx-lt .tbx-lt-summary-sub {
+	margin-top: 2px;
+	font-size: 12px;
+	color: var(--text-muted);
+}
+
+.tbx-lt .tbx-lt-summary-sub .tbx-lt-late {
+	color: var(--tbx-lt-red);
+}
+
+.tbx-lt .tbx-lt-nav {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.tbx-lt .tbx-lt-tab {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	width: 100%;
+	padding: 6px 8px;
+	border: 0;
+	border-radius: var(--border-radius-md, 8px);
+	background: transparent;
+	color: var(--text-muted);
+	font-size: 13px;
+	line-height: 1.3;
+	text-align: start;
+	cursor: pointer;
+}
+
+.tbx-lt .tbx-lt-tab:hover {
+	color: var(--text-color);
+	background: var(--fg-hover-color, var(--bg-color));
+}
+
+.tbx-lt .tbx-lt-tab.active {
+	color: var(--text-color);
+	font-weight: 600;
+	background: var(--card-bg);
+	box-shadow: var(--shadow-sm);
+}
+
+.tbx-lt .tbx-lt-ico {
+	display: inline-flex;
+	flex: none;
+}
+
+.tbx-lt .tbx-lt-ico .icon {
+	width: 16px;
+	height: 16px;
+	--icon-stroke: currentColor;
+}
+
+.tbx-lt .tbx-lt-label {
+	flex: 1;
+	min-width: 0;
+}
+
+.tbx-lt .tbx-lt-count {
+	min-width: 22px;
+	padding: 0 6px;
+	border-radius: 99px;
+	font-size: 11.5px;
+	text-align: center;
+	font-variant-numeric: tabular-nums;
+	color: var(--text-muted);
+	background: var(--border-color);
+}
+
+.tbx-lt .tbx-lt-tab.active .tbx-lt-count {
+	color: var(--text-color);
+}
+
+/* ------------------------------------------------------------------ list */
+.tbx-lt .tbx-lt-pane {
+	display: flex;
+	flex-direction: column;
+	min-height: 0;
+}
+
+.tbx-lt .tbx-lt-list {
+	overflow-y: auto;
+	padding: 0 0 8px;
+}
+
+/* a list in the Desk's own style: columns, thin separators, a hover tint */
+.tbx-lt .tbx-lt-row {
+	display: grid;
+	grid-template-columns: minmax(0, 2.3fr) minmax(0, 1.4fr) minmax(0, 1.1fr) minmax(0, 1.3fr) 90px 96px;
+	align-items: center;
+	gap: 12px;
+	padding: 9px 16px;
+	border-bottom: 1px solid var(--border-color);
+	color: inherit;
+	font-size: 13px;
+	text-decoration: none;
+}
+
+.tbx-lt a.tbx-lt-row:hover,
+.tbx-lt a.tbx-lt-row:focus-visible {
+	background: var(--fg-hover-color, var(--subtle-fg));
+	color: inherit;
+	text-decoration: none;
+}
+
+.tbx-lt .tbx-lt-cols {
+	position: sticky;
+	top: 0;
+	z-index: 1;
+	padding-block: 7px;
+	background: var(--card-bg, var(--bg-color));
+	font-size: 12px;
+	color: var(--text-muted);
+}
+
+.tbx-lt .tbx-lt-c {
+	min-width: 0;
+}
+
+.tbx-lt .tbx-lt-c-task {
+	display: flex;
+	flex-direction: column;
+}
+
+.tbx-lt .tbx-lt-subject {
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	font-weight: 500;
+	color: var(--text-color);
+}
+
+.tbx-lt a.tbx-lt-row:hover .tbx-lt-subject {
+	text-decoration: underline;
+}
+
+.tbx-lt .tbx-lt-subject.is-private {
+	font-style: italic;
+	color: var(--text-muted);
+}
+
+.tbx-lt .tbx-lt-sub {
+	font-size: 11.5px;
+	color: var(--text-muted);
+}
+
+.tbx-lt .tbx-lt-c-user {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.tbx-lt .tbx-lt-c-user .avatar {
+	flex: none;
+}
+
+.tbx-lt .tbx-lt-c-by,
+.tbx-lt .tbx-lt-c-due,
+.tbx-lt .tbx-lt-c-prio {
+	color: var(--text-muted);
+}
+
+.tbx-lt .tbx-lt-cols .tbx-lt-c {
+	color: var(--text-muted);
+}
+
+.tbx-lt .tbx-lt-c-due {
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.tbx-lt .tbx-lt-c-due.is-late {
+	color: var(--tbx-lt-red);
+	font-weight: 500;
+}
+
+.tbx-lt .tbx-lt-c-prio {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.tbx-lt .tbx-lt-c-state {
+	justify-self: end;
+}
+
+.tbx-lt .tbx-lt-dot {
+	width: 7px;
+	height: 7px;
+	border-radius: 50%;
+	background: var(--tbx-lt-gray);
+}
+
+.tbx-lt .tbx-lt-dot.red { background: var(--tbx-lt-red); }
+.tbx-lt .tbx-lt-dot.orange { background: var(--tbx-lt-orange); }
+
+.tbx-lt .tbx-lt-empty {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	flex: 1;
+	padding: 32px 8px;
+	font-size: 13px;
+	color: var(--text-muted);
+}
+
+.tbx-lt .tbx-lt-empty .icon {
+	width: 32px;
+	height: 32px;
+	opacity: 0.6;
+	--icon-stroke: currentColor;
+}
+
+@media (max-width: 767px) {
+	.tbx-lt .tbx-lt-row {
+		grid-template-columns: minmax(0, 1fr) auto;
+	}
+	.tbx-lt .tbx-lt-c-user,
+	.tbx-lt .tbx-lt-c-by,
+	.tbx-lt .tbx-lt-c-due,
+	.tbx-lt .tbx-lt-c-prio {
+		display: none;
+	}
+	.tbx-lt .tbx-lt-page {
+		grid-template-columns: minmax(0, 1fr);
+		grid-template-rows: auto minmax(0, 1fr);
+		height: calc(100vh - 190px);
+	}
+	.tbx-lt .tbx-lt-side {
+		border-inline-end: 0;
+		border-bottom: 1px solid var(--border-color);
+	}
+	.tbx-lt .tbx-lt-nav {
+		flex-direction: row;
+		overflow-x: auto;
+	}
+	.tbx-lt .tbx-lt-tab {
+		width: auto;
+		white-space: nowrap;
+	}
+}
+
+/* ------------------------------------------------------------------ the sidebar entry above "Attachments" */
+.tbx-lt-section .tbx-lt-open {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	cursor: pointer;
+	text-decoration: none;
+}
+
+.tbx-lt-section .tbx-lt-open:hover,
+.tbx-lt-section .tbx-lt-open:hover * {
+	text-decoration: none;
+}
+
+.tbx-lt-section .tbx-lt-open:hover .form-sidebar-label,
+.tbx-lt-section .tbx-lt-open:focus-visible .form-sidebar-label {
+	color: var(--text-color);
+}
+
+.tbx-lt-section .tbx-lt-section-count {
+	font-size: 12px;
+	font-variant-numeric: tabular-nums;
+	color: var(--text-muted);
+	padding-inline: 6px;
+	border-radius: 99px;
+	background: var(--subtle-fg);
+}

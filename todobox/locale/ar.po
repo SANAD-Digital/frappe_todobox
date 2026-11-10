@@ -4638,3 +4638,30 @@ msgstr "السجل الزمني للإجراءات"
 msgctxt "ToDoBox"
 msgid "Received: {0}"
 msgstr "استُلم في: {0}"
+
+msgid "Overdue"
+msgstr "متأخرة"
+
+msgid "Assigned by {0}"
+msgstr "أسندها {0}"
+
+msgid "Due {0}"
+msgstr "الاستحقاق {0}"
+
+msgid "Completed {0}"
+msgstr "أُنجزت {0}"
+
+msgid "Private task"
+msgstr "مهمة خاصة"
+
+msgid "Tasks of {0}"
+msgstr "مهام {0}"
+
+msgid "Overdue by {0} days"
+msgstr "متأخرة {0} يوم"
+
+msgid "Open in ToDoBox"
+msgstr "فتح في ToDoBox"
+
+msgid "{0} of {1} completed"
+msgstr "أُنجز {0} من {1}"

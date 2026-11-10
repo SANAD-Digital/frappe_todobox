@@ -33,8 +33,9 @@ app_include_js = [
 	"/assets/todobox/js/desk_font.js",
 	"/assets/todobox/js/desk/wf_progress.js",
 	"/assets/todobox/js/desk/wf_sidebar.js",
+	"linked_todos.bundle.js",
 ]
-app_include_css = ["/assets/todobox/css/desk_wf.css"]
+app_include_css = ["/assets/todobox/css/desk_wf.css", "linked_todos.bundle.css"]
 
 # ToDo desk form: fill the checklist from a ToDoBox Task Template
 doctype_js = {
@@ -74,7 +75,10 @@ doc_events = {
 		"after_insert": "todobox.services.live.on_comment_insert",
 	},
 	"*": {
-		"onload": "todobox.services.wf_engine.enqueue_workflow_receipt",
+		"onload": [
+			"todobox.services.wf_engine.enqueue_workflow_receipt",
+			"todobox.services.linked_todos.set_todo_count",
+		],
 		"validate": "todobox.services.wf_engine.before_transition",
 		"before_update_after_submit": "todobox.services.wf_engine.before_transition",
 		"before_cancel": "todobox.services.wf_engine.before_transition",
