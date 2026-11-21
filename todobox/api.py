@@ -49,6 +49,7 @@ from todobox.services.todos import (
 	unsnooze_todo,
 	update_todo,
 )
+from todobox.services.related_comments import get_related_comments
 from todobox.services.users import get_active_users
 from todobox.services.wf_engine import (
 	get_all_possible_next_actions,
@@ -87,6 +88,7 @@ __all__ = [
 	"get_doc_actions",
 	"get_notifications",
 	"get_reference_detail",
+	"get_related_comments",
 	"get_saved_views",
 	"get_settings",
 	"get_task_templates",

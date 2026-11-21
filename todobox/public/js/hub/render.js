@@ -231,6 +231,11 @@
     if (sel) {
       const from = U[sel.assigned_by] || {}, to = U[sel.allocated_to] || {};
       let items = sel.thread.map((x) => ({ ...x }));
+      /* a task linked to a document: the document's comments and its other tasks' join the conversation (related-comments.js) */
+      const rel = this.relatedFor ? this.relatedFor(sel) : null;
+      if (rel && rel.items.length) {
+        items = items.concat(rel.items.map((x) => ({ ...x, related: 1 }))).sort((a, b) => (a.ts < b.ts ? -1 : a.ts > b.ts ? 1 : 0));
+      }
       const eventCount = items.filter((x) => x.kind === 'event').length;
       let hidden = 0;
       if (!s.showEvents && eventCount > 3) {
@@ -243,17 +248,30 @@
         const day = x.ts.slice(0, 10);
         const divider = day !== lastDay; lastDay = day;
         const grouped = !divider && x.user === lastUser && x.kind !== 'event'; lastUser = x.kind === 'event' ? null : x.user;
-        const internal = x.kind === 'comment';
-        const bg = internal ? 'var(--amber-soft)' : x.kind === 'desc' ? 'var(--panel2)' : 'var(--panel)';
-        const bd = internal ? 'var(--amber)' : 'var(--line)';
+        /* a comment on the document is not the task's internal note */
+        const internal = x.kind === 'comment' && !x.on_doc;
+        /* another task's comment: dashed, on the list pane's tone, with the task it came from */
+        const other = !!x.related && !x.own;
+        const bg = other ? 'var(--panel2)' : internal ? 'var(--amber-soft)' : x.kind === 'desc' ? 'var(--panel2)' : 'var(--panel)';
+        const bd = other ? 'var(--line2)' : internal ? 'var(--amber)' : 'var(--line)';
+        /* written from another task (clickable), or on the document with no task / from this one */
+        const fromTask = !!x.related && !x.own && !!x.todo;
+        const relText = !x.related ? '' : x.on_doc
+          ? (fromTask ? __('On the document · {0}', [x.todo_subject || x.todo]) : __('On the document'))
+          : __('From task: {0}', [x.todo_subject || x.todo]);
         return {
           id: x.id, divider, dividerLabel: this.dayLabel(x.ts),
-          isEvent: x.kind === 'event', isBubble: x.kind !== 'event', isInternal: internal,
+          isEvent: x.kind === 'event', isBubble: x.kind !== 'event', isInternal: internal && !other,
+          showRelChip: !!x.related, relChip: relText,
+          relTip: fromTask ? __('Open that task') : '',
+          relChipStyle: 'display:inline-flex;align-items:center;gap:4px;min-width:0;max-width:260px;height:20px;padding:0 8px;border-radius:99px;font-size:10.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border:0;' +
+            (fromTask ? 'cursor:pointer;color:var(--primary);background:var(--primary-soft);' : 'cursor:default;color:var(--fg2);background:var(--sunk);'),
+          onRel: () => { if (fromTask) this.openTask(x.todo); },
           icon: '↪', who: (U[x.user] || {}).name || x.user, initials: (U[x.user] || {}).initials || '?',
           text: x.kind === 'event' ? this.plainText(x.html) : x.html, rich: x.kind === 'event' ? null : this.richHtml(x.html), time: x.ts.slice(11, 16),
           wrap: 'display:flex;gap:10px;align-items:flex-start;margin-top:' + (grouped ? '4px' : '10px') + ';',
           avatar: this.ava(x.user, 30) + (grouped ? 'visibility:hidden;' : ''),
-          bubble: 'flex:1;padding:11px 14px;border-radius:12px;background:' + bg + ';border:1px solid ' + bd + ';',
+          bubble: 'flex:1;min-width:0;padding:11px 14px;border-radius:12px;background:' + bg + ';border:1px ' + (other ? 'dashed ' : 'solid ') + bd + ';',
         };
       });
       const props = [
@@ -336,6 +354,8 @@
         reopen: () => this.reopenTask(sel.name),
         ccToggleLabel: (sel.cc_users || []).length ? (s.ccOpen ? __('Hide CC') : __('CC ({0})', [sel.cc_users.length])) : __('No CC'),
         props, thread, hasHidden: hidden > 0, hiddenLabel: __('Show {0} earlier events', [hidden]),
+        /* "Comment" goes to the linked document */
+        docComments: !!rel,
         prioLabel: sel.priority === 'High' ? __('High') : sel.priority === 'Medium' ? __('Medium') : __('Low'),
         prioSegStyle: 'display:flex;align-items:center;gap:6px;height:30px;padding:0 11px;background:transparent;border:0;cursor:' + (canManage ? 'pointer' : 'default') + ';font-size:12px;font-weight:600;color:' + this.prioColor(sel.priority) + ';',
         onCyclePriority: () => this.cyclePriority(sel),
@@ -449,7 +469,8 @@
 
     const now = new Date();
     /* completed tasks: comment-only composer */
-    const selLocked = !!(d && d.locked), cTab = selLocked ? 'comment' : s.tab;
+    const docOn = !!(d && d.docComments);
+    const selLocked = !!(d && d.locked), cTab = selLocked ? 'comment' : s.tab === 'doc' ? 'reply' : s.tab;
     return {
       ...this.wfVals(),
       ...this.filePvVals(),
@@ -825,14 +846,14 @@
       composerBox: 'width:100%;height:' + (s.composerOpen ? '104px' : '56px') + ';padding:11px 13px;background:var(--panel);border:1px solid ' +
         (cTab === 'comment' ? 'var(--amber)' : 'var(--line2)') +
         ';border-radius:10px;outline:none;font-size:13px;line-height:1.9;resize:none;transition:height .18s var(--ease);',
-      composerPlaceholder: cTab === 'reply' ? __('Write a reply… type @ to mention a colleague') : __('Internal comment — not visible to external recipients'),
+      composerPlaceholder: cTab === 'reply' ? __('Write a reply… type @ to mention a colleague') : docOn ? __('Comment on the linked document — everyone who can open it sees it') : __('Internal comment'),
       composerTabs: [
         ['reply', __('Reply'), '#i-reply', selLocked ? __('This task is completed — you can only add comments and attachments') : __('Reply visible to everyone (r)')],
-        ['comment', __('Comment'), '#i-chat', __('Comment for the internal team only (k)')],
+        ['comment', __('Comment'), '#i-chat', docOn ? __('Comment on the linked document itself') : __('Comment for the internal team only (k)')],
       ].map(([id, label, iconRef, title]) => {
         const on = cTab === id;
         const off = selLocked && id === 'reply';
-        const tone = id === 'reply' ? 'var(--primary)' : 'var(--amber)';
+        const tone = id === 'comment' ? 'var(--amber)' : 'var(--primary)';
         return {
           label, iconRef, title, disabled: off,
           style: 'height:26px;padding:0 11px;display:flex;align-items:center;gap:6px;border:0;border-radius:7px;cursor:' + (off ? 'not-allowed;opacity:.45' : 'pointer') + ';font-size:12px;background:' +
@@ -843,7 +864,7 @@
       }),
       draft: s.draft, ...this.mentionVals(),
       onComposerFocus: () => this.setState({ composerOpen: true }),
-      sendLabel: s.sending ? __('Sending…') : cTab === 'reply' ? __('Send reply') : __('Add comment'),
+      sendLabel: s.sending ? __('Sending…') : cTab === 'reply' ? __('Send reply') : docOn ? __('Comment on the document') : __('Add comment'),
       sending: !!s.sending, sendBtnStyle: s.sending ? 'cursor:progress;opacity:.6;' : 'cursor:pointer;',
       sendComposer: () => this.send(false), sendAndComplete: () => this.send(true), canComplete: !selLocked, showKeyHint: isDesktop,
       composerKeyHint: __('Enter to send · Shift+Enter for new line'),

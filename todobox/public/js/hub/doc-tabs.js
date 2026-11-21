@@ -132,6 +132,7 @@
     if (!r) { this.setState({ refCommentDraft: txt }); return; }
     this.toast(__('Comment added to the document'));
     this.loadRefDetail(sel.name, true);
+    if (this.loadRelated) this.loadRelated(sel.name, true);
   };
 
   /** A workflow action on the linked document, from inside the task: same rules as Required actions */
@@ -204,7 +205,8 @@
     const tabs = [
       { id: 'task', label: __('ToDo') },
       { id: 'data', label: __('Data') },
-      { id: 'comments', label: __('Comments') + (rd && (rd.comments || []).length ? ' (' + rd.comments.length + ')' : '') },
+      /* with "Show all comments" on, the document's comments are in the task's conversation */
+      ...(this.docCommentOn && this.docCommentOn(sel) ? [] : [{ id: 'comments', label: __('Comments') + (rd && (rd.comments || []).length ? ' (' + rd.comments.length + ')' : '') }]),
       { id: 'files', label: __('Attachments') + (nFiles ? ' (' + nFiles + ')' : '') },
       ...(hasWf ? [{ id: 'log', label: __('History') }] : []),
     ];

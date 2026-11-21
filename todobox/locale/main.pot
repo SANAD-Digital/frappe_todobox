@@ -4419,3 +4419,24 @@ msgstr ""
 
 msgid "{0} of {1} completed"
 msgstr ""
+
+msgid "From task: {0}"
+msgstr ""
+
+msgid "On the document"
+msgstr ""
+
+msgid "On the document · {0}"
+msgstr ""
+
+msgid "Open that task"
+msgstr ""
+
+msgid "Comment on the linked document — everyone who can open it sees it"
+msgstr ""
+
+msgid "Comment on the linked document itself"
+msgstr ""
+
+msgid "Send attachments with a reply"
+msgstr ""

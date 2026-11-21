@@ -212,7 +212,8 @@ export const TASK_TEMPLATES = [];
 export async function getDocActions(name) { return (await srv('get_doc_actions', { name })) || { actions: [], ref_status: '' }; }
 /** Linked-document tabs of a task: { readable, fields, items, comments, files, trail, has_workflow, users, ... } */
 export async function getReferenceDetail(name) { return srv('get_reference_detail', { name }); }
-export async function addReferenceComment(name, text) { return srv('add_reference_comment', { name, text }); }
+export async function getRelatedComments(name) { return srv('get_related_comments', { name }); }
+export async function addReferenceComment(name, text, mentions) { return srv('add_reference_comment', { name, text, mentions: JSON.stringify(mentions || []) }); }
 /** A workflow action on the task's linked document (same endpoint as Required actions) */
 export async function applyDocAction(doctype, docname, action, note) { return bridge().callOrNull('todobox.workflow_api.apply_action', { doctype, docname, action, note: note || '' }); }
 

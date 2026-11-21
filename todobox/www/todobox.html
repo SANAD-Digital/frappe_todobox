@@ -1192,6 +1192,11 @@ html[data-dark="1"] .tms-err button{background:#ededed;color:#171717}
                             <svg data-ic="" style="width:10px;height:10px;"><use href="#i-chat"></use></svg> Comment
                           </span>
                         </sc-if>
+                        <sc-if value="{{ it.showRelChip }}" hint-placeholder-val="{{ false }}">
+                          <button type="button" onClick="{{ it.onRel }}" title="{{ it.relTip }}" style="{{ it.relChipStyle }}">
+                            <svg data-ic="" style="width:10px;height:10px;flex:0 0 10px;"><use href="#i-link"></use></svg><span style="overflow:hidden;text-overflow:ellipsis;">{{ it.relChip }}</span>
+                          </button>
+                        </sc-if>
                         <div style="flex:1;"></div>
                         <span style="font-size:11px;color:var(--fg3);font-family:var(--font);font-variant-numeric:tabular-nums;">{{ it.time }}</span>
                       </div>
@@ -2915,6 +2920,7 @@ html[data-dark="1"] .tms-err button{background:#ededed;color:#171717}
 <script src="/assets/todobox/js/hub/mentions.js?v={{ asset_version }}"></script>
 <script src="/assets/todobox/js/hub/helpers.js?v={{ asset_version }}"></script>
 <script src="/assets/todobox/js/hub/doc-tabs.js?v={{ asset_version }}"></script>
+<script src="/assets/todobox/js/hub/related-comments.js?v={{ asset_version }}"></script>
 <script src="/assets/todobox/js/hub/render.js?v={{ asset_version }}"></script>
 <script src="/assets/todobox/js/hub/shell.js?v={{ asset_version }}"></script>
 <script src="/assets/todobox/js/hub/workflow-ui.js?v={{ asset_version }}"></script>

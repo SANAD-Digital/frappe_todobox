@@ -14,6 +14,7 @@ from frappe.modules import scrub
 
 from todobox.services.common import CHECKLIST_ITEM_DOCTYPE, TEMPLATE_DOCTYPE
 from todobox.services.org import remove_roles, setup_roles
+from todobox.services.related_comments import backfill_comment_todo
 from todobox.setup.legacy import migrate_legacy_workflow
 
 MODULE = "ToDoBox"
@@ -88,6 +89,20 @@ CUSTOM_FIELDS = {
 			"fieldtype": "Check",
 			"default": "0",
 			"insert_after": "comment_type",
+		}
+	],
+	"Comment": [
+		# the task (ToDo) the comment was written from: a comment on the ToDo itself, or one ToDoBox added to the
+		# task's linked document. Shown on the Comment form
+		{
+			"fieldname": "todobox_todo",
+			"label": "ToDo",
+			"fieldtype": "Link",
+			"options": "ToDo",
+			"insert_after": "reference_name",
+			"read_only": 1,
+			"hidden": 0,
+			"search_index": 1,
 		}
 	],
 	"Notification Log": [
@@ -247,6 +262,7 @@ def after_install():
 	_safe("roles", setup_roles)
 	_safe("seed task templates", seed_task_templates)
 	_safe("backfill completed_on", backfill_completed_on)
+	_safe("backfill comment todo", backfill_comment_todo)
 
 
 def after_migrate():
@@ -258,6 +274,7 @@ def after_migrate():
 	_safe("indexes", setup_indexes)
 	_safe("roles", setup_roles)
 	_safe("backfill completed_on", backfill_completed_on)
+	_safe("backfill comment todo", backfill_comment_todo)
 
 
 def before_uninstall():

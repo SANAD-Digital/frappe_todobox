@@ -535,6 +535,11 @@
     if (files.some((f) => f.busy)) { this.toast(__('Wait for the uploads to finish')); return; }
     if (!txt && !files.length) { this.toast(__('Write some text first')); return; }
     const locked = this.isLocked(this.taskByName(name));
+    /* a comment on a task linked to a document is a comment on the document */
+    if ((locked || this.state.tab === 'comment') && this.docCommentOn && this.docCommentOn(this.taskByName(name))) {
+      if (files.length) { this.toast(__('Send attachments with a reply')); return; }
+      return this.sendDocComment(name, txt, draft, this.mentionEmails(txt), alsoComplete && !locked);
+    }
     if (locked) alsoComplete = false;
     const mentions = this.mentionEmails(txt);
     this._sending = true;

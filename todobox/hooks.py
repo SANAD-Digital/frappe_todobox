@@ -72,6 +72,7 @@ doc_events = {
 		"on_trash": "todobox.services.live.on_todo_change",
 	},
 	"Comment": {
+		"before_insert": "todobox.services.related_comments.stamp_comment_todo",
 		"after_insert": "todobox.services.live.on_comment_insert",
 	},
 	"*": {

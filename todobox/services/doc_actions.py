@@ -4,10 +4,11 @@ import frappe
 from frappe import _
 from frappe.model.workflow import get_workflow_name
 
-from todobox.services.common import can, is_participant
-
+from todobox.services.common import can, is_participant, share_with
+from todobox.services.related_comments import mark_written_from
 from todobox.services.workflow import (
 	STYLE_TONE,
+	_with_mentions,
 	_initials,
 	_state_styles,
 	allowed_transitions,
@@ -110,14 +111,20 @@ def get_reference_detail(name):
 
 
 @frappe.whitelist()
-def add_reference_comment(name, text):
-	"""Comment on the task's linked document (read access on the task and the document is required)."""
+def add_reference_comment(name, text, mentions=None):
+	"""Comment on the task's linked document (read access on the task and the document is required), written
+	from the task (Comment.todobox_todo). mentions (JSON list of users): notified and given access, as in the
+	comments of "Awaiting my decision"."""
 	text = (text or "").strip()
 	if not text:
 		frappe.throw(_("Comment cannot be empty"))
 	_todo, ref = _reference(name)
 	if not ref:
 		frappe.throw(_("This task is not linked to a document you can access"), frappe.PermissionError)
-	ref.add_comment("Comment", text)
+	content, mentioned = _with_mentions(text, mentions)
+	for user in mentioned:
+		share_with(ref.doctype, ref.name, user)
+	comment = ref.add_comment("Comment", content)
+	mark_written_from(comment.name, name)
 	frappe.db.commit()
-	return {"ok": 1}
+	return {"ok": 1, "mentioned": mentioned}

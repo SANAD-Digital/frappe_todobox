@@ -4665,3 +4665,24 @@ msgstr "فتح في ToDoBox"
 
 msgid "{0} of {1} completed"
 msgstr "أُنجز {0} من {1}"
+
+msgid "From task: {0}"
+msgstr "من المهمة: {0}"
+
+msgid "On the document"
+msgstr "على المستند"
+
+msgid "On the document · {0}"
+msgstr "على المستند · {0}"
+
+msgid "Open that task"
+msgstr "فتح تلك المهمة"
+
+msgid "Comment on the linked document — everyone who can open it sees it"
+msgstr "تعليق على المستند المرتبط — يراه كل من يستطيع فتحه"
+
+msgid "Comment on the linked document itself"
+msgstr "تعليق على المستند المرتبط نفسه"
+
+msgid "Send attachments with a reply"
+msgstr "أرسل المرفقات مع رد"
