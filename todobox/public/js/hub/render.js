@@ -959,7 +959,7 @@
         .map((c) => ({ ...c, hasKey: !!c.key })),
 
       shortcutsOpen: s.shortcuts, closeShortcuts: () => this.setState({ shortcuts: false }),
-      shortcutList: [['n', __('New ToDo')], ['k', __('Comment')], ['f', __('Forward')], ['e', __('Complete')], ['s', __('Snooze until a set time')], ['↑ ↓', __('Navigate the list')], ['Space', __('Select / deselect')], ['Shift ↑ ↓', __('Extend the selection')], ['Shift+Click', __('Select a range')], ['Ctrl+Click', __('Add to the selection')], ['Ctrl+A', __('Select all')], ['Enter', __('Open task')], ['Esc', __('Close')], ['⌘K', __('Command palette')], ['?', __('This list')], ['@', __('Mention a user')],
+      shortcutList: [['n', __('New ToDo')], ['k', __('Comment')], ['f', __('Forward')], ['e', __('Complete')], ['s', __('Snooze until a set time')], ['↑ ↓', __('Navigate the list')], ['Space', __('Select / deselect')], ['Shift ↑ ↓', __('Extend the selection')], ['Shift+Space', __('Select up to here')], ['Shift+Click', __('Select a range')], ['Ctrl+Click', __('Add to the selection')], ['Ctrl+A', __('Select all')], ['Enter', __('Open task')], ['Esc', __('Close')], ['⌘K', __('Command palette')], ['?', __('This list')], ['@', __('Mention a user')],
         ...this.paletteCommands().filter((c) => /^g ./.test(c.key)).map((c) => [c.key, c.label])].map(([key, label]) => ({ key, label })),
 
       hasUndo: !!s.undo, undoText: s.undo ? s.undo.text : '', doUndo: this.doUndo,

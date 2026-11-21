@@ -367,20 +367,26 @@
   selClick(key, order, name, e) { if (e && e.shiftKey) this.selRange(key, order, name); else this.selToggle(key, name); }
   selAll(key, order) { this.selMem(key).base = null; this.setState({ [key]: order.slice() }); }
   selClear(key) { const m = this.selMem(key); m.anchor = null; m.base = null; this.setState({ [key]: [] }); }
-  /* Space / Shift+↑↓ / Ctrl+A on a list; cur = the open row, go(name) opens a row. True when handled. */
+  /* Keys on a list, as in Windows. ↑/↓ move without touching the selection, so the anchor (the last one picked) stays:
+     Space / Ctrl+Space toggles the current row; Shift+Space and Ctrl+Shift+Space select from the anchor to it;
+     Shift+↑↓ and Ctrl+Shift+↑↓ move and select from the anchor; Ctrl+A selects all.
+     cur = the open row, go(name) opens a row. True when handled. */
   selKey(e, key, order, cur, go) {
-    if (!order.length) return false;
-    if ((e.ctrlKey || e.metaKey) && !e.shiftKey && !e.altKey && e.key.toLowerCase() === 'a') { this.selAll(key, order); return true; }
-    if (e.key === ' ' && !e.ctrlKey && !e.metaKey && !e.altKey) {
-      if (!cur || !order.includes(cur) || /BUTTON|A|SELECT/.test(e.target.tagName)) return false;
+    if (!order.length || e.altKey) return false;
+    if ((e.ctrlKey || e.metaKey) && !e.shiftKey && e.key.toLowerCase() === 'a') { this.selAll(key, order); return true; }
+    if (e.key === ' ') {
+      /* a focused button keeps its own Space, unless it belongs to the list (a row's checkbox stays focused after a click) */
+      const t = e.target;
+      const own = /^(BUTTON|A|SELECT)$/.test(t.tagName) && !(t.closest && t.closest('[data-row], [data-selbox]'));
+      if (own || !cur || !order.includes(cur)) return false;
       if (e.shiftKey) this.selRange(key, order, cur); else this.selToggle(key, cur);
       return true;
     }
-    if (e.shiftKey && !e.altKey && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) {
+    if (e.shiftKey && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) {
       const i = order.indexOf(cur);
       const next = i < 0 ? order[0] : order[e.key === 'ArrowDown' ? Math.min(order.length - 1, i + 1) : Math.max(0, i - 1)];
       const m = this.selMem(key);
-      if (cur && order.includes(cur) && !(order.includes(m.anchor) && m.base != null)) { m.anchor = cur; m.base = null; }
+      if (!order.includes(m.anchor)) { m.anchor = cur && order.includes(cur) ? cur : next; m.base = null; }
       this.selRange(key, order, next);
       if (next !== cur) go(next);
       return true;

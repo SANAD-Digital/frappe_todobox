@@ -4710,3 +4710,6 @@ msgstr "إضافة إلى التحديد"
 
 msgid "Selection"
 msgstr "التحديد"
+
+msgid "Select up to here"
+msgstr "تحديد حتى هنا"

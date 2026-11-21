@@ -824,7 +824,7 @@ html[data-dark="1"] .tms-err button{background:#ededed;color:#171717}
             <div onClick="{{ c.onOpen }}" onMouseEnter="{{ c.onEnter }}" onMouseLeave="{{ c.onLeave }}" onPointerDown="{{ c.onDown }}" onPointerMove="{{ c.onMove }}" onPointerUp="{{ c.onUp }}" onPointerCancel="{{ c.onCancel }}" class="tt-row list-row" data-row="{{ c.name }}" data-prio="{{ c.prio }}" data-unread="{{ c.unread }}" data-done="{{ c.doneFlag }}" data-checked="{{ c.checkedFlag }}" data-overdue="{{ c.overdueFlag }}" style="{{ c.rowStyle }}">
               <div style="{{ c.prioBar }}"></div>
               <sc-if value="{{ c.showCheck }}" hint-placeholder-val="{{ true }}">
-              <button class="tt-check list-row-checkbox" data-checked="{{ c.checkedFlag }}" onClick="{{ c.onCheck }}" aria-label="Select for bulk action" style="{{ c.box }}">
+              <button class="tt-check list-row-checkbox" data-selbox="" data-checked="{{ c.checkedFlag }}" onClick="{{ c.onCheck }}" aria-label="Select for bulk action" style="{{ c.box }}">
                 <svg data-ic="" style="{{ c.tick }}"><use href="#i-check"></use></svg>
               </button>
               </sc-if>
@@ -883,7 +883,7 @@ html[data-dark="1"] .tms-err button{background:#ededed;color:#171717}
           <div onClick="{{ c.onOpen }}" onMouseEnter="{{ c.onEnter }}" onMouseLeave="{{ c.onLeave }}" onPointerDown="{{ c.onDown }}" onPointerMove="{{ c.onMove }}" onPointerUp="{{ c.onUp }}" onPointerCancel="{{ c.onCancel }}" class="tt-row list-row" data-row="{{ c.name }}" data-prio="{{ c.prio }}" data-unread="{{ c.unread }}" data-done="{{ c.doneFlag }}" data-checked="{{ c.checkedFlag }}" data-overdue="{{ c.overdueFlag }}" style="{{ c.cf.rowStyle }}">
             <div style="{{ c.cf.prioBar }}"></div>
             <sc-if value="{{ c.showCheck }}" hint-placeholder-val="{{ true }}">
-            <button class="tt-check list-row-checkbox" data-checked="{{ c.checkedFlag }}" onClick="{{ c.onCheck }}" aria-label="Select for bulk action" style="{{ c.box }}">
+            <button class="tt-check list-row-checkbox" data-selbox="" data-checked="{{ c.checkedFlag }}" onClick="{{ c.onCheck }}" aria-label="Select for bulk action" style="{{ c.box }}">
               <svg data-ic="" style="{{ c.tick }}"><use href="#i-check"></use></svg>
             </button>
             </sc-if>
@@ -1630,7 +1630,7 @@ html[data-dark="1"] .tms-err button{background:#ededed;color:#171717}
               <div onClick="{{ c.onOpen }}" title="{{ c.tip }}" data-row="{{ c.name }}" style="{{ c.card }}">
                 <div style="{{ c.bar }}"></div>
                 <span style="flex:0 0 auto;display:flex;padding-top:2px;">
-                  <button onClick="{{ c.onCheck }}" aria-label="Select for bulk approval" style="{{ c.box }}">
+                  <button data-selbox="" onClick="{{ c.onCheck }}" aria-label="Select for bulk approval" style="{{ c.box }}">
                     <svg data-ic="" style="{{ c.tick }}"><use href="#i-check"></use></svg>
                   </button>
                 </span>
@@ -1668,7 +1668,7 @@ html[data-dark="1"] .tms-err button{background:#ededed;color:#171717}
                 <div style="{{ c.cf.bar }}"></div>
                 <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;">
                   <div style="display:flex;align-items:center;gap:8px;min-width:0;">
-                    <button onClick="{{ c.onCheck }}" aria-label="Select for bulk approval" style="{{ c.box }}">
+                    <button data-selbox="" onClick="{{ c.onCheck }}" aria-label="Select for bulk approval" style="{{ c.box }}">
                       <svg data-ic="" style="{{ c.tick }}"><use href="#i-check"></use></svg>
                     </button>
                     <svg data-ic="" style="width:14px;height:14px;flex:0 0 14px;color:var(--fg3);"><use href="{{ c.iconRef }}"></use></svg>
