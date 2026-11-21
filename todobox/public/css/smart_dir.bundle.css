@@ -1,0 +1,24 @@
+/* Text the user types follows its own language: Arabic right to left, English left to right, line by line
+   (each line and each editor paragraph takes the direction of its first letter). Desk (hooks app_include_css)
+   and the ToDoBox page (www/todobox.html). Numbers, dates and codes keep their layout: only text fields. */
+
+/* Desk fields: Data, Link, Small Text, Text, Long Text, ... (the input carries its field type) */
+:is(input, textarea):is(
+	[data-fieldtype="Data"],
+	[data-fieldtype="Link"],
+	[data-fieldtype="Dynamic Link"],
+	[data-fieldtype="Autocomplete"],
+	[data-fieldtype="Small Text"],
+	[data-fieldtype="Text"],
+	[data-fieldtype="Long Text"]
+),
+/* other text boxes: search, filters, dialogs, the ToDoBox page */
+input:is([type="text"], [type="search"], :not([type])):not([data-fieldtype]),
+textarea:not([data-fieldtype]),
+/* Text Editor and comment boxes (Quill), and other editable areas: per paragraph; an alignment the user chose stays */
+.ql-editor > :is(p, h1, h2, h3, h4, h5, h6, blockquote):not([class*="ql-align-"]),
+[contenteditable="true"]:not(.ql-editor),
+[contenteditable="true"]:not(.ql-editor) > :is(div, p) {
+	unicode-bidi: plaintext;
+	text-align: start;
+}

@@ -35,7 +35,7 @@ app_include_js = [
 	"/assets/todobox/js/desk/wf_sidebar.js",
 	"linked_todos.bundle.js",
 ]
-app_include_css = ["/assets/todobox/css/desk_wf.css", "linked_todos.bundle.css"]
+app_include_css = ["/assets/todobox/css/desk_wf.css", "linked_todos.bundle.css", "smart_dir.bundle.css"]
 
 # ToDo desk form: fill the checklist from a ToDoBox Task Template
 doctype_js = {
