@@ -153,10 +153,7 @@
           (s.checked.includes(t.name) ? 'var(--primary)' : 'var(--line2)') + ';background:' + (s.checked.includes(t.name) ? 'var(--primary)' : 'transparent') + ';color:var(--on-accent);',
         showCheck: s.folder !== 'all' && !s.viewAs, /* no bulk selection in All tasks or in someone else's box */
         tick: 'width:11px;height:11px;opacity:' + (s.checked.includes(t.name) ? '1' : '0') + ';',
-        onCheck: (ev) => {
-          ev.stopPropagation();
-          this.setState((st) => ({ checked: st.checked.includes(t.name) ? st.checked.filter((n) => n !== t.name) : [...st.checked, t.name] }));
-        },
+        onCheck: (ev) => { ev.stopPropagation(); this.selClick('checked', this.checkOrder || [], t.name, ev); },
         headStyle: 'flex:1;min-width:0;display:flex;align-items:center;gap:6px;',
         actionsStyle: 'display:' + (isDesktop && hov && !this.isLocked(t) ? 'flex' : 'none') + ';position:absolute;top:calc(var(--row-py) - 3px);inset-inline-end:8px;gap:4px;padding:2px;border-radius:9px;background:var(--panel);box-shadow:0 1px 3px rgba(0,0,0,.12);',
         actions: this.isLocked(t) ? [] : [
@@ -164,7 +161,12 @@
           { act: 'forward', iconRef: '#i-forward', title: __('Forward (f)'), onDo: (ev) => { ev.stopPropagation(); this.open(t.name); this.setState({ forward: this.newForward() }); } },
           { act: 'snooze', iconRef: '#i-moon', title: __('Snooze (s)'), onDo: (ev) => { ev.stopPropagation(); this.open(t.name); this.openSnooze(t.name); } },
         ],
-        onOpen: () => { if (this.justSwiped) { this.justSwiped = false; return; } this.open(t.name); },
+        onOpen: (ev) => {
+          if (this.justSwiped) { this.justSwiped = false; return; }
+          /* Ctrl/⌘+click or Shift+click on a row selects it instead of opening it */
+          if (this.canCheck && ev && (ev.ctrlKey || ev.metaKey || ev.shiftKey)) { this.selClick('checked', this.checkOrder || [], t.name, ev); return; }
+          this.open(t.name);
+        },
         onEnter: () => { if (isDesktop) this.setState({ hovered: t.name }); },
         onLeave: () => { if (isDesktop) this.setState({ hovered: null }); },
         /* horizontal swipe on mobile: right = complete, left = snooze (doesn't block vertical scroll or taps) */
@@ -224,6 +226,9 @@
     })();
     /* the rows as shown: the next row after a decision, ↑/↓ (workflow-ui.js allNext, tasks.js onKey) */
     this.allRows = s.folder === 'all' ? listRows.map((r) => ({ name: r.name, isWf: r.isWf })) : null;
+    /* multi-select (tasks.js selKey): the tasks as shown, where bulk selection is offered */
+    this.canCheck = s.folder !== 'all' && !s.viewAs;
+    this.checkOrder = this.canCheck ? listRows.filter((r) => r.isTask).map((r) => r.name) : [];
     const docOpen = this.inAllDoc(s);
 
     /* detail */
@@ -900,8 +905,9 @@
       filtersOpen: s.filtersOpen === true,
       toggleFilters: () => this.setState((st) => ({ filtersOpen: st.filtersOpen !== true })),
       filtersChevron: 'width:13px;height:13px;color:var(--fg3);transition:transform .18s var(--ease);transform:rotate(' + (s.filtersOpen === true ? '0deg' : '-90deg') + ');',
-      hasChecked: s.checked.length > 0, checkedLabel: __('Selected: {0}', [s.checked.length]),
-      clearChecked: () => this.setState({ checked: [] }),
+      hasChecked: s.checked.length > 0, noChecked: !s.checked.length,
+      ...this.selBarVals(this.checkOrder, s.checked, 'checked', ''),
+      clearChecked: () => this.selClear('checked'),
       bulkDone: () => { s.checked.forEach((n) => this.complete(n)); this.setState({ checked: [] }); },
       bulkSnooze: () => { this.openSnooze(s.checked.slice()); this.setState({ checked: [] }); },
       bulkArchive: () => { const on = s.folder !== 'archived'; s.checked.forEach((n) => this.archive(n, on)); this.setState({ checked: [] }); },
@@ -953,12 +959,33 @@
         .map((c) => ({ ...c, hasKey: !!c.key })),
 
       shortcutsOpen: s.shortcuts, closeShortcuts: () => this.setState({ shortcuts: false }),
-      shortcutList: [['n', __('New ToDo')], ['k', __('Comment')], ['f', __('Forward')], ['e', __('Complete')], ['s', __('Snooze until a set time')], ['↑ ↓', __('Navigate the list')], ['Enter', __('Open task')], ['Esc', __('Close')], ['⌘K', __('Command palette')], ['?', __('This list')], ['@', __('Mention a user')],
+      shortcutList: [['n', __('New ToDo')], ['k', __('Comment')], ['f', __('Forward')], ['e', __('Complete')], ['s', __('Snooze until a set time')], ['↑ ↓', __('Navigate the list')], ['Space', __('Select / deselect')], ['Shift ↑ ↓', __('Extend the selection')], ['Shift+Click', __('Select a range')], ['Ctrl+Click', __('Add to the selection')], ['Ctrl+A', __('Select all')], ['Enter', __('Open task')], ['Esc', __('Close')], ['⌘K', __('Command palette')], ['?', __('This list')], ['@', __('Mention a user')],
         ...this.paletteCommands().filter((c) => /^g ./.test(c.key)).map((c) => [c.key, c.label])].map(([key, label]) => ({ key, label })),
 
       hasUndo: !!s.undo, undoText: s.undo ? s.undo.text : '', doUndo: this.doUndo,
       hasToast: !!s.toast, toastText: s.toast || '',
     };
+  }
+
+  /** The selection bar (tasks: prefix '', documents: 'wf'): "{n} of {total} selected", a three-state box, select all, clear */
+  selBarVals(order, checked, key, p) {
+    const every = order.length > 0 && order.every((n) => checked.includes(n));
+    const some = checked.length > 0;
+    const v = {
+      SelLabel: __('{0} of {1} selected', [checked.length, order.length]),
+      CanSelectAll: some && !every && order.length > 1,
+      SelectAllLabel: __('Select all ({0})', [order.length]),
+      SelectAll: () => this.selAll(key, order),
+      SelClear: () => this.selClear(key),
+      /* the box: ticked when all are, a dash when some are; it selects all, or clears when all are */
+      SelMaster: () => (every ? this.selClear(key) : this.selAll(key, order)),
+      SelMasterLabel: every ? __('Clear selection') : __('Select all'),
+      SelMasterChecked: every ? 'true' : some ? 'mixed' : 'false',
+      SelMasterIcon: every ? '#i-check' : '#i-minus',
+    };
+    const out = {};
+    Object.keys(v).forEach((k) => { out[p ? p + k : k.charAt(0).toLowerCase() + k.slice(1)] = v[k]; });
+    return out;
   }
 
   /** Command palette entries: the single source of truth for palette items and their keyboard shortcuts (see onKey) */

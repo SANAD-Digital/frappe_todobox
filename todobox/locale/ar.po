@@ -4686,3 +4686,27 @@ msgstr "تعليق على المستند المرتبط نفسه"
 
 msgid "Send attachments with a reply"
 msgstr "أرسل المرفقات مع رد"
+
+msgid "Select all ({0})"
+msgstr "تحديد الكل ({0})"
+
+msgid "{0} of {1} selected"
+msgstr "تم تحديد {0} من {1}"
+
+msgid "Select all"
+msgstr "تحديد الكل"
+
+msgid "Select / deselect"
+msgstr "تحديد / إلغاء التحديد"
+
+msgid "Extend the selection"
+msgstr "توسيع التحديد"
+
+msgid "Select a range"
+msgstr "تحديد نطاق"
+
+msgid "Add to the selection"
+msgstr "إضافة إلى التحديد"
+
+msgid "Selection"
+msgstr "التحديد"

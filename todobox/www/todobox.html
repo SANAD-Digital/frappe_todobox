@@ -255,6 +255,7 @@ html[data-dark="1"] .tms-err button{background:#ededed;color:#171717}
     <symbol id="i-monitor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3.4" y="4.4" width="17.2" height="11.8" rx="2.2"></rect><path d="M8.6 20h6.8M12 16.2V20"></path></symbol>
     <symbol id="i-check-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.4"></circle><path d="M8.4 12.2l2.6 2.6 4.6-5"></path></symbol>
     <symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="9.4" cy="8.4" r="3.4"></circle><path d="M3.4 20v-1.4a4.6 4.6 0 0 1 4.6-4.6h2.8a4.6 4.6 0 0 1 4.6 4.6V20"></path><path d="M16.6 5.6a3.2 3.2 0 0 1 0 6.2M17.8 14.2a4.4 4.4 0 0 1 2.8 4.1V20"></path></symbol>
+    <symbol id="i-minus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6.5 12h11"></path></symbol>
     <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4.6 12.6l4.4 4.4L19.4 6.6"></path></symbol>
     <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.6v14.8M4.6 12h14.8"></path></symbol>
     <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.8" cy="10.8" r="6.6"></circle><path d="M15.6 15.6 20 20"></path></symbol>
@@ -655,13 +656,28 @@ html[data-dark="1"] .tms-err button{background:#ededed;color:#171717}
           <button type="button" onClick="{{ backToMyBox }}" style="flex:0 0 auto;height:26px;padding:0 10px;white-space:nowrap;background:transparent;border:1px solid var(--line2);border-radius:7px;cursor:pointer;font-size:11.5px;font-weight:600;color:var(--fg);">Back to my tasks</button>
         </div>
       </sc-if>
-      <div style="flex:0 0 auto;display:flex;flex-direction:column;gap:8px;padding:10px 12px;min-width:0;border-bottom:1px solid var(--line);">
-        <button onClick="{{ toggleFilters }}" aria-expanded="{{ filtersOpen }}" style="display:flex;align-items:center;gap:8px;background:transparent;border:0;padding:0;cursor:pointer;text-align:start;color:var(--fg);">
-          <svg data-ic="" style="width:13px;height:13px;color:var(--fg3);"><use href="#i-sliders"></use></svg>
-          <span style="font-size:12px;font-weight:600;flex:1;">Filters &amp; sorting</span>
-          <span style="font-size:11px;color:var(--fg3);font-family:var(--font);font-variant-numeric:tabular-nums;">{{ listCount }}</span>
-          <svg data-ic="" style="{{ filtersChevron }}"><use href="#i-chev-down"></use></svg>
+      <sc-if value="{{ hasChecked }}" hint-placeholder-val="{{ false }}">
+      <div role="toolbar" aria-label="Selection" style="flex:0 0 auto;display:flex;align-items:center;gap:10px;min-height:43px;box-sizing:border-box;padding:8px 12px 8px 14px;padding-inline:14px 12px;border-bottom:1px solid var(--line);background:var(--sel);animation:fadeup .14s var(--ease);">
+        <button type="button" role="checkbox" aria-checked="{{ selMasterChecked }}" onClick="{{ selMaster }}" aria-label="{{ selMasterLabel }}" title="{{ selMasterLabel }}" style="width:18px;height:18px;flex:0 0 18px;padding:0;box-sizing:border-box;display:grid;place-items:center;border-radius:5px;cursor:pointer;border:1.5px solid var(--primary);background:var(--primary);color:var(--on-accent);">
+          <svg data-ic="" style="width:11px;height:11px;"><use href="{{ selMasterIcon }}"></use></svg>
         </button>
+        <span aria-live="polite" style="flex:1;min-width:0;font-size:12.5px;font-weight:700;color:var(--fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-variant-numeric:tabular-nums;">{{ selLabel }}</span>
+        <sc-if value="{{ canSelectAll }}" hint-placeholder-val="{{ false }}">
+          <button type="button" onClick="{{ selectAll }}" style="flex:0 0 auto;padding:0;background:transparent;border:0;cursor:pointer;font-size:12px;font-weight:600;color:var(--primary);white-space:nowrap;">{{ selectAllLabel }}</button>
+        </sc-if>
+        <button type="button" onClick="{{ selClear }}" title="Esc" style="flex:0 0 auto;padding:0;background:transparent;border:0;cursor:pointer;font-size:12px;font-weight:600;color:var(--fg2);white-space:nowrap;">Clear selection</button>
+      </div>
+      </sc-if>
+      <sc-if value="{{ noChecked }}" hint-placeholder-val="{{ true }}">
+      <div style="flex:0 0 auto;display:flex;flex-direction:column;gap:8px;padding:10px 12px;min-width:0;border-bottom:1px solid var(--line);">
+        <div style="display:flex;align-items:center;gap:8px;min-width:0;">
+          <button onClick="{{ toggleFilters }}" aria-expanded="{{ filtersOpen }}" style="flex:1;min-width:0;display:flex;align-items:center;gap:8px;background:transparent;border:0;padding:0;cursor:pointer;text-align:start;color:var(--fg);">
+            <svg data-ic="" style="width:13px;height:13px;color:var(--fg3);"><use href="#i-sliders"></use></svg>
+            <span style="font-size:12px;font-weight:600;flex:1;">Filters &amp; sorting</span>
+          </button>
+          <span style="font-size:11px;color:var(--fg3);font-family:var(--font);font-variant-numeric:tabular-nums;">{{ listCount }}</span>
+          <button type="button" tabindex="-1" aria-hidden="true" onClick="{{ toggleFilters }}" style="display:flex;background:transparent;border:0;padding:0;cursor:pointer;color:var(--fg);"><svg data-ic="" style="{{ filtersChevron }}"><use href="#i-chev-down"></use></svg></button>
+        </div>
         <sc-if value="{{ filtersOpen }}" hint-placeholder-val="{{ false }}">
           <div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;min-width:0;">
             <sc-for list="{{ quickFilters }}" as="q" hint-placeholder-count="5">
@@ -674,6 +690,7 @@ html[data-dark="1"] .tms-err button{background:#ededed;color:#171717}
           </div>
         </sc-if>
       </div>
+      </sc-if>
 
       <sc-if value="{{ hasFilterChips }}" hint-placeholder-val="{{ false }}">
         <div style="flex:0 0 auto;display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:7px 12px;background:var(--primary-soft);border-bottom:1px solid var(--primary-line);">
@@ -906,12 +923,10 @@ html[data-dark="1"] .tms-err button{background:#ededed;color:#171717}
 
       <sc-if value="{{ hasChecked }}" hint-placeholder-val="{{ false }}">
         <div style="flex:0 0 auto;margin:8px;padding:8px 12px;display:flex;align-items:center;gap:10px;background:var(--fg);color:var(--bg);border-radius:10px;animation:fadeup .18s var(--ease);">
-          <span style="font-size:12px;">{{ checkedLabel }}</span>
           <div style="flex:1;"></div>
           <button onClick="{{ bulkDone }}" style="height:26px;padding:0 10px;background:transparent;border:1px solid currentColor;border-radius:7px;cursor:pointer;font-size:12px;opacity:.85;">Complete</button>
           <button onClick="{{ bulkArchive }}" style="height:26px;padding:0 10px;background:transparent;border:1px solid currentColor;border-radius:7px;cursor:pointer;font-size:12px;opacity:.85;">{{ bulkArchiveLabel }}</button>
           <button onClick="{{ bulkSnooze }}" style="height:26px;padding:0 10px;background:transparent;border:1px solid currentColor;border-radius:7px;cursor:pointer;font-size:12px;opacity:.85;">Snooze</button>
-          <button onClick="{{ clearChecked }}" style="background:transparent;border:0;cursor:pointer;font-size:14px;opacity:.7;">✕</button>
         </div>
       </sc-if>
     </section>
@@ -1500,14 +1515,27 @@ html[data-dark="1"] .tms-err button{background:#ededed;color:#171717}
     <!-- ================= Required actions: list ================= -->
     <sc-if value="{{ showWfList }}" hint-placeholder-val="{{ false }}">
     <section style="{{ wfListPaneStyle }}">
+      <sc-if value="{{ wfHasChecked }}" hint-placeholder-val="{{ false }}">
+      <div role="toolbar" aria-label="Selection" style="flex:0 0 auto;display:flex;align-items:center;gap:10px;min-height:43px;box-sizing:border-box;padding:8px 12px 8px 14px;padding-inline:14px 12px;border-bottom:1px solid var(--line);background:var(--sel);animation:fadeup .14s var(--ease);">
+        <button type="button" role="checkbox" aria-checked="{{ wfSelMasterChecked }}" onClick="{{ wfSelMaster }}" aria-label="{{ wfSelMasterLabel }}" title="{{ wfSelMasterLabel }}" style="width:18px;height:18px;flex:0 0 18px;padding:0;box-sizing:border-box;display:grid;place-items:center;border-radius:5px;cursor:pointer;border:1.5px solid var(--primary);background:var(--primary);color:var(--on-accent);">
+          <svg data-ic="" style="width:11px;height:11px;"><use href="{{ wfSelMasterIcon }}"></use></svg>
+        </button>
+        <span aria-live="polite" style="flex:1;min-width:0;font-size:12.5px;font-weight:700;color:var(--fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-variant-numeric:tabular-nums;">{{ wfSelLabel }}</span>
+        <sc-if value="{{ wfCanSelectAll }}" hint-placeholder-val="{{ false }}">
+          <button type="button" onClick="{{ wfSelectAll }}" style="flex:0 0 auto;padding:0;background:transparent;border:0;cursor:pointer;font-size:12px;font-weight:600;color:var(--primary);white-space:nowrap;">{{ wfSelectAllLabel }}</button>
+        </sc-if>
+        <button type="button" onClick="{{ wfSelClear }}" title="Esc" style="flex:0 0 auto;padding:0;background:transparent;border:0;cursor:pointer;font-size:12px;font-weight:600;color:var(--fg2);white-space:nowrap;">Clear selection</button>
+      </div>
+      </sc-if>
+      <sc-if value="{{ wfNoChecked }}" hint-placeholder-val="{{ true }}">
       <div style="flex:0 0 auto;padding:13px 14px 11px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:9px;">
         <div style="display:flex;align-items:center;gap:8px;">
         <button onClick="{{ wfToggleHead }}" aria-expanded="{{ wfHeadOpen }}" style="flex:1;min-width:0;display:flex;align-items:center;gap:9px;background:transparent;border:0;padding:0;cursor:pointer;text-align:start;color:var(--fg);">
           <svg data-ic="" style="width:16px;height:16px;color:var(--primary);"><use href="#i-bolt"></use></svg>
           <span style="font-size:15px;font-weight:700;flex:1;">{{ wfTitle }}</span>
-          <span style="font-size:11px;color:var(--fg3);font-family:var(--font);font-variant-numeric:tabular-nums;">{{ wfCount }}</span>
-          <svg data-ic="" style="{{ wfHeadChevron }}"><use href="#i-chev-down"></use></svg>
         </button>
+        <span style="font-size:11px;color:var(--fg3);font-family:var(--font);font-variant-numeric:tabular-nums;">{{ wfCount }}</span>
+        <button type="button" tabindex="-1" aria-hidden="true" onClick="{{ wfToggleHead }}" style="display:flex;background:transparent;border:0;padding:0;cursor:pointer;color:var(--fg);"><svg data-ic="" style="{{ wfHeadChevron }}"><use href="#i-chev-down"></use></svg></button>
         <sc-if value="{{ wfCanCollapse }}" hint-placeholder-val="{{ true }}">
           <button onClick="{{ wfToggleAll }}" title="{{ wfCollapseLabel }}" aria-label="{{ wfCollapseLabel }}" style="flex:0 0 auto;width:28px;height:28px;display:grid;place-items:center;padding:0;background:transparent;border:1px solid var(--line2);border-radius:8px;cursor:pointer;color:var(--fg2);"><svg data-ic="" style="width:15px;height:15px;"><use href="{{ wfCollapseIcon }}"></use></svg></button>
         </sc-if>
@@ -1538,6 +1566,7 @@ html[data-dark="1"] .tms-err button{background:#ededed;color:#171717}
           </div>
         </sc-if>
       </div>
+      </sc-if>
 
       <div style="flex:1;overflow-y:auto;padding:6px 8px 10px;display:flex;flex-direction:column;gap:10px;overscroll-behavior:contain;" aria-live="polite">
         <sc-if value="{{ wfEmpty }}" hint-placeholder-val="{{ false }}">
@@ -1681,10 +1710,8 @@ html[data-dark="1"] .tms-err button{background:#ededed;color:#171717}
 
       <sc-if value="{{ wfHasChecked }}" hint-placeholder-val="{{ false }}">
         <div style="flex:0 0 auto;margin:8px;padding:9px 13px;display:flex;align-items:center;gap:10px;background:var(--fg);color:var(--bg);border-radius:11px;animation:fadeup .18s var(--ease);">
-          <span style="font-size:12px;">{{ wfCheckedLabel }}</span>
           <div style="flex:1;"></div>
           <button onClick="{{ wfBulkDo }}" style="{{ wfBulkStyle }}">{{ wfBulkLabel }}</button>
-          <button onClick="{{ wfClearChecked }}" aria-label="Clear selection" style="background:transparent;border:0;cursor:pointer;font-size:14px;opacity:.7;color:inherit;">✕</button>
         </div>
       </sc-if>
     </section>

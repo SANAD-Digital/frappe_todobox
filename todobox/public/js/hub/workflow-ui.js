@@ -215,10 +215,13 @@
     const W = this.W; if (!W) return false;
     const me = this.meWf();
     const list = this.wfVisible || [];
+    const s0 = this.state;
     const isSel = (d) => d.name === this.state.wfSel && (!this.state.wfSelDt || d.doctype === this.state.wfSelDt);
     const i = list.findIndex(isSel);
     const k = e.key.toLowerCase();
     const cur = list[i];
+    if (s0.wfTab !== 'log' && this.selKey(e, 'wfChecked', list.map((d) => W.docKey(d)), cur ? W.docKey(cur) : null, (key) => { const n = list.find((d) => W.docKey(d) === key); if (n) this.wfOpenDoc(n.name, n.doctype); })) return true;
+    if (!e.shiftKey && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) { const n = list[e.key === 'ArrowDown' ? Math.min(list.length - 1, i + 1) : Math.max(0, i - 1)]; if (n) this.wfOpenDoc(n.name, n.doctype); return true; }
     if (k === 'j') { const n = list[Math.min(list.length - 1, i + 1)]; if (n) this.wfOpenDoc(n.name, n.doctype); return true; }
     if (k === 'k') { const n = list[Math.max(0, i - 1)]; if (n) this.wfOpenDoc(n.name, n.doctype); return true; }
     if (k === 'o' && cur) { this.wfOpenDoc(cur.name, cur.doctype); return true; }
@@ -237,7 +240,7 @@
     if (!W) return {
       wfTabs: [], wfGroups: [], wfTypeChips: [], wfStateChips: [], wfQuickChips: [], wfLogGroups: [], wfShowGroupSort: false, wfTabsDetail: [], wfMoreItems: [],
       showWfList: false, showWfPreview: false, hasWfDoc: false, noWfDoc: false, wfIsLog: false, wfEmpty: false,
-      wfHasChecked: false, wfHasUndo: false,
+      wfHasChecked: false, wfNoChecked: true, wfHasUndo: false,
     };
     const me = this.meWf(), U = W.WF_USERS, meU = U[me] || {};
     const tone = (t) => 'var(--' + t + ')';
@@ -277,7 +280,7 @@
       ...sideVals,
       wfGroups: [], wfTypeChips: [], wfStateChips: [], wfQuickChips: [], wfLogGroups: [], wfShowGroupSort: false, wfTabsDetail: [], wfMoreItems: [],
       showWfList: false, showWfPreview: false, hasWfDoc: false, noWfDoc: false, wfIsLog: false, wfEmpty: false,
-      wfHasChecked: false, wfHasUndo: false, wd: null,
+      wfHasChecked: false, wfNoChecked: true, wfHasUndo: false, wd: null,
     };
 
     /* ---- filters ---- */
@@ -367,7 +370,7 @@
         box: 'width:17px;height:17px;flex:0 0 17px;padding:0;box-sizing:border-box;appearance:none;-webkit-appearance:none;line-height:0;display:grid;place-items:center;border-radius:5px;cursor:pointer;border:1.5px solid ' +
           (checked ? 'var(--primary)' : 'var(--line2)') + ';background:' + (checked ? 'var(--primary)' : 'transparent') + ';color:var(--on-accent);',
         tick: 'width:11px;height:11px;opacity:' + (checked ? '1' : '0') + ';',
-        onCheck: (ev) => { ev.stopPropagation(); this.setState((stt) => ({ wfChecked: checked ? stt.wfChecked.filter((n) => n !== dKey) : [...stt.wfChecked, dKey] })); },
+        onCheck: (ev) => { ev.stopPropagation(); this.selClick('wfChecked', (this.wfVisible || []).map((x) => W.docKey(x)), dKey, ev); },
         actions: s.wfTab === 'sent'
           ? [{
             label: __('Send reminder'),
@@ -400,7 +403,11 @@
         } : null,
         /* buttons on the second line; the line wraps only with more than two actions */
         line2Style: 'display:flex;align-items:center;gap:5px 7px;min-width:0;flex-wrap:' + (narrow || trs.length > 2 ? 'wrap' : 'nowrap') + ';',
-        onOpen: () => this.wfOpenDoc(d.name, d.doctype),
+        /* Ctrl/⌘+click or Shift+click on a row selects it instead of opening it */
+        onOpen: (ev) => {
+          if (s.wfTab !== 'log' && ev && (ev.ctrlKey || ev.metaKey || ev.shiftKey)) { this.selClick('wfChecked', (this.wfVisible || []).map((x) => W.docKey(x)), dKey, ev); return; }
+          this.wfOpenDoc(d.name, d.doctype);
+        },
         onPreview: (e) => { if (e && e.stopPropagation) e.stopPropagation(); this.qlOpen(d.doctype, d.name); },
         onPreviewHover: () => this.qlPrefetch(d.doctype, d.name),
       };
@@ -573,13 +580,14 @@
       ...logV,
 
       /* bulk approval */
-      wfHasChecked: s.wfChecked.length > 0,
-      wfCheckedLabel: __('Selected: {0}', [s.wfChecked.length]),
+      wfHasChecked: s.wfChecked.length > 0, wfNoChecked: !s.wfChecked.length,
       wfBulkLabel: commonAction ? __('{0} — {1} items', [commonAction, s.wfChecked.length]) : __('No common action'),
       wfBulkStyle: 'height:28px;padding:0 12px;border-radius:8px;cursor:' + (commonAction ? 'pointer' : 'not-allowed') +
         ';font-size:12px;font-weight:600;border:1px solid currentColor;background:transparent;opacity:' + (commonAction ? '1' : '.5') + ';',
       wfBulkDo: () => commonAction ? this.wfBulk(commonAction) : this.toast(__('The selected items do not share a single action')),
-      wfClearChecked: () => this.setState({ wfChecked: [] }),
+      wfClearChecked: () => this.selClear('wfChecked'),
+      /* the selection bar that takes the header's place: "3 of 15 selected", select all, clear */
+      ...this.selBarVals(s.wfTab === 'log' ? [] : sorted.map((x) => W.docKey(x)), s.wfChecked, 'wfChecked', 'wf'),
 
       /* preview */
       hasWfDoc: !!wd, noWfDoc: !wd,

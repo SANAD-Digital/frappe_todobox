@@ -4440,3 +4440,27 @@ msgstr ""
 
 msgid "Send attachments with a reply"
 msgstr ""
+
+msgid "Select all ({0})"
+msgstr ""
+
+msgid "{0} of {1} selected"
+msgstr ""
+
+msgid "Select all"
+msgstr ""
+
+msgid "Select / deselect"
+msgstr ""
+
+msgid "Extend the selection"
+msgstr ""
+
+msgid "Select a range"
+msgstr ""
+
+msgid "Add to the selection"
+msgstr ""
+
+msgid "Selection"
+msgstr ""

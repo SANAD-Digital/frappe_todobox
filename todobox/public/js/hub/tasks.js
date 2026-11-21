@@ -346,6 +346,48 @@
     if (tries > 0) setTimeout(() => this.scrollToRow(name, tries - 1), 120);
   }
 
+  /* ---------- multi-select, as in a file list ----------
+     key: the state list ('checked' tasks, 'wfChecked' documents); order: the rows as shown.
+     Click / Space toggles one and makes it the anchor; Shift+click / Shift+↑↓ select the range from the anchor,
+     added to what was selected before the range began (so Ctrl+Shift+click keeps it too). */
+  selMem(key) { this._selMem = this._selMem || {}; return (this._selMem[key] = this._selMem[key] || { anchor: null, base: null }); }
+  selToggle(key, name) {
+    const m = this.selMem(key); m.anchor = name; m.base = null;
+    this.setState((st) => ({ [key]: st[key].includes(name) ? st[key].filter((n) => n !== name) : [...st[key], name] }));
+  }
+  selRange(key, order, to) {
+    const m = this.selMem(key);
+    if (!order.includes(m.anchor)) { m.anchor = to; m.base = null; }
+    if (m.base == null) m.base = this.state[key].filter((n) => n !== m.anchor);
+    const a = order.indexOf(m.anchor), b = order.indexOf(to);
+    const range = order.slice(Math.min(a, b), Math.max(a, b) + 1);
+    this.setState({ [key]: [...new Set([...m.base, ...range])] });
+    try { window.getSelection().removeAllRanges(); } catch (e) { /* */ }
+  }
+  selClick(key, order, name, e) { if (e && e.shiftKey) this.selRange(key, order, name); else this.selToggle(key, name); }
+  selAll(key, order) { this.selMem(key).base = null; this.setState({ [key]: order.slice() }); }
+  selClear(key) { const m = this.selMem(key); m.anchor = null; m.base = null; this.setState({ [key]: [] }); }
+  /* Space / Shift+↑↓ / Ctrl+A on a list; cur = the open row, go(name) opens a row. True when handled. */
+  selKey(e, key, order, cur, go) {
+    if (!order.length) return false;
+    if ((e.ctrlKey || e.metaKey) && !e.shiftKey && !e.altKey && e.key.toLowerCase() === 'a') { this.selAll(key, order); return true; }
+    if (e.key === ' ' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      if (!cur || !order.includes(cur) || /BUTTON|A|SELECT/.test(e.target.tagName)) return false;
+      if (e.shiftKey) this.selRange(key, order, cur); else this.selToggle(key, cur);
+      return true;
+    }
+    if (e.shiftKey && !e.altKey && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) {
+      const i = order.indexOf(cur);
+      const next = i < 0 ? order[0] : order[e.key === 'ArrowDown' ? Math.min(order.length - 1, i + 1) : Math.max(0, i - 1)];
+      const m = this.selMem(key);
+      if (cur && order.includes(cur) && !(order.includes(m.anchor) && m.base != null)) { m.anchor = cur; m.base = null; }
+      this.selRange(key, order, next);
+      if (next !== cur) go(next);
+      return true;
+    }
+    return false;
+  }
+
   /* ---------- keyboard ---------- */
   onKey = (e) => {
     const typing = /INPUT|TEXTAREA/.test(e.target.tagName) || e.target.isContentEditable;
@@ -360,7 +402,7 @@
       if (st.automation && (st.ruleForm || st.recForm)) { this.setState({ ruleForm: null, recForm: null }); return; }
       if (!typing && st.screen === 'templates' && (st.tplSel || st.tplDraft) && !st.compose && !st.forward && !st.cmdk && !st.shortcuts) { this.setState({ tplSel: null, tplDraft: null, tplConfirmDel: false }); return; }
     }
-    if (e.key === 'Escape') { this.setState({ dateEdit: null, cmdk: false, shortcuts: false, compose: null, forward: null, checked: [], notifsOpen: false, snoozeFor: null, automation: null, userMenu: false, themeMenu: false }); return; }
+    if (e.key === 'Escape') { this.setState({ dateEdit: null, cmdk: false, shortcuts: false, compose: null, forward: null, checked: [], wfChecked: [], notifsOpen: false, snoozeFor: null, automation: null, userMenu: false, themeMenu: false }); return; }
     if (typing) return;
     /* two-key "g then x" sequences: resolved against the palette command list (single source of truth) */
     if (!e.metaKey && !e.ctrlKey && !e.altKey) {
@@ -372,6 +414,7 @@
       } else if (pk === 'g' && !e.shiftKey) { this._gAt = Date.now(); e.preventDefault(); return; }
     }
     if (this.state.screen === 'wf') { if (this.wfKey(e)) { e.preventDefault(); } return; }
+    if (this.state.screen === 'mail' && this.canCheck && this.selKey(e, 'checked', this.checkOrder || [], this.state.sel, (n) => this.open(n))) { e.preventDefault(); return; }
     const sel = this.state.sel;
     const idx = this.state.tasks.findIndex((t) => t.name === sel);
     const go = (n) => { const t = this.state.tasks[n]; if (t) this.open(t.name); };
