@@ -15,7 +15,7 @@ from frappe.modules import scrub
 from todobox.services.common import CHECKLIST_ITEM_DOCTYPE, TEMPLATE_DOCTYPE
 from todobox.services.org import remove_roles, setup_roles
 from todobox.services.related_comments import backfill_comment_todo
-from todobox.setup.legacy import migrate_legacy_workflow
+from todobox.setup.legacy import OLD_APP, before_old_app_uninstall, migrate_legacy_workflow, repair_orphaned_data
 
 MODULE = "ToDoBox"
 
@@ -152,7 +152,7 @@ CUSTOM_FIELDS.update(
 )
 
 # Workflow data ToDoBox owns on a site
-SHARED_DOCTYPES = ("Workflow Trace", "Workflow Action Permitted User")
+SHARED_DOCTYPES = ("Workflow Trace", "Workflow Action Permitted User", "Doctype Update Condition")
 SHARED_REPORTS = (
 	"Employee wise Workflow Action",
 	"Leader For Wise",
@@ -258,6 +258,7 @@ def after_install():
 	setup_custom_fields()
 	claim_workflow_ownership()
 	frappe.db.commit()
+	_safe("legacy data", repair_orphaned_data)
 	_safe("indexes", setup_indexes)
 	_safe("roles", setup_roles)
 	_safe("seed task templates", seed_task_templates)
@@ -271,10 +272,27 @@ def after_migrate():
 	setup_custom_fields()
 	claim_workflow_ownership()
 	frappe.db.commit()
+	_safe("legacy data", repair_orphaned_data)
 	_safe("indexes", setup_indexes)
 	_safe("roles", setup_roles)
 	_safe("backfill completed_on", backfill_completed_on)
 	_safe("backfill comment todo", backfill_comment_todo)
+
+
+def before_app_uninstall(app_name):
+	"""Another app is being uninstalled. The earlier workflow add-on: its data moves to ToDoBox first (legacy.py).
+	Not _safe: if this fails the uninstall must stop, before Frappe deletes its module with the data."""
+	if app_name == OLD_APP:
+		before_old_app_uninstall()
+
+
+def after_app_uninstall(app_name):
+	if app_name == OLD_APP:
+		setup_custom_fields()
+		claim_workflow_ownership()
+		frappe.db.commit()
+		_safe("legacy data", repair_orphaned_data)
+		frappe.clear_cache()
 
 
 def before_uninstall():

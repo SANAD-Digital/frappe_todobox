@@ -159,6 +159,8 @@ def enrich_workflow_action(doc, workflow, state):
 	for user in users:
 		action.append("todobox_permitted_users", {"user": user})
 	action.todobox_permitted_users_count = len(users)
+	# who moved the document to this state
+	action.user = frappe.session.user
 	action.flags.ignore_version = True
 	action.flags.ignore_links = True
 	action.save(ignore_permissions=True)
@@ -314,7 +316,21 @@ def valid_states(doctype, name):
 			}
 		)
 	states.sort(key=lambda row: row["status_no"])
-	return states, {"name": workflow.name, "show_status_bar": cint(workflow.get("show_status_bar"))}
+	show = cint(workflow.get("show_status_bar")) and not _progress_hidden_for_user()
+	return states, {"name": workflow.name, "show_status_bar": 1 if show else 0}
+
+
+def _progress_hidden_for_user() -> bool:
+	"""ToDoBox Settings "Hide the progress bar from": one of the user's roles is listed (System Managers see it)."""
+	roles = set(frappe.get_roles())
+	if "System Manager" in roles or not frappe.db.table_exists("ToDoBox Hidden Role"):
+		return False
+	hidden = frappe.get_all(
+		"ToDoBox Hidden Role",
+		filters={"parent": "ToDoBox Settings", "parenttype": "ToDoBox Settings", "parentfield": "progress_hidden_roles"},
+		pluck="role",
+	)
+	return bool(roles.intersection(hidden))
 
 
 @frappe.whitelist()

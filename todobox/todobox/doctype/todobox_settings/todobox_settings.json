@@ -1,7 +1,7 @@
 {
  "actions": [],
  "creation": "2026-10-29 12:00:00.000000",
- "description": "Site-wide ToDoBox options: who appears in pickers, department-only assignment, linkable document types.",
+ "description": "Site-wide ToDoBox options: who appears in pickers, department-only assignment, linkable document types, the workflow progress bar.",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
@@ -11,7 +11,9 @@
   "hidden_groups",
   "restrict_to_department",
   "links_section",
-  "linkable_doctypes"
+  "linkable_doctypes",
+  "workflow_section",
+  "progress_hidden_roles"
  ],
  "fields": [
   {
@@ -55,12 +57,24 @@
    "fieldtype": "Table MultiSelect",
    "label": "Linkable document types",
    "options": "ToDoBox Linkable DocType"
+  },
+  {
+   "fieldname": "workflow_section",
+   "fieldtype": "Section Break",
+   "label": "Workflow"
+  },
+  {
+   "description": "These roles do not see the workflow progress bar on document forms. System Managers always see it.",
+   "fieldname": "progress_hidden_roles",
+   "fieldtype": "Table MultiSelect",
+   "label": "Hide the progress bar from",
+   "options": "ToDoBox Hidden Role"
   }
  ],
  "index_web_pages_for_search": 0,
  "issingle": 1,
  "links": [],
- "modified": "2026-10-29 12:00:00.000000",
+ "modified": "2026-11-22 12:00:00.000000",
  "modified_by": "Administrator",
  "module": "ToDoBox",
  "name": "ToDoBox Settings",

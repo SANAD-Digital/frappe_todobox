@@ -26,7 +26,9 @@ after_install = "todobox.setup.install.after_install"
 after_migrate = "todobox.setup.install.after_migrate"
 before_uninstall = "todobox.setup.install.before_uninstall"
 after_uninstall = "todobox.setup.install.after_uninstall"
-# keeps the shared workflow tables when another app that also ships them is removed
+# the earlier workflow add-on being uninstalled: its data moves to ToDoBox before Frappe deletes its module
+before_app_uninstall = "todobox.setup.install.before_app_uninstall"
+after_app_uninstall = "todobox.setup.install.after_app_uninstall"
 
 # Desk: remember the Desk's typeface (incl. a theme's) so /todobox renders with the same font
 app_include_js = [
@@ -80,8 +82,14 @@ doc_events = {
 			"todobox.services.wf_engine.enqueue_workflow_receipt",
 			"todobox.services.linked_todos.set_todo_count",
 		],
-		"validate": "todobox.services.wf_engine.before_transition",
-		"before_update_after_submit": "todobox.services.wf_engine.before_transition",
+		"validate": [
+			"todobox.services.update_conditions.check_update_conditions",
+			"todobox.services.wf_engine.before_transition",
+		],
+		"before_update_after_submit": [
+			"todobox.services.update_conditions.check_update_conditions",
+			"todobox.services.wf_engine.before_transition",
+		],
 		"before_cancel": "todobox.services.wf_engine.before_transition",
 		"on_update": [
 			"todobox.services.wf_engine.after_transition",

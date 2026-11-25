@@ -1,0 +1,98 @@
+{
+ "actions": [],
+ "autoname": "format:{doc_type}-{####}",
+ "creation": "2026-11-22 12:00:00.000000",
+ "description": "Fields a document must fill (or values it must hold) when it matches the conditions, checked on every save.",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "doc_type",
+  "disabled",
+  "conditions_section",
+  "filters_html",
+  "filters_data",
+  "required_section",
+  "mandatory_html",
+  "mandatory_data"
+ ],
+ "fields": [
+  {
+   "fieldname": "doc_type",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Document Type",
+   "options": "DocType",
+   "reqd": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "disabled",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Disabled"
+  },
+  {
+   "depends_on": "doc_type",
+   "description": "Empty: every document of this type.",
+   "fieldname": "conditions_section",
+   "fieldtype": "Section Break",
+   "label": "When the document matches"
+  },
+  {
+   "fieldname": "filters_html",
+   "fieldtype": "HTML",
+   "label": "Conditions"
+  },
+  {
+   "fieldname": "filters_data",
+   "fieldtype": "JSON",
+   "hidden": 1,
+   "label": "Conditions (JSON)"
+  },
+  {
+   "depends_on": "doc_type",
+   "description": "\"is set\" makes a field mandatory; any other operator is the value the field must hold.",
+   "fieldname": "required_section",
+   "fieldtype": "Section Break",
+   "label": "Then it must have"
+  },
+  {
+   "fieldname": "mandatory_html",
+   "fieldtype": "HTML",
+   "label": "Required"
+  },
+  {
+   "fieldname": "mandatory_data",
+   "fieldtype": "JSON",
+   "hidden": 1,
+   "label": "Required (JSON)"
+  }
+ ],
+ "links": [],
+ "modified": "2026-11-22 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "ToDoBox",
+ "name": "Doctype Update Condition",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "doc_type",
+ "track_changes": 1
+}

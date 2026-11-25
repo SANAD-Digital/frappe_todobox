@@ -4713,3 +4713,141 @@ msgstr "التحديد"
 
 msgid "Select up to here"
 msgstr "تحديد حتى هنا"
+
+msgid "Branch"
+msgstr "الفرع"
+
+msgid "Created Custom Field {0} in {1}"
+msgstr "تم إنشاء حقل مخصص {0} في {1}"
+
+msgid "Creation"
+msgstr "الإنشاء"
+
+msgid "Department"
+msgstr "القسم"
+
+msgid "Designation"
+msgstr "المسمى الوظيفي"
+
+msgid "DocType"
+msgstr "نوع المستند"
+
+msgid "Doctype Update Condition"
+msgstr "شرط تحديث نوع المستند"
+
+msgid "Duration"
+msgstr "المدة"
+
+msgid "Duration Seconds"
+msgstr "المدة بالثواني"
+
+msgid "Employee"
+msgstr "الموظف"
+
+msgid "Employee Name"
+msgstr "اسم الموظف"
+
+msgid "Employee wise Workflow Action"
+msgstr "إجراءات سير العمل حسب الموظف"
+
+msgid "Leader For Wise"
+msgstr "ملخص القائد"
+
+msgid "My Team"
+msgstr "فريقي"
+
+msgid "Pending"
+msgstr "قيد الانتظار"
+
+msgid "Reference Name"
+msgstr "اسم المرجع"
+
+msgid "Reference Type"
+msgstr "نوع المرجع"
+
+msgid "roles"
+msgstr "الصلاحيات"
+
+msgid "Share"
+msgstr "مشاركة"
+
+msgid "Success"
+msgstr "نجاح"
+
+msgid "User Name"
+msgstr "اسم المستخدم"
+
+msgid "Workflow Action Permitted User"
+msgstr "مستخدم إجراء سير العمل المسموح"
+
+msgid "Workflow Action Report"
+msgstr "تقرير إجراءات سير العمل"
+
+msgid "Workflow Document State"
+msgstr "حالة مستند سير العمل"
+
+msgid "Workflow Trace Report"
+msgstr "تقرير تتبع سير العمل"
+
+msgid "Workflow Trace Summary"
+msgstr "ملخص تتبع سير العمل"
+
+msgid "{0} is mandatory"
+msgstr "{0} إلزامي"
+
+msgid "Fields a document must fill (or values it must hold) when it matches the conditions, checked on every save."
+msgstr "الحقول التي يجب أن يعبئها المستند (أو القيم التي يجب أن يحملها) عندما يطابق الشروط، ويُتحقق منها عند كل حفظ."
+
+msgid "When the document matches"
+msgstr "عندما يطابق المستند"
+
+msgid "Empty: every document of this type."
+msgstr "فارغ: كل مستندات هذا النوع."
+
+msgid "Conditions (JSON)"
+msgstr "الشروط (JSON)"
+
+msgid "Then it must have"
+msgstr "فيجب أن يحتوي على"
+
+msgid "\"is set\" makes a field mandatory; any other operator is the value the field must hold."
+msgstr "«is set» تجعل الحقل إلزاميًا، وأي عامل آخر هو القيمة التي يجب أن يحملها الحقل."
+
+msgid "Required"
+msgstr "المطلوب"
+
+msgid "Required (JSON)"
+msgstr "المطلوب (JSON)"
+
+msgid "{0} is not a document type"
+msgstr "{0} ليس نوع مستند"
+
+msgid "Add at least one field the document must have"
+msgstr "أضف حقلًا واحدًا على الأقل يجب أن يحتويه المستند"
+
+msgid "{0} is not {1} or one of its tables"
+msgstr "{0} ليس {1} ولا أحد جداوله"
+
+msgid "{0} must be {1} {2}"
+msgstr "{0} يجب أن يكون {1} {2}"
+
+msgid "Missing values"
+msgstr "قيم ناقصة"
+
+msgid "Workflow"
+msgstr "سير العمل"
+
+msgid "Hide the progress bar from"
+msgstr "إخفاء شريط التقدم عن"
+
+msgid "These roles do not see the workflow progress bar on document forms. System Managers always see it."
+msgstr "هذه الأدوار لا ترى شريط تقدم سير العمل في نماذج المستندات. مدير النظام يراه دائمًا."
+
+msgid "ToDoBox Hidden Role"
+msgstr "دور مخفي في ToDoBox"
+
+msgid "A role that does not see the workflow progress bar on Desk forms (ToDoBox Settings)."
+msgstr "دور لا يرى شريط تقدم سير العمل في نماذج Desk (إعدادات ToDoBox)."
+
+msgid "Site-wide ToDoBox options: who appears in pickers, department-only assignment, linkable document types, the workflow progress bar."
+msgstr "خيارات ToDoBox على مستوى الموقع: من يظهر في قوائم الاختيار، والإسناد داخل القسم فقط، وأنواع المستندات القابلة للربط، وشريط تقدم سير العمل."

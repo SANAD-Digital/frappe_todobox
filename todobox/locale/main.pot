@@ -4467,3 +4467,144 @@ msgstr ""
 
 msgid "Select up to here"
 msgstr ""
+
+msgid "Branch"
+msgstr ""
+
+msgid "Created Custom Field {0} in {1}"
+msgstr ""
+
+msgid "Creation"
+msgstr ""
+
+msgid "Department"
+msgstr ""
+
+msgid "Designation"
+msgstr ""
+
+msgid "DocType"
+msgstr ""
+
+msgid "Doctype Update Condition"
+msgstr ""
+
+msgid "Duration"
+msgstr ""
+
+msgid "Duration Seconds"
+msgstr ""
+
+msgid "Employee"
+msgstr ""
+
+msgid "Employee Name"
+msgstr ""
+
+msgid "Employee wise Workflow Action"
+msgstr ""
+
+msgid "Leader For Wise"
+msgstr ""
+
+msgid "My Team"
+msgstr ""
+
+msgid "Pending"
+msgstr ""
+
+msgid "Reference Name"
+msgstr ""
+
+msgid "Reference Type"
+msgstr ""
+
+msgid "roles"
+msgstr ""
+
+msgid "Share"
+msgstr ""
+
+msgid "Success"
+msgstr ""
+
+msgid "User Name"
+msgstr ""
+
+msgid "Workflow Action Permitted User"
+msgstr ""
+
+msgid "Workflow Action Report"
+msgstr ""
+
+msgid "Workflow Document State"
+msgstr ""
+
+msgid "Workflow Trace Report"
+msgstr ""
+
+msgid "Workflow Trace Summary"
+msgstr ""
+
+msgid "{0} is mandatory"
+msgstr ""
+
+msgid "Fields a document must fill (or values it must hold) when it matches the conditions, checked on every save."
+msgstr ""
+
+msgid "When the document matches"
+msgstr ""
+
+msgid "Empty: every document of this type."
+msgstr ""
+
+msgid "Conditions (JSON)"
+msgstr ""
+
+msgid "Then it must have"
+msgstr ""
+
+msgid "\"is set\" makes a field mandatory; any other operator is the value the field must hold."
+msgstr ""
+
+msgid "Required"
+msgstr ""
+
+msgid "Required (JSON)"
+msgstr ""
+
+msgid "{0} is not a document type"
+msgstr ""
+
+msgid "Add at least one field the document must have"
+msgstr ""
+
+msgid "{0} is not {1} or one of its tables"
+msgstr ""
+
+msgid "{0} must be {1} {2}"
+msgstr ""
+
+msgid "Missing values"
+msgstr ""
+
+msgid "Operator must be one of {0}"
+msgstr ""
+
+msgid "Workflow"
+msgstr ""
+
+msgid "Hide the progress bar from"
+msgstr ""
+
+msgid "These roles do not see the workflow progress bar on document forms. System Managers always see it."
+msgstr ""
+
+msgid "ToDoBox Hidden Role"
+msgstr ""
+
+msgid "A role that does not see the workflow progress bar on Desk forms (ToDoBox Settings)."
+msgstr ""
+
+msgid "Site-wide ToDoBox options: who appears in pickers, department-only assignment, linkable document types, the workflow progress bar."
+msgstr ""
