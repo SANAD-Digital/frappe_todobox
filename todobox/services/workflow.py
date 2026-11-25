@@ -1,7 +1,9 @@
 """«Required actions» over Frappe Workflow.
 
-A document is pending when the Desk form would offer me an action on it: readable by get_list, in a
-state with a transition allowed to my roles, and allowed_transitions() leaves at least one action.
+A document is pending when it has an Open Workflow Action for its current state that is mine (as in Frappe's
+Workflow Action list: a permitted role of mine, and, when the action names permitted users, me among them),
+it is readable, it is not another company's than my default one (as the Desk sidebar), and allowed_transitions()
+leaves at least one action.
 Returns workflow definitions, documents, trail and the user's decision log to the UI.
 """
 
@@ -27,7 +29,7 @@ from frappe.utils import add_days, cint, flt, fmt_money, get_datetime, now_datet
 from todobox.services.common import TRANSLATION_CONTEXT, can, derive_subject, loads, share_with, split_csv, todo_has
 from todobox.services.notifications import create_notification_log
 from todobox.services.org import can_assign
-from todobox.services.wf_engine import next_actions_of, timeline_of
+from todobox.services.wf_engine import ACTION, _permitted_users_of, next_actions_of, timeline_of
 from todobox.services.wf_rules import user_rule_passes
 
 # form events that only run in the Desk form (frappe/public/js/frappe/form/workflow.js)
@@ -252,25 +254,34 @@ def _quiet(fn, default):
 
 
 def _pending_rows(workflows, roles, limit):
-	"""[(modified, doctype, name)] newest first: what get_list lets me read in a state where a transition
-	is allowed to my roles. Only candidates: allowed_transitions decides per document."""
-	rows = []
-	for dt, wf in workflows.items():
-		states = list({t.state for t in wf.transitions if t.allowed in roles})
-		if not states:
-			continue
-		found = _quiet(
-			lambda: frappe.get_list(
-				dt,
-				filters={wf.workflow_state_field: ("in", states)},
-				fields=["name", "modified"],
-				order_by="modified desc",
-				limit=limit * PENDING_SCAN,
-			),
-			[],
-		)
-		rows += [(get_datetime(r.modified), dt, r.name) for r in found]
-	rows.sort(key=lambda r: r[0], reverse=True)
+	"""[(modified, doctype, name, state)] newest first, from the Open Workflow Actions, as Frappe's Workflow Action
+	list shows them: the rows whose permitted roles are mine (its permission query, through get_list), and, when a
+	row names permitted users (the transition's users-by-field rule), only if I am one of them. Only candidates:
+	_pending_docs skips a row of a state the document has left, and allowed_transitions decides per document."""
+	fields = ["reference_doctype", "reference_name", "workflow_state", "modified"]
+	has_users = frappe.get_meta(ACTION).has_field("todobox_permitted_users_count")
+	if has_users:
+		fields += ["name", "todobox_permitted_users_count"]
+	actions = _quiet(
+		lambda: frappe.get_list(
+			ACTION,
+			filters={"status": "Open", "reference_doctype": ("in", list(workflows))},
+			fields=fields,
+			order_by="modified desc",
+			limit_page_length=0,
+		),
+		[],
+	)
+	if has_users:
+		me = frappe.session.user
+		listed = _permitted_users_of([a.name for a in actions if cint(a.todobox_permitted_users_count)])
+		actions = [a for a in actions if not cint(a.todobox_permitted_users_count) or me in listed.get(a.name, ())]
+	rows, seen = [], set()
+	for a in actions:
+		key = (a.reference_doctype, a.reference_name, a.workflow_state)
+		if a.reference_name and a.workflow_state and key not in seen:
+			seen.add(key)
+			rows.append((get_datetime(a.modified), *key))
 	return rows
 
 
@@ -300,20 +311,27 @@ def _actions_doc(doc, wfp):
 def _pending_docs(workflows, wf_payload, roles, limit):
 	"""{(doctype, name): transitions} for up to `limit` documents the form would offer me an action on."""
 	rows = _pending_rows(workflows, roles, limit)
+	# as the Desk sidebar (wf_engine._readable_references): another company's documents wait on its own users
+	company = frappe.defaults.get_user_default("company")
 	out = {}
 	for start in range(0, len(rows), PENDING_BATCH):
 		if len(out) >= limit:
 			break
 		batch = rows[start : start + PENDING_BATCH]
 		by_type = {}
-		for _m, dt, name in batch:
+		for _m, dt, name, _state in batch:
 			by_type.setdefault(dt, []).append(name)
 		loaded = {dt: _doc_rows(dt, names) for dt, names in by_type.items()}
-		for _m, dt, name in batch:
+		for _m, dt, name, state in batch:
 			row = loaded[dt].get(name)
-			if not row or len(out) >= limit:
+			if not row or len(out) >= limit or (dt, name) in out:
 				continue
 			wfp = wf_payload[dt]
+			# an Open row of a state the document has left: Frappe does not close it when a state is re-entered
+			if row.get(wfp["workflow_state_field"]) != state:
+				continue
+			if company and row.get("company") and row.get("company") != company:
+				continue
 			doc = _light_doc(dt, row)
 			trs = _quiet(lambda: allowed_transitions(_actions_doc(doc, wfp), wfp) if can(dt, "read", doc=doc) else [], [])
 			if trs:
@@ -703,9 +721,7 @@ def get_workflow_inbox(limit=120):
 
 LOG_DAYS = 180
 
-# pending: candidates fetched per doctype (× limit), so documents with no resulting action do not use up
-# the limit; they are evaluated in batches until the limit is reached
-PENDING_SCAN = 3
+# pending: the candidates (open Workflow Actions) are evaluated in batches until the limit is reached
 PENDING_BATCH = 50
 
 
